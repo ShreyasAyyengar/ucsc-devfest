@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { FC, MouseEvent, ReactNode } from "react";
 import { CodeFileSvg } from "@/SVGs/code-file-svg";
 import { HackerPassSvg } from "@/SVGs/hacker-pass-svg";
+import { TrophySvg } from "@/SVGs/trophy-svg";
 
 type TiltWidgetProps = {
   baseRotateZ?: number;
@@ -242,7 +243,7 @@ export const DevFestStage3D: FC = () => {
         </motion.div>
 
         {/* ==========================================
-             FLOATING BADGE 4: Mentor / AI Track Card (Bottom Right)
+             FLOATING BADGE 4: Prize Pool Card (Bottom Right)
              ========================================== */}
         <motion.div
           animate={{ y: [0, -10, 0] }}
@@ -252,12 +253,12 @@ export const DevFestStage3D: FC = () => {
         >
           <TiltWidget baseRotateZ={-3} depth={60} maxTilt={4}>
             <div className="dark-glass flex items-center gap-3 rounded-2xl border border-white/20 p-3.5 shadow-2xl">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#EA4335] to-pink-500 font-bold text-sm text-white shadow">
-                AI
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#34A853] to-emerald-400 text-white shadow">
+                <TrophySvg className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="font-bold font-google text-white text-xs">Google Cloud Lab</p>
-                <p className="text-[11px] text-gray-300">Free $300 Credits</p>
+                <p className="font-bold font-google text-white text-xs">Prize Pool</p>
+                <p className="text-[11px] text-gray-300">$2,000 Prizes &amp; Swag</p>
               </div>
               <div className="ml-1 h-2 w-2 rounded-full bg-[#34A853]" />
             </div>
