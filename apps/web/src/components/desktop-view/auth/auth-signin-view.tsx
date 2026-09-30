@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import type { FC } from "react";
 import { GoogleSvg } from "@/SVGs/google-svg";
 
-interface AuthSignInViewProps {
+type AuthSignInViewProps = {
   onSignIn: () => void;
-}
+};
 
 export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
   return (
@@ -15,7 +15,7 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="w-full max-w-lg"
+      className="w-full"
     >
       {/* 48-Hour Badge row */}
       <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gray-100/90 px-3 py-1 font-medium text-gray-700 text-xs">
@@ -53,7 +53,7 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
           whileTap={{ scale: 0.98 }}
           type="button"
           onClick={onSignIn}
-          className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-gray-300 px-6 py-4 font-google font-medium text-base text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:ring-offset-2 active:bg-gray-100"
+          className="group relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-gray-300 px-6 py-4 font-google font-medium text-base text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:ring-offset-2 active:bg-gray-100"
         >
           {/* Google 4-Color 'G' Logo SVG */}
           <GoogleSvg className="h-5 w-5 shrink-0 transition-transform group-hover:scale-105" />

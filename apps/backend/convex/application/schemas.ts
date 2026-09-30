@@ -1,5 +1,5 @@
 import { defineTable } from "convex/server";
-import { zodOutputToConvex } from "convex-helpers/server/zod";
+import { zodOutputToConvex } from "convex-helpers/server/zod4";
 import { z } from "zod";
 
 const requiredText = (label: string, maxLength = 2000) => z.string().trim().min(1, `${label} is required`).max(maxLength);
