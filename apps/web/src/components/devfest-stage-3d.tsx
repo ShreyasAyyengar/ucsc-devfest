@@ -2,6 +2,8 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { FC, MouseEvent, ReactNode } from "react";
+import { CodeFileSvg } from "@/SVGs/code-file-svg";
+import { HackerPassSvg } from "@/SVGs/hacker-pass-svg";
 
 type TiltWidgetProps = {
   baseRotateZ?: number;
@@ -129,14 +131,7 @@ export const DevFestStage3D: FC = () => {
                   <div className="h-3 w-3 rounded-full bg-[#34A853] shadow-xs" />
                 </div>
                 <div className="flex items-center gap-1 font-mono text-[11px] text-gray-400">
-                  <svg className="h-3 w-3 text-[#4285F4]" fill="currentColor" viewBox="0 0 20 20" role="img" aria-label="Code file icon">
-                    <title>Code file icon</title>
-                    <path
-                      fillRule="evenodd"
-                      d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <CodeFileSvg />
                   <span>devfest_agent.py</span>
                 </div>
                 <span className="rounded bg-[#4285F4]/20 px-2 py-0.5 font-mono text-[#E8F0FE] text-[9px]">ONLINE</span>
@@ -188,10 +183,7 @@ export const DevFestStage3D: FC = () => {
           <TiltWidget baseRotateZ={-6} depth={65} maxTilt={5}>
             <div className="backdrop-glass flex items-center gap-3 rounded-2xl border border-white/80 p-3.5 shadow-vibrant-glow">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#4285F4] text-white shadow-md">
-                <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Hacker pass icon">
-                  <title>Hacker pass icon</title>
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
+                <HackerPassSvg />
               </div>
               <div>
                 <p className="font-bold text-[11px] text-gray-400 uppercase tracking-wider">Hacker Pass</p>
