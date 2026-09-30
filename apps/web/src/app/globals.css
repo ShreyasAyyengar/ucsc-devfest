@@ -104,3 +104,36 @@
   );
   background-size: 24px 24px;
 }
+
+/* Custom sleek scrollbar styles */
+* {
+  scrollbar-color: #dadce0 transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dadce0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bdc1c6;
+}
+
+/* Ensure all interactive buttons, comboboxes, and checkboxes show pointer cursor */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="combobox"]:not([aria-disabled="true"]),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled) {
+  cursor: pointer;
+}

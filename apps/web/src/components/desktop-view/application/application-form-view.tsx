@@ -1,32 +1,47 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Send, Sparkles } from "lucide-react";
-import { type FC, type FormEvent, useState } from "react";
+import { CheckCircle2, Sparkles } from "lucide-react";
+import { type FC, useState } from "react";
+import { AgreementsSection } from "./agreements-section";
+import { defaultApplicationFormValues, useAppForm } from "./application-form-hook";
+import { IdentitySection } from "./identity-section";
+import { LogisticsSection } from "./logistics-section";
+import { MotivationSection } from "./motivation-section";
+import { SkillLevelSection } from "./skill-level-section";
+import { SubmitSection } from "./submit-section";
 
-interface ApplicationFormViewProps {
+type ApplicationFormViewProps = {
   onSignOut: () => void;
   userEmail?: string;
-}
+};
 
 export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu" }) => {
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "Alex Rivera",
-    university: "UC Santa Cruz",
-    gradYear: "2027",
-    track: "ai-gemini",
-    teamStatus: "looking",
-    githubUrl: "https://github.com/",
-    linkedinUrl: "https://linkedin.com/in/",
-    tshirtSize: "L",
-    dietary: "none",
-  });
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+  const form = useAppForm({
+    defaultValues: {
+      ...defaultApplicationFormValues,
+      email: userEmail,
+    },
+    onSubmit: ({ value }) => {
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
+      console.log("=== DEV FEST APPLICATION FORM SUBMITTED (VALID) ===");
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
+      console.table(value);
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
+      console.log("Full form payload:", value);
+      setSubmitted(true);
+    },
+    onSubmitInvalid: ({ value, formApi }) => {
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form errors for submission verification
+      console.warn("=== DEV FEST APPLICATION FORM SUBMIT BLOCKED (VALIDATION ERRORS) ===");
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form errors for submission verification
+      console.warn("Form values at submission attempt:", value);
+      // biome-ignore lint/suspicious/noConsole: intentionally logging form errors for submission verification
+      console.warn("Field errors:", formApi.state.errorMap);
+    },
+  });
 
   return (
     <motion.div
@@ -70,156 +85,27 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mx-auto block pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
+            className="mx-auto block cursor-pointer pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
           >
             Edit your application
           </button>
         </motion.div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-6 max-h-[58vh] space-y-4 overflow-y-auto pr-1">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label htmlFor="fullName" className="mb-1 block font-medium text-gray-700 text-xs">
-                Full Name
-              </label>
-              <input
-                id="fullName"
-                type="text"
-                required
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              />
-            </div>
-            <div>
-              <label htmlFor="university" className="mb-1 block font-medium text-gray-700 text-xs">
-                University / College
-              </label>
-              <input
-                id="university"
-                type="text"
-                required
-                value={formData.university}
-                onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label htmlFor="track" className="mb-1 block font-medium text-gray-700 text-xs">
-                Preferred Track
-              </label>
-              <select
-                id="track"
-                value={formData.track}
-                onChange={(e) => setFormData({ ...formData, track: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              >
-                <option value="ai-gemini">AI & Gemini API</option>
-                <option value="cloud-devops">Google Cloud & Infra</option>
-                <option value="mobile-flutter">Mobile & Flutter</option>
-                <option value="social-good">Open Source & Social Impact</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="gradYear" className="mb-1 block font-medium text-gray-700 text-xs">
-                Graduation Year
-              </label>
-              <select
-                id="gradYear"
-                value={formData.gradYear}
-                onChange={(e) => setFormData({ ...formData, gradYear: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              >
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028+</option>
-                <option value="grad">Graduate / Master's</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label htmlFor="githubUrl" className="mb-1 block font-medium text-gray-700 text-xs">
-                GitHub Profile
-              </label>
-              <input
-                id="githubUrl"
-                type="url"
-                value={formData.githubUrl}
-                onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 font-mono text-sm text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              />
-            </div>
-            <div>
-              <label htmlFor="teamStatus" className="mb-1 block font-medium text-gray-700 text-xs">
-                Team Status
-              </label>
-              <select
-                id="teamStatus"
-                value={formData.teamStatus}
-                onChange={(e) => setFormData({ ...formData, teamStatus: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              >
-                <option value="looking">Looking for teammates</option>
-                <option value="formed">Have a team (code ready)</option>
-                <option value="solo">Hacking solo</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="tshirtSize" className="mb-1 block font-medium text-gray-700 text-xs">
-                T-Shirt Size
-              </label>
-              <select
-                id="tshirtSize"
-                value={formData.tshirtSize}
-                onChange={(e) => setFormData({ ...formData, tshirtSize: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              >
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="dietary" className="mb-1 block font-medium text-gray-700 text-xs">
-                Dietary Preference
-              </label>
-              <select
-                id="dietary"
-                value={formData.dietary}
-                onChange={(e) => setFormData({ ...formData, dietary: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-              >
-                <option value="none">No Restrictions</option>
-                <option value="vegetarian">Vegetarian</option>
-                <option value="vegan">Vegan</option>
-                <option value="halal">Halal</option>
-                <option value="kosher">Kosher</option>
-                <option value="gluten-free">Gluten-Free</option>
-              </select>
-            </div>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#4285F4] px-4 py-3 font-semibold text-sm text-white shadow-md transition-all hover:bg-[#1a73e8]"
-          >
-            <span>Submit Hackathon Application</span>
-            <Send className="h-4 w-4" />
-          </motion.button>
+        <form
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="-mx-2 mt-6 max-h-[58vh] space-y-6 overflow-y-auto px-3 py-2"
+        >
+          <IdentitySection form={form} />
+          <LogisticsSection form={form} />
+          <SkillLevelSection form={form} />
+          <MotivationSection form={form} />
+          <AgreementsSection form={form} />
+          <SubmitSection form={form} />
         </form>
       )}
     </motion.div>
