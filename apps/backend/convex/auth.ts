@@ -23,8 +23,13 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     database: authComponent.adapter(ctx),
     plugins: [convex({ authConfig }), multiSession()],
-    trustedOrigins: [env.WEBSITE_URL],
-    baseURL: env.WEBSITE_URL + env.AUTH_BASE_PATH,
+    trustedOrigins: [env.WEBSITE_URL, "http://localhost:3000"],
+    baseURL: {
+      allowedHosts: ["localhost:3000", "127.0.0.1:3000", "ucsc-devfest.com", "*.ucsc-devfest.com"],
+      fallback: env.WEBSITE_URL,
+      protocol: "auto",
+    },
+    basePath: env.AUTH_BASE_PATH,
     socialProviders: {
       google: {
         prompt: "select_account consent",

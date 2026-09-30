@@ -1,13 +1,49 @@
+"use client";
+
+import { useState } from "react";
+import { DesktopView } from "@/components/desktop-view/desktop-view";
+import { MobileView } from "@/components/mobile-view/mobile-view";
+import { authClient } from "@/lib/auth-client";
+
 export default function Home() {
+  const { data: session, isPending } = authClient.useSession();
+  const [manualAuthOverride, setManualAuthOverride] = useState<boolean | null>(null);
+
+  const isAuthenticated = manualAuthOverride !== null ? manualAuthOverride : Boolean(session?.user);
+  const userEmail = session?.user?.email ?? (isAuthenticated ? "student@ucsc.edu" : "");
+
+  const handleSignIn = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
+
+  const handleSignOut = async () => {
+    if (manualAuthOverride !== null) {
+      setManualAuthOverride(false);
+    }
+    await authClient.signOut();
+  };
+
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16">
-      <section className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm sm:p-14">
-        <p className="mb-4 font-semibold text-blue-600 text-sm uppercase tracking-[0.2em]">UCSC DevFest</p>
-        <h1 className="font-bold text-4xl text-slate-950 tracking-tight sm:text-5xl">Your starter is ready.</h1>
-        <p className="mt-5 max-w-xl text-lg text-slate-600 leading-8">
-          Start building by editing <code className="rounded bg-slate-100 px-2 py-1 text-base text-slate-800">src/app/page.tsx</code>.
-        </p>
-      </section>
-    </main>
+    <>
+      {/* Mobile View Wrapper */}
+      <div className="w-full lg:hidden">
+        <MobileView />
+      </div>
+
+      {/* Desktop View Wrapper */}
+      <div className="hidden w-full lg:block">
+        <DesktopView
+          isAuthenticated={isAuthenticated}
+          userEmail={userEmail}
+          isLoading={isPending && manualAuthOverride === null}
+          onSignIn={handleSignIn}
+          onSignOut={handleSignOut}
+          onToggleAuth={() => setManualAuthOverride((prev) => (prev === null ? !isAuthenticated : !prev))}
+        />
+      </div>
+    </>
   );
 }

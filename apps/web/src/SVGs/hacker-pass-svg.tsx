@@ -1,0 +1,8 @@
+import type { FC, SVGProps } from "react";
+
+export const HackerPassSvg: FC<SVGProps<SVGSVGElement>> = ({ className = "h-6 w-6", ...props }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Hacker pass icon" {...props}>
+    <title>Hacker pass icon</title>
+    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+  </svg>
+);
