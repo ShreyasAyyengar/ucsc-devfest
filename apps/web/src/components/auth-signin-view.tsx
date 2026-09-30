@@ -1,26 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Mail } from "lucide-react";
-import { type FC, type FormEvent, useState } from "react";
+import type { FC } from "react";
 
 interface AuthSignInViewProps {
   onSignIn: () => void;
 }
 
 export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
-  const [email, setEmail] = useState("");
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const handleCampusSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setToastMessage("Verification link sent! Check your student inbox to complete your application.");
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 5000);
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -50,14 +37,14 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
         wild ideas into shipped prototypes.
       </p>
 
-      <div className="mt-8 space-y-4">
-        {/* Authentic 'Sign in with Google' Pill Button */}
+      {/* Google SSO Container */}
+      <div className="mt-8 space-y-3">
         <motion.button
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           type="button"
           onClick={onSignIn}
-          className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-gray-300 px-6 py-3.5 font-google font-medium text-base text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:ring-offset-2 active:bg-gray-100"
+          className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-gray-300 px-6 py-4 font-google font-medium text-base text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:ring-offset-2 active:bg-gray-100"
         >
           {/* Google 4-Color 'G' Logo SVG */}
           <svg className="h-5 w-5 shrink-0 transition-transform group-hover:scale-105" viewBox="0 0 24 24" role="img" aria-label="Google logo">
@@ -81,57 +68,12 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
           </svg>
           <span className="font-semibold text-sm tracking-wide">Continue with Google Account</span>
         </motion.button>
-
-        {/* Divider */}
-        <div className="relative my-4 flex items-center justify-center">
-          <div className="w-full border-gray-200 border-t" />
-          <span className="bg-white px-3 font-mono text-gray-400 text-xs uppercase tracking-widest">or register with campus SSO</span>
-          <div className="w-full border-gray-200 border-t" />
-        </div>
-
-        {/* Secondary Quick Form */}
-        <form onSubmit={handleCampusSubmit} className="space-y-3">
-          <div className="relative">
-            <label htmlFor="campusEmail" className="sr-only">
-              University / Student Email
-            </label>
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-              <Mail className="h-4 w-4" />
-            </div>
-            <input
-              type="email"
-              id="campusEmail"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@university.edu"
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-800 text-sm placeholder-gray-400 transition-all focus:border-[#4285F4] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/50"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-3 font-semibold text-sm text-white shadow-sm transition-all hover:bg-black hover:shadow active:scale-[0.99]"
-          >
-            <span>Apply with University Email</span>
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </form>
-
-        {/* Notification feedback */}
-        {toastMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center gap-2 rounded-xl border border-[#34A853]/30 bg-[#E6F4EA] p-3 text-[#1E8E3E] text-xs"
-          >
-            <CheckCircle2 className="h-4 w-4 shrink-0 text-[#34A853]" />
-            <span>{toastMessage}</span>
-          </motion.div>
-        )}
+        <p className="text-center text-xs text-gray-400">
+          Sign in using your student or personal Google account to proceed with your application.
+        </p>
       </div>
 
+      {/* Hackathon Essentials */}
       <div className="mt-10 border-gray-100 border-t pt-6">
         <p className="mb-3 font-mono font-semibold text-gray-400 text-xs uppercase tracking-wider">Hackathon Essentials</p>
         <div className="grid grid-cols-3 gap-3">
@@ -151,14 +93,6 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
             <span className="inline-block font-semibold text-[#EA4335] text-[10px]">AI & Cloud</span>
           </div>
         </div>
-      </div>
-
-      {/* Hackathon Track Pills */}
-      <div className="mt-4 flex flex-wrap gap-2 text-xs">
-        <span className="rounded-md bg-[#4285F4]/10 px-2.5 py-1 font-medium font-mono text-[#1A73E8]">#GeminiAPI</span>
-        <span className="rounded-md bg-[#34A853]/10 px-2.5 py-1 font-medium font-mono text-[#1E8E3E]">#FirebaseCloud</span>
-        <span className="rounded-md bg-[#FBBC05]/15 px-2.5 py-1 font-medium font-mono text-[#F9AB00]">#FlutterMultiplatform</span>
-        <span className="rounded-md bg-[#EA4335]/10 px-2.5 py-1 font-medium font-mono text-[#D93025]">#ResponsibleAI</span>
       </div>
     </motion.div>
   );
