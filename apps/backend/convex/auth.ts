@@ -9,10 +9,6 @@ import { env } from "./_generated/server";
 import authConfig from "./auth.config.ts";
 import authSchema from "./betterAuth/schema";
 
-const HOURS_PER_SESSION = 8;
-const HOURS_BETWEEN_SESSION_UPDATES = 2;
-const SECONDS_PER_HOUR = 60 * 60;
-
 export const authComponent = createClient<DataModel, typeof authSchema>(components.betterAuth, {
   local: {
     schema: authSchema,
@@ -48,10 +44,6 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
           input: false,
         },
       },
-    },
-    session: {
-      expiresIn: SECONDS_PER_HOUR * HOURS_PER_SESSION,
-      updateAge: SECONDS_PER_HOUR * HOURS_BETWEEN_SESSION_UPDATES,
     },
   } satisfies BetterAuthOptions;
 };

@@ -9,6 +9,7 @@
  */
 
 import type * as application_schemas from "../application/schemas.js";
+import type * as application_service from "../application/service.js";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as lib_procedures from "../lib/procedures.js";
@@ -21,6 +22,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "application/schemas": typeof application_schemas;
+  "application/service": typeof application_service;
   auth: typeof auth;
   http: typeof http;
   "lib/procedures": typeof lib_procedures;
