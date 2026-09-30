@@ -7,13 +7,13 @@ import { AuthSignInView } from "./auth/auth-signin-view";
 import { DevFestHeader } from "./devfest-header";
 import { DevFestStage3D } from "./devfest-stage-3d";
 
-interface DesktopViewProps {
+type DesktopViewProps = {
   isAuthenticated: boolean;
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleAuth: () => void;
   userEmail?: string;
-}
+};
 
 export const DesktopView: FC<DesktopViewProps> = ({ isAuthenticated, onSignIn, onSignOut, onToggleAuth, userEmail = "hacker@ucsc.edu" }) => {
   return (
@@ -21,7 +21,7 @@ export const DesktopView: FC<DesktopViewProps> = ({ isAuthenticated, onSignIn, o
       {/* ==========================================
            LEFT COLUMN: INTERACTIVE REGISTRATION PANEL
            ========================================== */}
-      <main className="relative z-10 flex min-h-screen w-full flex-col bg-white px-6 py-8 sm:px-12 md:px-16 lg:w-1/2 lg:py-10 xl:px-24">
+      <main className="relative z-10 flex min-h-screen w-full flex-col bg-white px-6 py-8 sm:px-10 md:px-12 lg:w-1/2 lg:py-10 xl:px-14">
         <DevFestHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={onSignOut} />
 
         <AnimatePresence mode="wait">
