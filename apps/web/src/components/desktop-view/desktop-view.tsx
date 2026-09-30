@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import type { FC } from "react";
 import { ApplicationFormView } from "./application/application-form-view";
 import { AuthSignInView } from "./auth/auth-signin-view";
 import { DevFestHeader } from "./devfest-header";
@@ -16,14 +15,14 @@ type DesktopViewProps = {
   userEmail?: string;
 };
 
-export const DesktopView: FC<DesktopViewProps> = ({
+export function DesktopView({
   isAuthenticated,
   isLoading = false,
   onSignIn,
   onSignOut,
   onToggleAuth,
   userEmail = "hacker@ucsc.edu",
-}) => {
+}: DesktopViewProps) {
   return (
     <div className="flex min-h-screen w-full flex-col overflow-x-hidden lg:flex-row">
       {/* ==========================================
@@ -85,4 +84,4 @@ export const DesktopView: FC<DesktopViewProps> = ({
       <DevFestStage3D />
     </div>
   );
-};
+}

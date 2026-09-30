@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { FC } from "react";
 import { GoogleSvg } from "@/SVGs/google-svg";
 
 type AuthSignInViewProps = {
   onSignIn: () => void;
 };
 
-export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
+export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -101,4 +100,4 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
       </div>
     </motion.div>
   );
-};
+}

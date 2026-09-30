@@ -34,6 +34,7 @@ type Env = {
   readonly BETTER_AUTH_SECRET: string;
   readonly GOOGLE_CLIENT_ID: string;
   readonly GOOGLE_CLIENT_SECRET: string;
+  readonly RESEND_API_KEY: string;
   readonly WEBSITE_URL: string;
 };
 

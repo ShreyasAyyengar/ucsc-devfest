@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { Providers } from "@/components/providers/providers";
+import Providers from "@/components/providers/providers";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],

@@ -3,17 +3,17 @@
 import { useState } from "react";
 import { DesktopView } from "@/components/desktop-view/desktop-view";
 import { MobileView } from "@/components/mobile-view/mobile-view";
-import { authClient } from "@/lib/auth-client";
+import { authClientWeb } from "@/lib/auth-client-web";
 
 export default function Home() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClientWeb.useSession();
   const [manualAuthOverride, setManualAuthOverride] = useState<boolean | null>(null);
 
   const isAuthenticated = manualAuthOverride !== null ? manualAuthOverride : Boolean(session?.user);
   const userEmail = session?.user?.email ?? (isAuthenticated ? "student@ucsc.edu" : "");
 
   const handleSignIn = async () => {
-    await authClient.signIn.social({
+    await authClientWeb.signIn.social({
       provider: "google",
       callbackURL: "/",
     });
@@ -23,7 +23,7 @@ export default function Home() {
     if (manualAuthOverride !== null) {
       setManualAuthOverride(false);
     }
-    await authClient.signOut();
+    await authClientWeb.signOut();
   };
 
   return (
