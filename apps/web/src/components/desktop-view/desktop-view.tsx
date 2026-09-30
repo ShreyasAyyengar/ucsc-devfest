@@ -2,10 +2,10 @@
 
 import { AnimatePresence } from "framer-motion";
 import type { FC } from "react";
-import { ApplicationFormView } from "@/components/application-form-view";
-import { AuthSignInView } from "@/components/auth-signin-view";
-import { DevFestHeader } from "@/components/devfest-header";
-import { DevFestStage3D } from "@/components/devfest-stage-3d";
+import { ApplicationFormView } from "./application/application-form-view";
+import { AuthSignInView } from "./auth/auth-signin-view";
+import { DevFestHeader } from "./devfest-header";
+import { DevFestStage3D } from "./devfest-stage-3d";
 
 interface DesktopViewProps {
   isAuthenticated: boolean;

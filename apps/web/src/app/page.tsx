@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { DesktopView } from "@/components/desktop-view";
-import { MobileView } from "@/components/mobile-view";
+import { DesktopView } from "@/components/desktop-view/desktop-view";
+import { MobileView } from "@/components/mobile-view/mobile-view";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
