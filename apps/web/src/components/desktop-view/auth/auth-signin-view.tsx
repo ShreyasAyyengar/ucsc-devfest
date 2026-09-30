@@ -47,7 +47,7 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
       </p>
 
       {/* Google SSO Container */}
-      <div className="mt-8 space-y-3">
+      <div className="mt-8 w-full space-y-3">
         <motion.button
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
@@ -65,9 +65,9 @@ export const AuthSignInView: FC<AuthSignInViewProps> = ({ onSignIn }) => {
       </div>
 
       {/* Hackathon Essentials */}
-      <div className="mt-10 border-gray-100 border-t pt-6">
+      <div className="mt-10 w-full border-gray-100 border-t pt-6">
         <p className="mb-3 font-mono font-semibold text-gray-400 text-xs uppercase tracking-wider">Hackathon Essentials</p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid w-full grid-cols-3 gap-3">
           <div className="rounded-xl border border-gray-100 border-t-2 border-t-[#4285F4] bg-gray-50/80 p-3 text-center transition-all hover:bg-white hover:shadow-xs">
             <span className="block font-medium text-gray-500 text-xs">Timeline</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-sm">Nov 14-15</span>

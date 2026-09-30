@@ -13,11 +13,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@convex-dev/better-auth": "^0.12.5",
     "@lucide/lab": "^0.7.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@tanstack/react-form": "^1.33.5",
     "@tanstack/react-hotkeys": "^0.12.1",
     "@ucsc-devfest/shad-ui": "workspace:*",
+    "better-auth": "1.6.27",
     "convex": "^1.46.0",
     "convex-helpers": "^0.1.124",
     "framer-motion": "^13.4.6",

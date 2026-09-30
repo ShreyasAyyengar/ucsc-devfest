@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import type { FC } from "react";
 import { ApplicationFormView } from "./application/application-form-view";
 import { AuthSignInView } from "./auth/auth-signin-view";
@@ -9,13 +9,21 @@ import { DevFestStage3D } from "./devfest-stage-3d";
 
 type DesktopViewProps = {
   isAuthenticated: boolean;
+  isLoading?: boolean;
   onSignIn: () => void;
   onSignOut: () => void;
-  onToggleAuth: () => void;
+  onToggleAuth?: () => void;
   userEmail?: string;
 };
 
-export const DesktopView: FC<DesktopViewProps> = ({ isAuthenticated, onSignIn, onSignOut, onToggleAuth, userEmail = "hacker@ucsc.edu" }) => {
+export const DesktopView: FC<DesktopViewProps> = ({
+  isAuthenticated,
+  isLoading = false,
+  onSignIn,
+  onSignOut,
+  onToggleAuth,
+  userEmail = "hacker@ucsc.edu",
+}) => {
   return (
     <div className="flex min-h-screen w-full flex-col overflow-x-hidden lg:flex-row">
       {/* ==========================================
@@ -25,7 +33,20 @@ export const DesktopView: FC<DesktopViewProps> = ({ isAuthenticated, onSignIn, o
         <DevFestHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={onSignOut} />
 
         <AnimatePresence mode="wait">
-          {isAuthenticated ? (
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-1 items-center justify-center py-20"
+            >
+              <div className="flex items-center gap-2.5 font-google text-gray-500 text-sm">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4285F4] border-t-transparent" />
+                <span>Checking session...</span>
+              </div>
+            </motion.div>
+          ) : isAuthenticated ? (
             <ApplicationFormView key="authed-form" userEmail={userEmail} onSignOut={onSignOut} />
           ) : (
             <AuthSignInView key="unauthed-signin" onSignIn={onSignIn} />
@@ -39,10 +60,14 @@ export const DesktopView: FC<DesktopViewProps> = ({ isAuthenticated, onSignIn, o
           </div>
 
           <div className="flex items-center gap-4 text-gray-400">
-            <button type="button" onClick={onToggleAuth} className="font-mono text-[#4285F4] text-[11px] hover:underline">
-              [Toggle State: {isAuthenticated ? "Authed" : "Unauthed"}]
-            </button>
-            <span>•</span>
+            {onToggleAuth ? (
+              <>
+                <button type="button" onClick={onToggleAuth} className="font-mono text-[#4285F4] text-[11px] hover:underline">
+                  [Toggle State: {isAuthenticated ? "Authed" : "Unauthed"}]
+                </button>
+                <span>•</span>
+              </>
+            ) : null}
             <a href="#rules" className="transition-colors hover:text-[#4285F4]">
               Code of Conduct
             </a>
