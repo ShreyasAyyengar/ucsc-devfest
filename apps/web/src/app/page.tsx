@@ -1,13 +1,62 @@
+"use client";
+
+import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { ApplicationFormView } from "@/components/application-form-view";
+import { AuthSignInView } from "@/components/auth-signin-view";
+import { DevFestHeader } from "@/components/devfest-header";
+import { DevFestStage3D } from "@/components/devfest-stage-3d";
+
 export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [demoEmail] = useState("hacker@ucsc.edu");
+
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16">
-      <section className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm sm:p-14">
-        <p className="mb-4 font-semibold text-blue-600 text-sm uppercase tracking-[0.2em]">UCSC DevFest</p>
-        <h1 className="font-bold text-4xl text-slate-950 tracking-tight sm:text-5xl">Your starter is ready.</h1>
-        <p className="mt-5 max-w-xl text-lg text-slate-600 leading-8">
-          Start building by editing <code className="rounded bg-slate-100 px-2 py-1 text-base text-slate-800">src/app/page.tsx</code>.
-        </p>
-      </section>
-    </main>
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden lg:flex-row">
+      {/* ==========================================
+           LEFT COLUMN: INTERACTIVE REGISTRATION PANEL
+           ========================================== */}
+      <main className="relative z-10 flex min-h-screen w-full flex-col justify-between bg-white px-6 py-8 sm:px-12 md:px-16 lg:w-1/2 lg:py-10 xl:px-24">
+        <DevFestHeader isAuthenticated={isAuthenticated} userEmail={demoEmail} onSignOut={() => setIsAuthenticated(false)} />
+
+        <AnimatePresence mode="wait">
+          {isAuthenticated ? (
+            <ApplicationFormView key="authed-form" userEmail={demoEmail} onSignOut={() => setIsAuthenticated(false)} />
+          ) : (
+            <AuthSignInView key="unauthed-signin" onSignIn={() => setIsAuthenticated(true)} />
+          )}
+        </AnimatePresence>
+
+        <footer className="mt-8 flex w-full flex-col items-center justify-between gap-2 border-gray-100 border-t pt-8 text-gray-500 text-xs sm:flex-row">
+          <div className="flex items-center gap-2">
+            <span>Supported by</span>
+            <span className="font-semibold text-gray-800">Google Developer Student Clubs</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-gray-400">
+            <button
+              type="button"
+              onClick={() => setIsAuthenticated(!isAuthenticated)}
+              className="font-mono text-[#4285F4] text-[11px] hover:underline"
+            >
+              [Toggle State: {isAuthenticated ? "Authed" : "Unauthed"}]
+            </button>
+            <span>•</span>
+            <a href="#rules" className="transition-colors hover:text-[#4285F4]">
+              Code of Conduct
+            </a>
+            <span>•</span>
+            <a href="#faq" className="transition-colors hover:text-[#4285F4]">
+              FAQ
+            </a>
+          </div>
+        </footer>
+      </main>
+
+      {/* ==========================================
+           RIGHT COLUMN: VIBRANT 3D GOOGLE TECH ARTWORK
+           ========================================== */}
+      <DevFestStage3D />
+    </div>
   );
 }

@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  --font-google: "Google Sans", "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+
+  --color-gBlue: #4285f4;
+  --color-gBlue-light: #e8f0fe;
+  --color-gBlue-dark: #1a73e8;
+  --color-gBlue-hover: #1967d2;
+
+  --color-gRed: #ea4335;
+  --color-gRed-light: #fce8e6;
+  --color-gRed-dark: #d93025;
+
+  --color-gYellow: #fbbc05;
+  --color-gYellow-light: #fef7e0;
+  --color-gYellow-dark: #f9ab00;
+
+  --color-gGreen: #34a853;
+  --color-gGreen-light: #e6f4ea;
+  --color-gGreen-dark: #1e8e3e;
+
+  --color-devSurface: #f8f9fa;
+  --color-devBorder: #e0e3e7;
+
+  --shadow-google-soft:
+    0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 4px 12px 0 rgba(60, 64, 67, 0.08);
+  --shadow-google-card: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --shadow-google-btn:
+    0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  --shadow-vibrant-glow: 0 20px 50px -10px rgba(66, 133, 244, 0.35);
+
+  --animate-float-slow: floating 6s ease-in-out infinite;
+  --animate-float-mid: floating 4.5s ease-in-out infinite;
+  --animate-float-fast: floating 3.2s ease-in-out infinite;
+  --animate-pulse-subtle: pulseSubtle 3s infinite;
+  --animate-spin-slow: spin 22s linear infinite;
+
+  @keyframes floating {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(2deg);
+    }
+  }
+
+  @keyframes pulseSubtle {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.88;
+      transform: scale(0.98);
+    }
+  }
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backdrop-glass {
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.dark-glass {
+  background: rgba(22, 27, 34, 0.75);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.code-editor-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 34, 42, 0.95) 0%,
+    rgba(18, 21, 27, 0.98) 100%
+  );
+}
+
+.bg-grid-dots {
+  background-image: radial-gradient(
+    rgba(0, 0, 0, 0.08) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 20px 20px;
+}
+
+.bg-grid-dots-dark {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.12) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 24px 24px;
+}
