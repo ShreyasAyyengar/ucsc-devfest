@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { ConvexClientProvider } from "@/components/providers/convex-client-provider";
+import { Providers } from "@/components/providers/providers";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en" className={`${plusJakarta.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-white font-sans text-gray-900 antialiased selection:bg-[#4285F4]/20 selection:text-[#4285F4]">
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
