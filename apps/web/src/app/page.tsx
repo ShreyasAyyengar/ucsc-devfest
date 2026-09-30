@@ -16,7 +16,7 @@ export default function Home() {
       {/* ==========================================
            LEFT COLUMN: INTERACTIVE REGISTRATION PANEL
            ========================================== */}
-      <main className="relative z-10 flex min-h-screen w-full flex-col justify-between bg-white px-6 py-8 sm:px-12 md:px-16 lg:w-1/2 lg:py-10 xl:px-24">
+      <main className="relative z-10 flex min-h-screen w-full flex-col bg-white px-6 py-8 sm:px-12 md:px-16 lg:w-1/2 lg:py-10 xl:px-24">
         <DevFestHeader isAuthenticated={isAuthenticated} userEmail={demoEmail} onSignOut={() => setIsAuthenticated(false)} />
 
         <AnimatePresence mode="wait">
@@ -27,10 +27,10 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        <footer className="mt-8 flex w-full flex-col items-center justify-between gap-2 border-gray-100 border-t pt-8 text-gray-500 text-xs sm:flex-row">
+        <footer className="mt-auto flex w-full flex-col items-center justify-between gap-2 border-gray-100 border-t pt-8 text-gray-500 text-xs sm:flex-row">
           <div className="flex items-center gap-2">
             <span>Supported by</span>
-            <span className="font-semibold text-gray-800">Google Developer Student Clubs</span>
+            <span className="font-semibold text-gray-800">Google Developer Groups</span>
           </div>
 
           <div className="flex items-center gap-4 text-gray-400">

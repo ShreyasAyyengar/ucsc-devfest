@@ -177,7 +177,7 @@ export const DevFestStage3D: FC = () => {
         </div>
 
         {/* ==========================================
-             FLOATING BADGE 1: GDSC Developer Badge (Top Left)
+             FLOATING BADGE 1: GDG Developer Badge (Top Left)
              ========================================== */}
         <motion.div
           animate={{ y: [0, -12, 0] }}

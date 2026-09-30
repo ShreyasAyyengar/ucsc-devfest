@@ -34,7 +34,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="my-auto w-full max-w-lg"
+      className="w-full max-w-lg"
     >
       {/* Authed Status Pill */}
       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#34A853]/20 bg-[#E6F4EA] px-3 py-1 font-medium text-[#1E8E3E] text-xs">
