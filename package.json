@@ -17,7 +17,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "@types/bun": "^1.4.2",
     "turbo": "^2.11.5",
-    "typescript": "^7.0.2",
+    "typescript": "^7.1.0-dev.20260929.1",
     "ultracite": "^7.12.2",
     "zod": "4.6.5"
   },
