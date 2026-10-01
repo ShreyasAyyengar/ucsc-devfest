@@ -12,6 +12,7 @@ const registrationDocumentWithSystemFieldsSchema = z.object(withSystemFields("re
 import type { ZCustomCtx } from "convex-helpers/server/zod4";
 import { authComponent, createAuth } from "../auth";
 import { protectedQuery } from "../lib/procedures";
+import { isPriority } from "../priority.ts";
 
 type AuthenticatedCtx = ZCustomCtx<typeof protectedQuery>;
 
@@ -57,7 +58,7 @@ export const createRegistration = protectedMutation({
       });
     }
 
-    const priority = true; // TODO figure this out
+    const priority = isPriority;
     const registrationId = await ctx.db.insert("registrations", {
       ...registration,
       googleSub,
