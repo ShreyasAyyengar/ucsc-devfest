@@ -13,6 +13,13 @@ export type TimelineMilestone = {
 
 export const TIMELINE_MILESTONES: TimelineMilestone[] = [
   {
+    id: "launch",
+    dateLabel: "Oct 1",
+    shortTitle: "Launch",
+    fullTitle: "Launch",
+    timestamp: new Date("2026-10-01T00:00:00-07:00").getTime(),
+  },
+  {
     id: "prio-open",
     dateLabel: "Oct 2",
     shortTitle: "Prio Open",
@@ -195,7 +202,7 @@ export function DevFestTimeline({
 
                 {/* Title on bottom */}
                 <span
-                  className={`mt-1 inline-flex items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-medium text-[7.5px] xs:text-[8.5px] leading-tight backdrop-blur-md shadow-2xs transition-all sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] max-w-[56px] xs:max-w-[68px] sm:max-w-[85px] ${
+                  className={`mt-1 inline-flex items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-medium text-[7.5px] xs:text-[8.5px] leading-tight backdrop-blur-md shadow-2xs transition-all sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] max-w-[48px] xs:max-w-[58px] sm:max-w-[74px] ${
                     isCurrent
                       ? "border border-blue-200/90 bg-white/95 font-semibold text-gray-950 shadow-xs ring-1 ring-blue-400/25"
                       : isCompleted
