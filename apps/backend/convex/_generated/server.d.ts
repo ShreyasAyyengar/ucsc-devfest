@@ -35,6 +35,9 @@ type Env = {
   readonly GOOGLE_CLIENT_ID: string;
   readonly GOOGLE_CLIENT_SECRET: string;
   readonly RESEND_API_KEY: string;
+  readonly RESEND_FROM_EMAIL: string | undefined;
+  readonly RESEND_REPLY_TO: string | undefined;
+  readonly RESEND_TEST_MODE: string | undefined;
   readonly WEBSITE_URL: string;
 };
 

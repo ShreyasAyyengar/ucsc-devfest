@@ -27,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   "application/service": typeof application_service;
   auth: typeof auth;
   "email/actions": typeof email_actions;
+  "email/resend": typeof email_resend;
   http: typeof http;
   "lib/procedures": typeof lib_procedures;
 }>;
@@ -59,4 +60,5 @@ export declare const internal: FilterApi<
 
 export declare const components: {
   betterAuth: import("../betterAuth/_generated/component.js").ComponentApi<"betterAuth">;
+  resend: import("@convex-dev/resend/_generated/component.js").ComponentApi<"resend">;
 };
