@@ -42,6 +42,11 @@ export const MobileView: FC<MobileViewProps> = ({
   const isCheckingRegistration = isAuthenticated && existingRegistration === undefined;
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsSubmitted(false);
+      setSubmittedData(null);
+      return;
+    }
     if (existingRegistration) {
       setIsSubmitted(true);
       setSubmittedData(existingRegistration);
@@ -49,7 +54,7 @@ export const MobileView: FC<MobileViewProps> = ({
       setIsSubmitted(false);
       setSubmittedData(null);
     }
-  }, [existingRegistration]);
+  }, [existingRegistration, isAuthenticated]);
 
   const handleSignIn = () => {
     if (propOnSignIn) {
@@ -60,8 +65,6 @@ export const MobileView: FC<MobileViewProps> = ({
   };
 
   const handleSignOut = () => {
-    setIsSubmitted(false);
-    setSubmittedData(null);
     if (propOnSignOut) {
       propOnSignOut();
     } else {
