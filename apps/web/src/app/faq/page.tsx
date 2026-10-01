@@ -319,7 +319,7 @@ export default function FaqPage() {
         category: "registration",
         question: "How do I apply and when are applications due?",
         answerText:
-          "Apply at ucsc-devfest.com. Spots are limited, and applications are reviewed in two rounds:\n• Priority applications: Open October 1st and close October 10th. Decisions go out October 11th.\n• Regular applications: Open October 11th and close October 28th. Decisions go out November 2nd.\nApplying in the priority round gets you an answer sooner, which helps with planning your weekend.",
+          "Apply at ucsc-devfest.com. Spots are limited, and applications are reviewed in two rounds:\n• Priority applications: Open October 2nd and close October 11th.\n• Regular applications: Open October 12th and close October 28th. Decisions go out November 2nd.\nApplying in the priority round gets you an answer sooner, which helps with planning your weekend.",
         renderCustomContent: () => (
           <div className="mt-3.5 space-y-2.5">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -328,15 +328,15 @@ export default function FaqPage() {
                   <span className="font-semibold text-[#1A73E8] text-xs">Priority Round</span>
                   <span className="rounded-full bg-[#4285F4]/15 px-2 py-0.5 font-mono text-[#1A73E8] text-[10px]">Fast Track</span>
                 </div>
-                <p className="mt-1 text-gray-700 text-xs">Oct 1 – Oct 10</p>
-                <p className="mt-0.5 text-[11px] text-gray-500">Decisions released Oct 11</p>
+                <p className="mt-1 text-gray-700 text-xs">Oct 2 – Oct 11</p>
+                <p className="mt-0.5 text-[11px] text-gray-500">Decisions released Nov 2</p>
               </div>
               <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-3">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-gray-800 text-xs">Regular Round</span>
                   <span className="rounded-full bg-gray-200/80 px-2 py-0.5 font-mono text-[10px] text-gray-600">Standard</span>
                 </div>
-                <p className="mt-1 text-gray-700 text-xs">Oct 11 – Oct 28</p>
+                <p className="mt-1 text-gray-700 text-xs">Oct 12 – Oct 28</p>
                 <p className="mt-0.5 text-[11px] text-gray-500">Decisions released Nov 2</p>
               </div>
             </div>
