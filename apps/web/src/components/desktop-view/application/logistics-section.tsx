@@ -10,7 +10,6 @@ const DIETARY_OPTIONS = [
   { value: "halal", label: "Halal" },
   { value: "kosher", label: "Kosher" },
   { value: "gluten-free", label: "Gluten-Free" },
-  { value: "other", label: "Other" },
 ] as const;
 
 export const LogisticsSection = withForm({
