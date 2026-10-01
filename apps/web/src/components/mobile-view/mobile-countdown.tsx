@@ -63,14 +63,14 @@ function MobileDigitCard({ label, value, accentColor, glowColor, textColor }: Mo
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-google text-2xl xs:text-3xl tabular-nums leading-none tracking-tight"
+            className="block w-full truncate text-center font-bold font-sans text-2xl xs:text-3xl tabular-nums leading-none tracking-tight"
           >
             {formattedValue}
           </span>
         </div>
 
         {/* Unit Label */}
-        <span className="mt-1 font-bold font-mono text-[9px] text-gray-500 xs:text-[10px] uppercase tracking-wider">{label}</span>
+        <span className="mt-1 font-sans font-semibold text-[9px] text-gray-500 xs:text-[10px] uppercase tracking-wider">{label}</span>
       </div>
     </div>
   );
@@ -91,10 +91,10 @@ export const MobileCountdown: FC = () => {
     <div className="relative flex w-full flex-col items-center gap-3.5">
       {/* 1. Title */}
       <div className="flex select-none items-center justify-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/90 bg-white/95 p-1.5 shadow-xs backdrop-blur-md">
+        <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/80 bg-white/95 p-1.5 shadow-xs backdrop-blur-md">
           <GdgLogoSvg className="h-full w-auto" />
         </div>
-        <h2 className="font-bold font-google text-base text-gray-900 xs:text-lg tracking-tight">GDG UCSC DevFest &apos;26</h2>
+        <h2 className="font-sans font-semibold text-base text-gray-700 xs:text-lg tracking-tight">GDG UCSC DevFest &apos;26</h2>
       </div>
 
       {/* 2. 4-Unit Countdown Row */}
@@ -124,10 +124,10 @@ export const MobileCountdown: FC = () => {
       </div>
 
       {/* 3. Event Kickoff Information Pill */}
-      <div className="inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white/90 px-3 py-1 text-[11px] shadow-xs backdrop-blur-md">
+      <div className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/90 px-3 py-1 text-[11px] shadow-xs backdrop-blur-md">
         <span className="flex h-1.5 w-1.5 rounded-full bg-[#4285F4]" />
-        <span className="font-semibold text-gray-900">Event Kickoff:</span>
-        <span className="font-mono text-gray-600">Nov 14, 2026 • 9:00 AM PST</span>
+        <span className="font-medium font-sans text-gray-700">Event Kickoff:</span>
+        <span className="font-sans text-gray-500">Nov 14, 2026 • 9:00 AM PST</span>
       </div>
     </div>
   );
