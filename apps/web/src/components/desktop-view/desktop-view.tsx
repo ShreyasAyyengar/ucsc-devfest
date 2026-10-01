@@ -24,11 +24,11 @@ export function DesktopView({
   userEmail = "hacker@ucsc.edu",
 }: DesktopViewProps) {
   return (
-    <div className="flex min-h-screen w-full flex-col overflow-x-hidden lg:flex-row">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden lg:h-screen lg:flex-row lg:overflow-hidden">
       {/* ==========================================
            LEFT COLUMN: INTERACTIVE REGISTRATION PANEL
            ========================================== */}
-      <main className="relative z-10 flex min-h-screen w-full flex-col bg-white px-6 py-8 sm:px-10 md:px-12 lg:w-1/2 lg:py-10 xl:px-14">
+      <main className="relative z-10 flex min-h-screen w-full flex-col bg-white px-6 py-8 sm:px-10 md:px-12 lg:h-screen lg:w-1/2 lg:py-8 xl:px-14">
         <DevFestHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={onSignOut} />
 
         <AnimatePresence mode="wait">
@@ -52,7 +52,7 @@ export function DesktopView({
           )}
         </AnimatePresence>
 
-        <footer className="mt-auto flex w-full flex-col items-center justify-between gap-2 border-gray-100 border-t pt-8 text-gray-500 text-xs sm:flex-row">
+        <footer className="mt-auto flex w-full flex-col items-center justify-between gap-2 border-gray-100 border-t pt-4 text-gray-500 text-xs sm:flex-row sm:pt-6">
           <div className="flex items-center gap-2">
             <span>Supported by</span>
             <span className="font-semibold text-gray-800">Google Developer Groups</span>

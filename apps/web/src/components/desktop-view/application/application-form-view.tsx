@@ -140,7 +140,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="w-full"
+      className="flex min-h-0 w-full flex-1 flex-col"
     >
       {/* Authed Status Pill */}
 
@@ -149,7 +149,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
           <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight sm:text-3xl">Hackathon Application</h2>
         </div>
         {isPriority === true && (
-          <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-black-600 text-md sm:flex">
+          <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-gray-800 text-sm sm:flex">
             {/* TODO: Create boolean to toggle priority review */}
             <Sparkles className="size-5 text-[#FBBC05]" />
             <span>Priority Application</span>
@@ -191,7 +191,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
               e.stopPropagation();
               form.handleSubmit();
             }}
-            className="-mx-2 mt-6 max-h-[58vh] space-y-6 overflow-y-auto px-3 py-2"
+            className="-mx-2 mt-6 min-h-0 flex-1 space-y-6 overflow-y-auto px-3 py-2"
           >
             <IdentitySection form={form} />
             <LogisticsSection form={form} />

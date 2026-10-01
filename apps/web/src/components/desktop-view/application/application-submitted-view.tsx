@@ -44,7 +44,7 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="-mx-2 mt-6 max-h-[58vh] space-y-4 overflow-y-auto px-3 py-2"
+      className="-mx-2 mt-6 min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-2"
     >
       {/* Confirmation Banner */}
       <div className="space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center">

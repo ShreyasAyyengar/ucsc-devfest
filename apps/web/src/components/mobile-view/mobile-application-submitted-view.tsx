@@ -20,6 +20,7 @@ type MobileApplicationSubmittedViewProps = {
   isDeleting?: boolean;
   deleteError?: string | null;
   onWithdraw: () => void;
+  onSignOut?: () => void;
   summaryData?: {
     identity?: {
       name?: string;
@@ -38,6 +39,7 @@ export const MobileApplicationSubmittedView: FC<MobileApplicationSubmittedViewPr
   isDeleting = false,
   deleteError = null,
   onWithdraw,
+  onSignOut,
   summaryData,
 }) => {
   const hasSummary = Boolean(summaryData?.identity?.name && summaryData?.identity?.major);
@@ -105,6 +107,16 @@ export const MobileApplicationSubmittedView: FC<MobileApplicationSubmittedViewPr
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {onSignOut && (
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-1 font-medium text-gray-500 text-xs hover:text-gray-800 hover:underline"
+          >
+            Sign out
+          </button>
+        )}
 
         {deleteError && (
           <div className="mt-2 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">

@@ -143,6 +143,7 @@ export const MobileView: FC<MobileViewProps> = ({
                 isDeleting={isDeleting}
                 deleteError={deleteError}
                 onWithdraw={handleWithdraw}
+                onSignOut={handleSignOut}
                 summaryData={
                   submittedData
                     ? {
@@ -160,7 +161,13 @@ export const MobileView: FC<MobileViewProps> = ({
                 }
               />
             ) : (
-              <MobileApplicationFormView key="form" userEmail={userEmail} initialValues={submittedData} onSubmitSuccess={handleSubmitSuccess} />
+              <MobileApplicationFormView
+                key="form"
+                userEmail={userEmail}
+                initialValues={submittedData}
+                onSubmitSuccess={handleSubmitSuccess}
+                onSignOut={handleSignOut}
+              />
             )}
           </AnimatePresence>
 
@@ -171,6 +178,16 @@ export const MobileView: FC<MobileViewProps> = ({
                 <span>Supported by</span>
                 <span className="font-semibold text-gray-800">Google Developer Groups</span>
               </div>
+
+              {isAuthenticated && (
+                <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                  <span className="max-w-[180px] truncate font-medium text-gray-600">{userEmail}</span>
+                  <span>•</span>
+                  <button type="button" onClick={handleSignOut} className="font-medium text-gray-500 hover:text-gray-800 hover:underline">
+                    Sign out
+                  </button>
+                </div>
+              )}
 
               {/* State Toggle Helper for Testing */}
               <div className="mt-1 flex items-center gap-2 text-[11px] text-gray-400">

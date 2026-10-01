@@ -161,6 +161,7 @@ export type MobileApplicationFormViewProps = {
   googleSub?: string;
   onSubmitSuccess: (data: Registration) => void;
   initialValues?: Partial<Registration> | null;
+  onSignOut?: () => void;
 };
 
 export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
@@ -168,6 +169,7 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
   googleSub = "dummy-google-sub",
   onSubmitSuccess,
   initialValues,
+  onSignOut,
 }) => {
   const [activeSection, setActiveSection] = useState<number>(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -258,22 +260,33 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
       }}
       className="w-full space-y-4"
     >
-      {/* Connected User Badge */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1 rounded-md bg-amber-50 py-0.5 font-medium text-[11px] text-amber-700">
+      {/* Title, Priority Badge & Sign Out Button */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-2">
+          <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight">Application Form</h2>
           {isPriority === true && (
-            <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-black-600 text-md sm:flex">
+            // <div className="inline-flex items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-gray-800 text-xs">
+            //   {/* TODO: Create boolean to toggle priority review */}
+            //   <Sparkles className="size-3.5 text-[#FBBC05]" />
+            //   <span>Priority Application</span>
+            // </div>
+            <div className="inline-flex items-center gap-1.5 rounded-md font-medium text-gray-800 text-xs">
               {/* TODO: Create boolean to toggle priority review */}
-              <Sparkles className="size-5 text-[#FBBC05]" />
+              <Sparkles className="size-3.5 text-[#FBBC05]" />
               <span>Priority Application</span>
             </div>
           )}
         </div>
-      </div>
 
-      <div>
-        <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight">Application Form</h2>
-        <p className="mt-0.5 text-gray-500 text-xs">Fill out all sections below to complete your registration.</p>
+        {onSignOut && (
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-100 hover:text-gray-900 active:scale-95"
+          >
+            Sign out
+          </button>
+        )}
       </div>
 
       {submitError && (
