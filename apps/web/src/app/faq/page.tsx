@@ -13,7 +13,6 @@ import {
   HelpCircle,
   Mail,
   MapPin,
-  MessageSquare,
   Search,
   ShieldAlert,
   Sparkles,
@@ -22,15 +21,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { DiscordSvg } from "@/SVGs/discord-svg";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
 
-interface FaqItem {
+type FaqItem = {
   answerText: string;
   category: string;
   id: string;
   question: string;
   renderCustomContent?: (openCodeOfConduct: () => void) => React.ReactNode;
-}
+};
 
 const CATEGORIES = [
   { id: "all", label: "All Questions", icon: HelpCircle, color: "#4285F4" },
@@ -204,7 +204,7 @@ export default function FaqPage() {
         category: "time-schedule",
         question: "When is the hackathon?",
         answerText:
-          "The hackathon runs November 14th-15th at the Merrill Cultural Center:\n• Saturday, November 14th: 9:00 AM to 8:00 PM\n• Sunday, November 15th: 9:00 AM to 4:00 PM",
+          "The hackathon runs November 14th-15th at the Merrill Cultural Center:\n• Saturday, November 14th: 9:00 AM to 7:00 PM\n• Sunday, November 15th: 9:00 AM to 4:00 PM",
         renderCustomContent: () => (
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="flex items-center gap-2.5 rounded-xl border border-gray-200/80 bg-gray-50/70 p-3">
@@ -213,7 +213,7 @@ export default function FaqPage() {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-xs">Saturday, Nov 14</p>
-                <p className="text-gray-600 text-xs">9:00 AM – 8:00 PM</p>
+                <p className="text-gray-600 text-xs">9:00 AM – 7:00 PM</p>
               </div>
             </div>
             <div className="flex items-center gap-2.5 rounded-xl border border-gray-200/80 bg-gray-50/70 p-3">
@@ -240,7 +240,7 @@ export default function FaqPage() {
         category: "time-schedule",
         question: "Is it overnight?",
         answerText:
-          "No, this is not an overnight event. The venue is only open during these hours:\nSaturday, November 14th: 9:00 AM to 8:00 PM\nSunday, November 15th: 9:00 AM to 4:00 PM",
+          "No, this is not an overnight event. The venue is only open during these hours:\nSaturday, November 14th: 9:00 AM to 7:00 PM\nSunday, November 15th: 9:00 AM to 4:00 PM",
       },
 
       // 5. Building Your Project
@@ -275,7 +275,7 @@ export default function FaqPage() {
         category: "building",
         question: "Is there a theme?",
         answerText:
-          "Themes and tracks will be revealed at the hackathon, so come ready for a surprise! You don't need to prepare anything ahead of time. Just bring your curiosity and your laptop.",
+          "We don't have a theme — prize tracks will be revealed at the hackathon, so come ready for a surprise! You don't need to prepare anything ahead of time. Just bring your curiosity and your laptop.",
       },
       {
         id: "tools-and-tech",
@@ -417,7 +417,7 @@ export default function FaqPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/10 px-3 py-1.5 font-medium text-[#5865F2] text-xs transition-colors hover:bg-[#5865F2]/20"
             >
-              <MessageSquare className="h-3.5 w-3.5" />
+              <DiscordSvg className="h-3.5 w-3.5" />
               <span>Join our Discord</span>
               <ExternalLink className="h-3 w-3" />
             </a>
@@ -493,7 +493,7 @@ export default function FaqPage() {
               rel="noopener noreferrer"
               className="hidden items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 font-medium text-gray-700 text-xs transition-colors hover:bg-gray-50 sm:inline-flex"
             >
-              <MessageSquare className="h-3.5 w-3.5 text-[#5865F2]" />
+              <DiscordSvg className="h-3.5 w-3.5 text-[#5865F2]" />
               <span>Discord</span>
             </a> */}
 
@@ -665,9 +665,10 @@ export default function FaqPage() {
                   href="https://discord.gg/sJUmrEHs7B"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg bg-[#5865F2] px-3.5 py-1.5 font-medium text-white text-xs hover:bg-[#4752C4]"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#5865F2] px-3.5 py-1.5 font-medium text-white text-xs hover:bg-[#4752C4]"
                 >
-                  Ask on Discord
+                  <DiscordSvg className="h-3.5 w-3.5" />
+                  <span>Ask on Discord</span>
                 </a>
               </div>
             </div>
@@ -740,13 +741,13 @@ export default function FaqPage() {
                                 <div className="border-gray-100 border-t px-4 pt-3.5 pb-5 sm:px-5">
                                   <div className="text-gray-600 text-sm leading-relaxed sm:text-[15px]">
                                     {item.answerText.split("\n").map((line, idx) => (
-                                      <p key={idx} className={idx > 0 ? "mt-2" : ""}>
+                                      <p key={`${item.id}-${line}`} className={idx > 0 ? "mt-2" : ""}>
                                         {line}
                                       </p>
                                     ))}
                                   </div>
 
-                                  {item.renderCustomContent && item.renderCustomContent(() => setIsCodeOfConductOpen(true))}
+                                  {item.renderCustomContent?.(() => setIsCodeOfConductOpen(true))}
                                 </div>
                               </motion.div>
                             )}
@@ -783,7 +784,7 @@ export default function FaqPage() {
                 rel="noopener noreferrer"
                 className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#5865F2] px-5 py-3 font-semibold text-white text-xs shadow-xs transition-colors hover:bg-[#4752C4] sm:text-sm"
               >
-                <MessageSquare className="h-4 w-4" />
+                <DiscordSvg className="h-4 w-4" />
                 <span>Join Discord Community</span>
               </a>
               <a
