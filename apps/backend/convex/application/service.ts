@@ -35,6 +35,15 @@ export const createRegistration = protectedMutation({
   args: registrationInputSchema,
   returns: zid("registrations"),
   handler: async (ctx, registration) => {
+    const recipientEmail = ctx.identity.email;
+
+    if (!recipientEmail) {
+      throw new ConvexError({
+        code: "INVALID_ACCOUNT",
+        message: "Your Google account must have an email address to register.",
+      });
+    }
+
     const googleSub = await getGoogleSub(ctx);
     const existingRegistration = await ctx.db
       .query("registrations")
@@ -48,16 +57,27 @@ export const createRegistration = protectedMutation({
       });
     }
 
-    return ctx.db.insert("registrations", {
+    const priority = true; // TODO figure this out
+    const registrationId = await ctx.db.insert("registrations", {
       ...registration,
       googleSub,
+      priority,
     });
+
+    await ctx.scheduler.runAfter(0, internal.email.actions.sendRegistrationConfirmation, {
+      name: registration.identity.name,
+      priority,
+      registrationId,
+      to: recipientEmail,
+    });
+
+    return registrationId;
   },
 });
 
 export const getRegistration = protectedQuery({
   args: {},
-  returns: registrationDocumentSchema.nullable(),
+  returns: registrationDocumentWithSystemFieldsSchema.nullable(),
   handler: async (ctx) => {
     const googleSub = await getGoogleSub(ctx);
 
