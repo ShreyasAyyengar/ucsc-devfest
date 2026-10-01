@@ -13,6 +13,7 @@ import {
 } from "@ucsc-devfest/shad-ui/components/alert-dialog";
 import { motion } from "framer-motion";
 import { AlertTriangle, Calendar, CheckCircle2, Mail, Users } from "lucide-react";
+import type { Doc } from "../../../../../backend/convex/_generated/dataModel";
 import { formatOptionsList } from "./application-form-hook";
 
 type ApplicationSubmittedViewProps = {
@@ -21,17 +22,7 @@ type ApplicationSubmittedViewProps = {
   deleteError: string | null;
   onWithdraw: () => void;
   onSignOut?: () => void;
-  summaryData: {
-    identity?: {
-      name?: string;
-      major?: string;
-    };
-    skillLevel?: {
-      teamRole?: string;
-      codingComfort?: string;
-      toolsUsed?: string[];
-    };
-  };
+  registration: Doc<"registrations">;
 };
 
 export function ApplicationSubmittedView({
@@ -40,10 +31,8 @@ export function ApplicationSubmittedView({
   deleteError,
   onWithdraw,
   onSignOut,
-  summaryData,
+  registration,
 }: ApplicationSubmittedViewProps) {
-  const hasSummary = Boolean(summaryData.identity?.name && summaryData.identity?.major);
-
   return (
     <motion.div
       key="submitted"
@@ -124,48 +113,46 @@ export function ApplicationSubmittedView({
       </div>
 
       {/* Application Overview Card */}
-      {hasSummary && summaryData.identity && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs">
-          <div className="flex items-center justify-between border-gray-100 border-b pb-2.5">
-            <span className="font-semibold text-gray-900 text-xs">Submission Overview</span>
-            <span className="rounded-full bg-[#E6F4EA] px-2 py-0.5 font-medium text-[#1E8E3E] text-[10px]">Active Application</span>
+      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs">
+        <div className="flex items-center justify-between border-gray-100 border-b pb-2.5">
+          <span className="font-semibold text-gray-900 text-xs">Submission Overview</span>
+          <span
+            className={`rounded-full px-2 py-0.5 font-medium text-[10px] ${
+              registration.priority ? "bg-[#FEF7E0] text-[#B06000]" : "bg-[#E6F4EA] text-[#1E8E3E]"
+            }`}
+          >
+            {registration.priority ? "Priority Application" : "Regular Application"}
+          </span>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <span className="block text-[11px] text-gray-400">Applicant</span>
+            <span className="block truncate font-medium text-gray-800">{registration.identity.name}</span>
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <span className="block text-[11px] text-gray-400">Applicant</span>
-              <span className="block truncate font-medium text-gray-800">{summaryData.identity.name}</span>
+          <div>
+            <span className="block text-[11px] text-gray-400">Major</span>
+            <span className="block truncate font-medium text-gray-800">{registration.identity.major}</span>
+          </div>
+          <div>
+            <span className="block text-[11px] text-gray-400">Preferred Role</span>
+            <span className="block truncate font-medium text-gray-800">{formatOptionsList([registration.skillLevel.teamRole])}</span>
+          </div>
+          <div>
+            <span className="block text-[11px] text-gray-400">Coding Comfort</span>
+            <span className="block truncate font-medium text-gray-800">{formatOptionsList([registration.skillLevel.codingComfort])}</span>
+          </div>
+          <div className="col-span-2 border-gray-100 border-t pt-2">
+            <span className="mb-1.5 block text-[11px] text-gray-400">Tools & Technologies</span>
+            <div className="flex flex-wrap gap-1.5">
+              {registration.skillLevel.toolsUsed.map((tool) => (
+                <span key={tool} className="rounded-md bg-gray-100 px-2 py-0.5 font-medium text-[10px] text-gray-700">
+                  {formatOptionsList([tool])}
+                </span>
+              ))}
             </div>
-            <div>
-              <span className="block text-[11px] text-gray-400">Major</span>
-              <span className="block truncate font-medium text-gray-800">{summaryData.identity.major}</span>
-            </div>
-            {summaryData.skillLevel?.teamRole ? (
-              <div>
-                <span className="block text-[11px] text-gray-400">Preferred Role</span>
-                <span className="block truncate font-medium text-gray-800">{formatOptionsList([summaryData.skillLevel.teamRole])}</span>
-              </div>
-            ) : null}
-            {summaryData.skillLevel?.codingComfort ? (
-              <div>
-                <span className="block text-[11px] text-gray-400">Coding Comfort</span>
-                <span className="block truncate font-medium text-gray-800">{formatOptionsList([summaryData.skillLevel.codingComfort])}</span>
-              </div>
-            ) : null}
-            {summaryData.skillLevel?.toolsUsed && summaryData.skillLevel.toolsUsed.length > 0 ? (
-              <div className="col-span-2 border-gray-100 border-t pt-2">
-                <span className="mb-1.5 block text-[11px] text-gray-400">Tools & Technologies</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {summaryData.skillLevel.toolsUsed.map((tool) => (
-                    <span key={tool} className="rounded-md bg-gray-100 px-2 py-0.5 font-medium text-[10px] text-gray-700">
-                      {formatOptionsList([tool])}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
-      )}
+      </div>
 
       {/* What to Expect Next */}
       <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 sm:p-5">
