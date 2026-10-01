@@ -14,14 +14,13 @@ import {
 import { motion } from "framer-motion";
 import { AlertTriangle, Calendar, CheckCircle2, Mail, Users } from "lucide-react";
 import type { FC } from "react";
-import { formatOptionsList } from "./application-form-hook";
 
-type ApplicationSubmittedViewProps = {
+type MobileApplicationSubmittedViewProps = {
   userEmail: string;
-  isDeleting: boolean;
-  deleteError: string | null;
+  isDeleting?: boolean;
+  deleteError?: string | null;
   onWithdraw: () => void;
-  summaryData: {
+  summaryData?: {
     identity?: {
       name?: string;
       major?: string;
@@ -34,34 +33,42 @@ type ApplicationSubmittedViewProps = {
   };
 };
 
-export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ userEmail, isDeleting, deleteError, onWithdraw, summaryData }) => {
+export const MobileApplicationSubmittedView: FC<MobileApplicationSubmittedViewProps> = ({
+  userEmail,
+  isDeleting = false,
+  deleteError = null,
+  onWithdraw,
+  summaryData,
+}) => {
   const hasSummary = Boolean(summaryData?.identity?.name && summaryData?.identity?.major);
 
   return (
     <motion.div
-      key="submitted"
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className="-mx-2 mt-6 max-h-[58vh] space-y-4 overflow-y-auto px-3 py-2"
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.25 }}
+      className="w-full space-y-4"
     >
       {/* Confirmation Banner */}
-      <div className="space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4285F4] text-white shadow-md">
+      <div className="space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-5 text-center">
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#4285F4] text-white shadow-md">
           <CheckCircle2 className="h-6 w-6" />
         </div>
-        <h3 className="font-bold font-google text-gray-900 text-lg">Application Submitted!</h3>
-        <p className="mx-auto max-w-sm text-gray-600 text-xs">
-          We’ve received your registration for Google DevFest 2026. Keep an eye on{" "}
-          <span className="font-semibold text-gray-800">{userEmail}</span> for team matching and workshop access.
-        </p>
+        <div>
+          <h3 className="font-bold font-google text-gray-900 text-lg">Application Submitted!</h3>
+          <p className="mt-1 text-gray-600 text-xs leading-relaxed">
+            We’ve received your registration for DevFest 2026. Keep an eye on <span className="font-semibold text-gray-800">{userEmail}</span>{" "}
+            for updates.
+          </p>
+        </div>
+
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <button
               type="button"
               disabled={isDeleting}
-              className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-2 font-semibold text-red-600 text-xs hover:text-red-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+              className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-1 font-semibold text-red-600 text-xs hover:text-red-700 active:underline disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isDeleting ? (
                 <>
@@ -73,25 +80,25 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
               )}
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="fixed top-1/2 left-1/2 z-[101] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
+          <AlertDialogContent className="fixed top-1/2 left-1/2 z-[101] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl sm:p-6">
             <AlertDialogHeader className="text-left sm:text-left">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-600">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <AlertDialogTitle className="font-bold font-google text-gray-900 text-lg">Withdraw Application?</AlertDialogTitle>
               <AlertDialogDescription className="text-gray-600 text-xs leading-relaxed">
-                Are you sure you want to withdraw your DevFest 2026 application? Your registration spot will be released, and you will need to
-                re-apply if you change your mind.
+                Are you sure you want to withdraw your DevFest 2026 application? Your registration spot will be released, and you'll need to
+                submit a new application if you change your mind.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <AlertDialogCancel className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 font-medium text-gray-700 text-xs hover:bg-gray-100">
+              <AlertDialogCancel className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2.5 font-medium text-gray-700 text-xs hover:bg-gray-100">
                 Keep Application
               </AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={onWithdraw}
-                className="cursor-pointer rounded-xl bg-red-600 px-4 py-2 font-semibold text-white text-xs hover:bg-red-700"
+                className="cursor-pointer rounded-xl bg-red-600 px-4 py-2.5 font-semibold text-white text-xs hover:bg-red-700"
               >
                 Yes, Withdraw
               </AlertDialogAction>
@@ -100,20 +107,21 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
         </AlertDialog>
 
         {deleteError && (
-          <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">
+          <div className="mt-2 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">
             <span className="font-semibold">Withdraw failed:</span> {deleteError}
           </div>
         )}
       </div>
 
       {/* Application Overview Card */}
-      {hasSummary && summaryData.identity && (
+      {hasSummary && summaryData?.identity && (
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs">
-          <div className="flex items-center justify-between border-gray-100 border-b pb-2.5">
-            <span className="font-semibold text-gray-900 text-xs">Submission Overview</span>
+          <div className="flex items-center justify-between border-gray-100 border-b pb-2">
+            <span className="font-semibold text-gray-900 text-xs">Application Overview</span>
             <span className="rounded-full bg-[#E6F4EA] px-2 py-0.5 font-medium text-[#1E8E3E] text-[10px]">Active Application</span>
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+
+          <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-xs">
             <div>
               <span className="block text-[11px] text-gray-400">Applicant</span>
               <span className="block truncate font-medium text-gray-800">{summaryData.identity.name}</span>
@@ -122,71 +130,67 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
               <span className="block text-[11px] text-gray-400">Major</span>
               <span className="block truncate font-medium text-gray-800">{summaryData.identity.major}</span>
             </div>
-            {summaryData.skillLevel?.teamRole ? (
+            {summaryData.skillLevel?.teamRole && (
               <div>
                 <span className="block text-[11px] text-gray-400">Preferred Role</span>
-                <span className="block truncate font-medium text-gray-800">{formatOptionsList([summaryData.skillLevel.teamRole])}</span>
+                <span className="block truncate font-medium text-gray-800 capitalize">{summaryData.skillLevel.teamRole.replace("_", "/")}</span>
               </div>
-            ) : null}
-            {summaryData.skillLevel?.codingComfort ? (
+            )}
+            {summaryData.skillLevel?.codingComfort && (
               <div>
                 <span className="block text-[11px] text-gray-400">Coding Comfort</span>
-                <span className="block truncate font-medium text-gray-800">{formatOptionsList([summaryData.skillLevel.codingComfort])}</span>
+                <span className="block truncate font-medium text-gray-800 capitalize">{summaryData.skillLevel.codingComfort}</span>
               </div>
-            ) : null}
-            {summaryData.skillLevel?.toolsUsed && summaryData.skillLevel.toolsUsed.length > 0 ? (
+            )}
+
+            {summaryData.skillLevel?.toolsUsed && summaryData.skillLevel.toolsUsed.length > 0 && (
               <div className="col-span-2 border-gray-100 border-t pt-2">
-                <span className="mb-1.5 block text-[11px] text-gray-400">Tools & Technologies</span>
-                <div className="flex flex-wrap gap-1.5">
+                <span className="mb-1.5 block text-[11px] text-gray-400">Tools &amp; Tech</span>
+                <div className="flex flex-wrap gap-1">
                   {summaryData.skillLevel.toolsUsed.map((tool) => (
-                    <span key={tool} className="rounded-md bg-gray-100 px-2 py-0.5 font-medium text-[10px] text-gray-700">
-                      {formatOptionsList([tool])}
+                    <span key={tool} className="rounded-md bg-gray-100 px-2 py-0.5 font-medium text-[10px] text-gray-700 capitalize">
+                      {tool.replace("_", " ")}
                     </span>
                   ))}
                 </div>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       )}
 
       {/* What to Expect Next */}
-      <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 sm:p-5">
+      <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
         <p className="font-mono font-semibold text-gray-400 text-xs uppercase tracking-wider">What to Expect Next</p>
-        <div className="mt-3.5 space-y-3">
-          <div className="flex items-start gap-3">
+        <div className="mt-3 space-y-3">
+          <div className="flex items-start gap-2.5">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#4285F4]/10 text-[#1A73E8]">
               <Mail className="h-4 w-4" />
             </div>
             <div className="text-xs">
-              <p className="font-semibold text-gray-800">Review & Confirmation</p>
-              <p className="mt-0.5 text-[11px] text-gray-500 leading-relaxed">
-                Applications are reviewed continuously. Watch your inbox for your official confirmation pass and check-in QR code.
-              </p>
+              <p className="font-semibold text-gray-800">Review &amp; Confirmation</p>
+              <p className="mt-0.5 text-[11px] text-gray-500 leading-relaxed">Watch your inbox for your official pass and QR check-in code.</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2.5">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#34A853]/10 text-[#1E8E3E]">
               <Users className="h-4 w-4" />
             </div>
             <div className="text-xs">
               <p className="font-semibold text-gray-800">Team Matching</p>
-              <p className="mt-0.5 text-[11px] text-gray-500 leading-relaxed">
-                After you're accepted, you'll get access to team matching with fellow hackers.
-              </p>
+              <p className="mt-0.5 text-[11px] text-gray-500 leading-relaxed">Join our Discord community to meet teammates and explore ideas.</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2.5">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#FBBC05]/15 text-[#B06000]">
               <Calendar className="h-4 w-4" />
             </div>
             <div className="text-xs">
               <p className="font-semibold text-gray-800">Event Kickoff (Nov 14-15)</p>
               <p className="mt-0.5 text-[11px] text-gray-500 leading-relaxed">
-                {/* TODO: make sure these details are accurate */}
-                24 hours of hacking, hands-on Google tech workshops, free food, mentor office hours, and sponsor networking.
+                24 hours of hacking, workshops, free food, and sponsor networking.
               </p>
             </div>
           </div>

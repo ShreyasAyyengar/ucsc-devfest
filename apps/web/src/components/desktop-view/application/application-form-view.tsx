@@ -25,6 +25,7 @@ type ApplicationFormViewProps = {
 export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }) => {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [hasInitializedFromQuery, setHasInitializedFromQuery] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -51,6 +52,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     },
     onSubmit: async ({ value }) => {
       setSubmitError(null);
+      setValidationError(null);
       setDeleteError(null);
       const validPayload: Registration = registrationSchema.parse(value);
       // Remove googleSub as the backend derives it securely from the authenticated Google account session
@@ -77,6 +79,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
       console.warn("Form values at submission attempt:", value);
       // biome-ignore lint/suspicious/noConsole: intentionally logging form errors for submission verification
       console.warn("Field errors:", formApi.state.errorMap);
+      setValidationError("We're missing some details. Please review the highlighted fields above.");
     },
   });
 
@@ -204,7 +207,21 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
               </div>
             )}
 
-            <SubmitSection form={form} />
+            <div className="space-y-2">
+              <SubmitSection form={form} />
+              <AnimatePresence>
+                {validationError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="text-center font-medium text-red-500 text-xs"
+                  >
+                    {validationError}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.form>
         )}
       </AnimatePresence>

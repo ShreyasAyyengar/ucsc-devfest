@@ -30,7 +30,14 @@ export default function Home() {
     <>
       {/* Mobile View Wrapper */}
       <div className="w-full lg:hidden">
-        <MobileView />
+        <MobileView
+          isAuthenticated={isAuthenticated}
+          userEmail={userEmail}
+          isLoading={isPending && manualAuthOverride === null}
+          onSignIn={handleSignIn}
+          onSignOut={handleSignOut}
+          onToggleAuth={() => setManualAuthOverride((prev) => (prev === null ? !isAuthenticated : !prev))}
+        />
       </div>
 
       {/* Desktop View Wrapper */}

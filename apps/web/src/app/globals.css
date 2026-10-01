@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../components/**/*.{tsx}";
+
 @theme {
   --font-google: "Google Sans", "Plus Jakarta Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -136,4 +139,65 @@ button:not(:disabled),
 input[type="checkbox"]:not(:disabled),
 input[type="radio"]:not(:disabled) {
   cursor: pointer;
+}
+
+/* Radix UI Alert Dialog & Modal animations */
+@keyframes alertDialogOverlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes alertDialogOverlayHide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes alertDialogContentShow {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes alertDialogContentHide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+[data-slot="alert-dialog-overlay"][data-state="open"],
+[data-slot="dialog-overlay"][data-state="open"] {
+  animation: alertDialogOverlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-slot="alert-dialog-overlay"][data-state="closed"],
+[data-slot="dialog-overlay"][data-state="closed"] {
+  animation: alertDialogOverlayHide 140ms ease-in forwards;
+}
+
+[data-slot="alert-dialog-content"][data-state="open"],
+[data-slot="dialog-content"][data-state="open"] {
+  animation: alertDialogContentShow 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-slot="alert-dialog-content"][data-state="closed"],
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: alertDialogContentHide 140ms ease-in forwards;
 }
