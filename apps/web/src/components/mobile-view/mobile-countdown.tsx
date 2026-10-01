@@ -44,7 +44,7 @@ function MobileDigitCard({ label, value, accentColor, glowColor, textColor }: Mo
         style={{
           boxShadow: `0 8px 20px -6px ${glowColor}, 0 2px 8px rgba(0, 0, 0, 0.4)`,
         }}
-        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-gradient-to-b from-[#181d29]/95 via-[#10141e]/98 to-[#0a0d14]/99 px-1.5 py-2.5 shadow-lg backdrop-blur-md xs:px-2.5 xs:py-3"
+        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-gradient-to-b from-[#181d29]/95 via-[#10141e]/98 to-[#0a0d14]/99 px-1.5 xs:px-2.5 py-2.5 xs:py-3 shadow-lg backdrop-blur-md"
       >
         {/* Top Accent Rim */}
         <div style={{ backgroundColor: accentColor }} className="absolute top-0 right-0 left-0 h-0.5 opacity-90" />
@@ -64,14 +64,14 @@ function MobileDigitCard({ label, value, accentColor, glowColor, textColor }: Mo
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-google tabular-nums text-2xl leading-none tracking-tight drop-shadow-sm xs:text-3xl"
+            className="block w-full truncate text-center font-bold font-google text-2xl xs:text-3xl tabular-nums leading-none tracking-tight drop-shadow-sm"
           >
             {formattedValue}
           </span>
         </div>
 
         {/* Unit Label */}
-        <span className="mt-1 font-bold font-mono text-[9px] text-gray-400 uppercase tracking-wider xs:text-[10px]">{label}</span>
+        <span className="mt-1 font-bold font-mono text-[9px] text-gray-400 xs:text-[10px] uppercase tracking-wider">{label}</span>
       </div>
     </div>
   );
@@ -100,7 +100,7 @@ export const MobileCountdown: FC = () => {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34A853] opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-[#34A853]" />
           </span>
-          <span className="font-bold font-google text-xs text-white tracking-wide">Event Countdown</span>
+          <span className="font-bold font-google text-white text-xs tracking-wide">Event Countdown</span>
         </div>
 
         <span className="rounded-full border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 font-mono font-semibold text-[10px] text-emerald-400 uppercase">
