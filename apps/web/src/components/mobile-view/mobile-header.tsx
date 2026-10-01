@@ -3,11 +3,11 @@
 import type { FC } from "react";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
 
-interface MobileHeaderProps {
+type MobileHeaderProps = {
   isAuthenticated?: boolean;
   onSignOut?: () => void;
   userEmail?: string;
-}
+};
 
 export const MobileHeader: FC<MobileHeaderProps> = ({ isAuthenticated = false, onSignOut, userEmail = "student@ucsc.edu" }) => (
   <header className="flex w-full items-center justify-between border-white/10 border-b bg-[#0d1117]/80 px-4 py-3 backdrop-blur-md">

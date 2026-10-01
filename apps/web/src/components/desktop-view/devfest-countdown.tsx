@@ -90,7 +90,7 @@ function DigitCard({ label, value, accentColor, glowColor, textColor, badgeText 
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-google tabular-nums text-2xl leading-none tracking-tight drop-shadow-md sm:text-3xl md:text-4xl"
+            className="block w-full truncate text-center font-bold font-google text-2xl tabular-nums leading-none tracking-tight drop-shadow-md sm:text-3xl md:text-4xl"
           >
             {formattedValue}
           </span>
@@ -238,7 +238,7 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
             />
 
             {/* Glowing Colon Separator */}
-            <div className="flex shrink-0 flex-col items-center justify-center gap-1 sm:gap-1.5 opacity-60">
+            <div className="flex shrink-0 flex-col items-center justify-center gap-1 opacity-60 sm:gap-1.5">
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
             </div>
@@ -254,7 +254,7 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
             />
 
             {/* Glowing Colon Separator */}
-            <div className="flex shrink-0 flex-col items-center justify-center gap-1 sm:gap-1.5 opacity-60">
+            <div className="flex shrink-0 flex-col items-center justify-center gap-1 opacity-60 sm:gap-1.5">
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
             </div>
@@ -270,7 +270,7 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
             />
 
             {/* Glowing Colon Separator */}
-            <div className="flex shrink-0 flex-col items-center justify-center gap-1 sm:gap-1.5 opacity-60">
+            <div className="flex shrink-0 flex-col items-center justify-center gap-1 opacity-60 sm:gap-1.5">
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
               <div className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] shadow-[0_0_8px_#FBBC05]" />
             </div>
@@ -290,7 +290,7 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
                TARGET DATE & EVENT METRICS FOOTER (Layer Z: 30px)
                ======================================================== */}
           <div style={{ transform: "translateZ(30px)" }} className="mt-6 border-white/10 border-t pt-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-300">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-gray-300 text-xs">
               <div className="flex items-center gap-2">
                 <span className="flex h-2 w-2 rounded-full bg-[#4285F4]" />
                 <span className="font-semibold text-white">Event Kickoff:</span>

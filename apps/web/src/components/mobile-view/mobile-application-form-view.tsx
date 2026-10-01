@@ -1,9 +1,18 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ucsc-devfest/shad-ui/components/select";
-import { motion } from "framer-motion";
-import { Check, ChevronDown, Send, Sparkles } from "lucide-react";
-import { type FC, type FormEvent, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, Sparkles } from "lucide-react";
+import { type FC, useState } from "react";
+import { type Registration, registrationSchema } from "../../../../backend/convex/application/schemas";
+import {
+  createSchemaValidator,
+  defaultApplicationFormValues,
+  formatValidationErrorMessage,
+  getFieldError,
+  useAppForm,
+  useFieldContext,
+} from "../desktop-view/application/application-form-hook";
 
 const YEAR_OPTIONS = [
   { value: "first_year", label: "1st Year / Freshman" },
@@ -13,7 +22,7 @@ const YEAR_OPTIONS = [
   { value: "fifth_year_or_later", label: "5th+ Year" },
   { value: "graduate", label: "Graduate / Master's / PhD" },
   { value: "other", label: "Other" },
-];
+] as const;
 
 const DIETARY_OPTIONS = [
   { value: "none", label: "No Restrictions" },
@@ -23,178 +32,207 @@ const DIETARY_OPTIONS = [
   { value: "kosher", label: "Kosher" },
   { value: "gluten-free", label: "Gluten-Free" },
   { value: "other", label: "Other" },
-];
+] as const;
 
-const HACKATHON_OPTIONS = ["0", "1-2", "3+"];
+const HACKATHON_COUNT_OPTIONS = [
+  { value: "0", label: "0" },
+  { value: "1-2", label: "1-2" },
+  { value: "3+", label: "3+" },
+] as const;
 
-const COMFORT_OPTIONS = [
+const CODING_COMFORT_OPTIONS = [
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
-];
+] as const;
 
-const TOOL_OPTIONS = [
+const TOOLS_OPTIONS = [
   { value: "gemini_api", label: "Gemini API" },
   { value: "firebase", label: "Firebase" },
   { value: "flutter", label: "Flutter" },
   { value: "google_cloud", label: "Google Cloud" },
   { value: "android", label: "Android" },
   { value: "none", label: "None of these" },
-];
+] as const;
 
 const ROLE_OPTIONS = [
   { value: "frontend", label: "Frontend" },
   { value: "backend", label: "Backend" },
-  { value: "ui_ux", label: "UI / UX" },
-  { value: "ml", label: "Machine Learning" },
-];
+  { value: "ui_ux", label: "UI/UX" },
+  { value: "ml", label: "ML" },
+] as const;
 
-export type MobileFormData = {
-  identity: {
-    name: string;
-    major: string;
-    year: string;
-  };
-  logistics: {
-    dietaryRestrictions: string;
-    dietaryOther: string;
-    age: number;
-    allergies: string;
-    accessibilityNeeds: string;
-  };
-  skillLevel: {
-    hackathonsAttended: string;
-    codingComfort: string;
-    toolsUsed: string[];
-    teamRole: string;
-  };
-  motivation: {
-    whyDevfest: string;
-    projectAndWhatWentWrong: string;
-    geminiWeekendIdea: string;
-    learningGoals: string;
-  };
-  consent: {
-    codeOfConduct: boolean;
-    photoVideo: boolean;
-    sponsorInfoSharing: boolean;
-  };
-};
+function MobileDietaryRestrictionsField() {
+  const field = useFieldContext<string | undefined>();
+  const error = getFieldError(field);
 
-type MobileApplicationFormViewProps = {
+  const initialVal = field.state.value ?? "";
+  const isOther =
+    initialVal === "other" || initialVal.startsWith("Other:") || (!DIETARY_OPTIONS.some((opt) => opt.value === initialVal) && initialVal !== "");
+
+  const otherText = initialVal.startsWith("Other: ")
+    ? initialVal.slice("Other: ".length)
+    : initialVal.startsWith("Other:")
+      ? initialVal.slice("Other:".length)
+      : initialVal === "other" || DIETARY_OPTIONS.some((opt) => opt.value === initialVal)
+        ? ""
+        : initialVal;
+
+  const selectValue = isOther ? "other" : (field.state.value ?? "none");
+
+  return (
+    <div className="space-y-2">
+      <div>
+        <label htmlFor="mobile-select-dietary" className="mb-1 block font-medium text-gray-700 text-xs">
+          Dietary Restrictions
+        </label>
+        <Select
+          value={selectValue}
+          onValueChange={(val) => {
+            if (val === "other") {
+              const finalVal = otherText.trim() ? `Other: ${otherText.trim()}` : "other";
+              field.handleChange(finalVal);
+            } else {
+              field.handleChange(val);
+            }
+            field.handleBlur();
+          }}
+        >
+          <SelectTrigger
+            id="mobile-select-dietary"
+            className={`flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-2.5 text-left text-sm transition-all focus:outline-none focus:ring-2 ${
+              error
+                ? "border-red-400 bg-red-50/40 text-gray-900 focus:border-red-500 focus:ring-red-500/20"
+                : "border-gray-200 bg-gray-50 text-gray-900 hover:bg-gray-100 focus:bg-white focus:ring-[#4285F4]/40"
+            }`}
+          >
+            <SelectValue placeholder="Select dietary preference..." />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+          >
+            {DIETARY_OPTIONS.map((opt) => (
+              <SelectItem
+                key={opt.value}
+                value={opt.value}
+                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
+              >
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {error && <p className="mt-1 text-red-500 text-xs">{error}</p>}
+      </div>
+
+      {isOther && (
+        <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+          <label htmlFor="mobile-input-dietary-other" className="mb-1 block font-medium text-gray-700 text-xs">
+            Specific Dietary Restrictions
+          </label>
+          <input
+            id="mobile-input-dietary-other"
+            type="text"
+            placeholder="e.g. Pescatarian, Low FODMAP, No Dairy"
+            value={otherText}
+            onChange={(e) => {
+              const text = e.target.value;
+              const finalVal = text.trim() ? `Other: ${text.trim()}` : "other";
+              field.handleChange(finalVal);
+            }}
+            onBlur={field.handleBlur}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+          />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+export type MobileFormData = Registration;
+
+export type MobileApplicationFormViewProps = {
   userEmail?: string;
-  onSubmitSuccess: (data: MobileFormData) => void;
+  googleSub?: string;
+  onSubmitSuccess: (data: Registration) => void;
 };
 
-export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", onSubmitSuccess }) => {
-  const [formData, setFormData] = useState<MobileFormData>({
-    identity: {
-      name: "",
-      major: "",
-      year: "first_year",
+export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
+  userEmail = "student@ucsc.edu",
+  googleSub = "dummy-google-sub",
+  onSubmitSuccess,
+}) => {
+  const [activeSection, setActiveSection] = useState<number>(0);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const form = useAppForm({
+    defaultValues: {
+      ...defaultApplicationFormValues,
+      googleSub,
     },
-    logistics: {
-      dietaryRestrictions: "none",
-      dietaryOther: "",
-      age: 18,
-      allergies: "",
-      accessibilityNeeds: "",
+    validators: {
+      onSubmit: ({ value }) => {
+        const res = registrationSchema.safeParse(value);
+        if (!res.success) {
+          const [firstIssue] = res.error.issues;
+          return firstIssue
+            ? formatValidationErrorMessage(firstIssue.message, (firstIssue as { values?: unknown[] }).values)
+            : "Please complete all required fields correctly.";
+        }
+      },
     },
-    skillLevel: {
-      hackathonsAttended: "",
-      codingComfort: "",
-      toolsUsed: [],
-      teamRole: "",
+    onSubmit: async ({ value }) => {
+      setSubmitError(null);
+      setValidationError(null);
+      try {
+        const validPayload: Registration = registrationSchema.parse(value);
+        onSubmitSuccess(validPayload);
+      } catch (err) {
+        if (err instanceof Error) {
+          setSubmitError(err.message);
+        } else {
+          setSubmitError("Failed to validate registration.");
+        }
+      }
     },
-    motivation: {
-      whyDevfest: "",
-      projectAndWhatWentWrong: "",
-      geminiWeekendIdea: "",
-      learningGoals: "",
-    },
-    consent: {
-      codeOfConduct: false,
-      photoVideo: false,
-      sponsorInfoSharing: false,
+    onSubmitInvalid: ({ value, formApi }) => {
+      // biome-ignore lint/suspicious/noConsole: intentional error logging for debugging
+      console.warn("Mobile form validation errors:", formApi.state.errorMap);
+
+      setValidationError("We're missing some details. Please review the highlighted fields above.");
+
+      // Automatically open the first section with an error
+      const res = registrationSchema.safeParse(value);
+      if (!res.success) {
+        const [firstIssue] = res.error.issues;
+        const [sectionKey] = firstIssue?.path ?? [];
+        if (sectionKey === "identity") {
+          setActiveSection(0);
+        } else if (sectionKey === "logistics") {
+          setActiveSection(1);
+        } else if (sectionKey === "skillLevel") {
+          setActiveSection(2);
+        } else if (sectionKey === "motivation") {
+          setActiveSection(3);
+        } else if (sectionKey === "consent") {
+          setActiveSection(4);
+        }
+      }
     },
   });
 
-  const [activeSection, setActiveSection] = useState<number>(0);
-  const [validationError, setValidationError] = useState<string | null>(null);
-
-
-  const handleToolToggle = (toolValue: string) => {
-    setFormData((prev) => {
-      const current = prev.skillLevel.toolsUsed;
-      if (toolValue === "none") {
-        return {
-          ...prev,
-          skillLevel: {
-            ...prev.skillLevel,
-            toolsUsed: current.includes("none") ? [] : ["none"],
-          },
-        };
-      }
-      const withoutNone = current.filter((t) => t !== "none");
-      const next = withoutNone.includes(toolValue) ? withoutNone.filter((t) => t !== toolValue) : [...withoutNone, toolValue];
-
-      return {
-        ...prev,
-        skillLevel: {
-          ...prev.skillLevel,
-          toolsUsed: next,
-        },
-      };
-    });
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setValidationError(null);
-
-    // Basic UI validation
-    if (!formData.identity.name.trim()) {
-      setValidationError("Please enter your full name.");
-      setActiveSection(0);
-      return;
-    }
-    if (!formData.identity.major.trim()) {
-      setValidationError("Please enter your major.");
-      setActiveSection(0);
-      return;
-    }
-    if (!formData.skillLevel.hackathonsAttended) {
-      setValidationError("Please select how many hackathons you've attended.");
-      setActiveSection(2);
-      return;
-    }
-    if (!formData.skillLevel.codingComfort) {
-      setValidationError("Please select your coding comfort level.");
-      setActiveSection(2);
-      return;
-    }
-    if (!formData.skillLevel.teamRole) {
-      setValidationError("Please choose your preferred team role.");
-      setActiveSection(2);
-      return;
-    }
-    if (!formData.motivation.whyDevfest.trim()) {
-      setValidationError("Please tell us why you want to attend DevFest.");
-      setActiveSection(3);
-      return;
-    }
-    if (!formData.consent.codeOfConduct || !formData.consent.photoVideo) {
-      setValidationError("Please agree to the required Code of Conduct and Photo/Video consent.");
-      setActiveSection(4);
-      return;
-    }
-
-    // Call UI submit success callback
-    onSubmitSuccess(formData);
-  };
-
   return (
-    <form onSubmit={handleSubmit} noValidate className="w-full space-y-4">
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="w-full space-y-4"
+    >
       {/* Connected User Badge */}
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#34A853]/20 bg-[#E6F4EA] px-3 py-1 font-medium text-[#1E8E3E] text-xs">
@@ -213,9 +251,9 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
         <p className="mt-0.5 text-gray-500 text-xs">Fill out all sections below to complete your registration.</p>
       </div>
 
-      {validationError && (
+      {submitError && (
         <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-700 text-xs">
-          <span className="font-semibold">Notice:</span> {validationError}
+          <span className="font-semibold">Notice:</span> {submitError}
         </div>
       )}
 
@@ -246,79 +284,34 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3.5 border-gray-100 border-t p-4 pt-3.5"
             >
-              <div>
-                <label htmlFor="mobile-input-name" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="mobile-input-name"
-                  type="text"
-                  placeholder="e.g. Alex Rivera"
-                  value={formData.identity.name}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      identity: { ...prev.identity, name: e.target.value },
-                    }))
-                  }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="identity.name"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.name),
+                }}
+              >
+                {(field) => <field.TextField label="Full Name" placeholder="e.g. Alex Rivera" required />}
+              </form.AppField>
 
-              <div>
-                <label htmlFor="mobile-input-major" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Major <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="mobile-input-major"
-                  type="text"
-                  placeholder="e.g. Computer Science, CE, Biomolecular"
-                  value={formData.identity.major}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      identity: { ...prev.identity, major: e.target.value },
-                    }))
-                  }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="identity.major"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.major),
+                }}
+              >
+                {(field) => <field.TextField label="Major" placeholder="e.g. Computer Science, CE" required />}
+              </form.AppField>
 
-              <div>
-                <label htmlFor="mobile-select-year" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Academic Year <span className="text-red-500">*</span>
-                </label>
-                <Select
-                  value={formData.identity.year}
-                  onValueChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      identity: { ...prev.identity, year: val },
-                    }))
-                  }
-                >
-                  <SelectTrigger
-                    id="mobile-select-year"
-                    className="flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-left text-gray-900 text-sm transition-all hover:bg-gray-100 focus:bg-white focus:ring-2 focus:ring-[#4285F4]/40"
-                  >
-                    <SelectValue placeholder="Select academic year..." />
-                  </SelectTrigger>
-                  <SelectContent
-                    position="popper"
-                    className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
-                  >
-                    {YEAR_OPTIONS.map((opt) => (
-                      <SelectItem
-                        key={opt.value}
-                        value={opt.value}
-                        className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
-                      >
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <form.AppField
+                name="identity.year"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.year),
+                }}
+              >
+                {(field) => (
+                  <field.ShadcnSelectField label="Academic Year" options={YEAR_OPTIONS} placeholder="Select academic year..." required />
+                )}
+              </form.AppField>
             </motion.div>
           )}
         </div>
@@ -348,123 +341,47 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3.5 border-gray-100 border-t p-4 pt-3.5"
             >
-              <div>
-                <label htmlFor="mobile-select-dietary" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Dietary Restrictions
-                </label>
-                <Select
-                  value={formData.logistics.dietaryRestrictions}
-                  onValueChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      logistics: { ...prev.logistics, dietaryRestrictions: val },
-                    }))
-                  }
-                >
-                  <SelectTrigger
-                    id="mobile-select-dietary"
-                    className="flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-left text-gray-900 text-sm transition-all hover:bg-gray-100 focus:bg-white focus:ring-2 focus:ring-[#4285F4]/40"
-                  >
-                    <SelectValue placeholder="Select dietary preference..." />
-                  </SelectTrigger>
-                  <SelectContent
-                    position="popper"
-                    className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
-                  >
-                    {DIETARY_OPTIONS.map((opt) => (
-                      <SelectItem
-                        key={opt.value}
-                        value={opt.value}
-                        className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
-                      >
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <form.AppField
+                name="logistics.dietaryRestrictions"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.dietaryRestrictions),
+                }}
+              >
+                {() => <MobileDietaryRestrictionsField />}
+              </form.AppField>
 
-              {formData.logistics.dietaryRestrictions === "other" && (
-                <div>
-                  <label htmlFor="mobile-input-dietary-other" className="mb-1 block font-medium text-gray-700 text-xs">
-                    Please specify dietary restriction
-                  </label>
-                  <input
-                    id="mobile-input-dietary-other"
-                    type="text"
-                    placeholder="e.g. Pescatarian, Low FODMAP"
-                    value={formData.logistics.dietaryOther}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        logistics: { ...prev.logistics, dietaryOther: e.target.value },
-                      }))
-                    }
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+              <form.AppField
+                name="logistics.age"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.age),
+                }}
+              >
+                {(field) => <field.NumberField label="Age" placeholder="e.g. 20" min={1} max={120} required />}
+              </form.AppField>
+
+              <form.AppField
+                name="logistics.allergies"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.allergies),
+                }}
+              >
+                {(field) => <field.TextField label="Allergies" placeholder="e.g. Peanuts, Shellfish, Dairy, or None" />}
+              </form.AppField>
+
+              <form.AppField
+                name="logistics.accessibilityNeeds"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.accessibilityNeeds),
+                }}
+              >
+                {(field) => (
+                  <field.TextAreaField
+                    label="Accessibility Needs"
+                    placeholder="Anything we can do to make the event accessible for you?"
+                    rows={2}
                   />
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="mobile-input-age" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Age <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="mobile-input-age"
-                  type="number"
-                  min={1}
-                  max={120}
-                  value={formData.logistics.age || ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      logistics: {
-                        ...prev.logistics,
-                        age: Number.parseInt(e.target.value, 10) || 0,
-                      },
-                    }))
-                  }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="mobile-input-allergies" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Allergies
-                </label>
-                <input
-                  id="mobile-input-allergies"
-                  type="text"
-                  placeholder="e.g. Peanuts, Shellfish, Dairy, or None"
-                  value={formData.logistics.allergies}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      logistics: { ...prev.logistics, allergies: e.target.value },
-                    }))
-                  }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="mobile-input-accessibility" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Accessibility Needs
-                </label>
-                <textarea
-                  id="mobile-input-accessibility"
-                  rows={2}
-                  placeholder="Anything we can do to make the event accessible for you?"
-                  value={formData.logistics.accessibilityNeeds}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      logistics: { ...prev.logistics, accessibilityNeeds: e.target.value },
-                    }))
-                  }
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+                )}
+              </form.AppField>
             </motion.div>
           )}
         </div>
@@ -494,125 +411,41 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
               exit={{ opacity: 0, height: 0 }}
               className="space-y-4 border-gray-100 border-t p-4 pt-3.5"
             >
-              <div>
-                <span className="mb-1.5 block font-medium text-gray-700 text-xs">
-                  How many hackathons have you attended? <span className="text-red-500">*</span>
-                </span>
-                <div className="flex gap-2">
-                  {HACKATHON_OPTIONS.map((val) => {
-                    const isSelected = formData.skillLevel.hackathonsAttended === val;
-                    return (
-                      <button
-                        key={val}
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            skillLevel: { ...prev.skillLevel, hackathonsAttended: val },
-                          }))
-                        }
-                        className={`flex-1 rounded-xl border py-2.5 font-medium text-xs transition-all ${
-                          isSelected
-                            ? "border-[#4285F4] bg-[#4285F4]/10 font-bold text-[#1A73E8] ring-1 ring-[#4285F4]"
-                            : "border-gray-200 bg-gray-50 text-gray-700 active:bg-gray-100"
-                        }`}
-                      >
-                        {val}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <form.AppField
+                name="skillLevel.hackathonsAttended"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.skillLevel.shape.hackathonsAttended),
+                }}
+              >
+                {(field) => <field.RadioGroupField label="How many hackathons have you attended?" options={HACKATHON_COUNT_OPTIONS} required />}
+              </form.AppField>
 
-              <div>
-                <span className="mb-1.5 block font-medium text-gray-700 text-xs">
-                  Rate your coding comfort <span className="text-red-500">*</span>
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {COMFORT_OPTIONS.map((opt) => {
-                    const isSelected = formData.skillLevel.codingComfort === opt.value;
-                    return (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            skillLevel: { ...prev.skillLevel, codingComfort: opt.value },
-                          }))
-                        }
-                        className={`rounded-xl border py-2.5 font-medium text-xs transition-all ${
-                          isSelected
-                            ? "border-[#4285F4] bg-[#4285F4]/10 font-bold text-[#1A73E8] ring-1 ring-[#4285F4]"
-                            : "border-gray-200 bg-gray-50 text-gray-700 active:bg-gray-100"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <form.AppField
+                name="skillLevel.codingComfort"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.skillLevel.shape.codingComfort),
+                }}
+              >
+                {(field) => <field.RadioGroupField label="Rate your coding comfort" options={CODING_COMFORT_OPTIONS} required />}
+              </form.AppField>
 
-              <div>
-                <span className="mb-1.5 block font-medium text-gray-700 text-xs">Which tools have you used before?</span>
-                <div className="grid grid-cols-2 gap-2">
-                  {TOOL_OPTIONS.map((opt) => {
-                    const isChecked = formData.skillLevel.toolsUsed.includes(opt.value);
-                    return (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() => handleToolToggle(opt.value)}
-                        className={`flex items-center gap-2 rounded-xl border p-2.5 text-left text-xs transition-all ${
-                          isChecked
-                            ? "border-[#4285F4] bg-[#4285F4]/10 text-[#1A73E8] ring-1 ring-[#4285F4]"
-                            : "border-gray-200 bg-gray-50 text-gray-700 active:bg-gray-100"
-                        }`}
-                      >
-                        <div
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                            isChecked ? "border-[#4285F4] bg-[#4285F4] text-white" : "border-gray-300 bg-white"
-                          }`}
-                        >
-                          {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
-                        </div>
-                        <span className="truncate font-medium">{opt.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <form.AppField
+                name="skillLevel.toolsUsed"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.skillLevel.shape.toolsUsed),
+                }}
+              >
+                {(field) => <field.MultiCheckboxField label="Which tools have you used before?" options={TOOLS_OPTIONS} />}
+              </form.AppField>
 
-              <div>
-                <span className="mb-1.5 block font-medium text-gray-700 text-xs">
-                  Preferred Team Role <span className="text-red-500">*</span>
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {ROLE_OPTIONS.map((opt) => {
-                    const isSelected = formData.skillLevel.teamRole === opt.value;
-                    return (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            skillLevel: { ...prev.skillLevel, teamRole: opt.value },
-                          }))
-                        }
-                        className={`rounded-xl border p-2.5 text-center font-medium text-xs transition-all ${
-                          isSelected
-                            ? "border-[#4285F4] bg-[#4285F4]/10 font-bold text-[#1A73E8] ring-1 ring-[#4285F4]"
-                            : "border-gray-200 bg-gray-50 text-gray-700 active:bg-gray-100"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <form.AppField
+                name="skillLevel.teamRole"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.skillLevel.shape.teamRole),
+                }}
+              >
+                {(field) => <field.RadioGroupField label="Preferred Team Role" options={ROLE_OPTIONS} required />}
+              </form.AppField>
             </motion.div>
           )}
         </div>
@@ -642,81 +475,69 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3.5 border-gray-100 border-t p-4 pt-3.5"
             >
-              <div>
-                <label htmlFor="mobile-input-why-devfest" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Why do you want to attend DevFest? <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="mobile-input-why-devfest"
-                  rows={3}
-                  placeholder="What excites you about DevFest, teaming up, or building with Google tools?"
-                  value={formData.motivation.whyDevfest}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      motivation: { ...prev.motivation, whyDevfest: e.target.value },
-                    }))
-                  }
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="motivation.whyDevfest"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.whyDevfest),
+                }}
+              >
+                {(field) => (
+                  <field.TextAreaField
+                    label="Why do you want to attend DevFest?"
+                    placeholder="What excites you about DevFest, teaming up, or building with Google tools?"
+                    rows={3}
+                    required
+                  />
+                )}
+              </form.AppField>
 
-              <div>
-                <label htmlFor="mobile-input-what-went-wrong" className="mb-1 block font-medium text-gray-700 text-xs">
-                  Tell us about something you built. What went wrong? <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="mobile-input-what-went-wrong"
-                  rows={3}
-                  placeholder="Share a project challenge or bug you faced and how you overcame it."
-                  value={formData.motivation.projectAndWhatWentWrong}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      motivation: { ...prev.motivation, projectAndWhatWentWrong: e.target.value },
-                    }))
-                  }
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="motivation.projectAndWhatWentWrong"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.projectAndWhatWentWrong),
+                }}
+              >
+                {(field) => (
+                  <field.TextAreaField
+                    label="Tell us about something you built. What went wrong?"
+                    placeholder="Share a project challenge or bug you faced and how you overcame it."
+                    rows={3}
+                    required
+                  />
+                )}
+              </form.AppField>
 
-              <div>
-                <label htmlFor="mobile-input-gemini-idea" className="mb-1 block font-medium text-gray-700 text-xs">
-                  If you had a weekend and the Gemini API, what would you build? <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="mobile-input-gemini-idea"
-                  rows={3}
-                  placeholder="Tell us about a creative tool, app, or prototype you'd love to make."
-                  value={formData.motivation.geminiWeekendIdea}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      motivation: { ...prev.motivation, geminiWeekendIdea: e.target.value },
-                    }))
-                  }
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="motivation.geminiWeekendIdea"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.geminiWeekendIdea),
+                }}
+              >
+                {(field) => (
+                  <field.TextAreaField
+                    label="If you had a weekend and the Gemini API, what would you build?"
+                    placeholder="Tell us about a creative tool, app, or prototype you'd love to make."
+                    rows={3}
+                    required
+                  />
+                )}
+              </form.AppField>
 
-              <div>
-                <label htmlFor="mobile-input-learning-goals" className="mb-1 block font-medium text-gray-700 text-xs">
-                  What do you want to learn? <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="mobile-input-learning-goals"
-                  rows={3}
-                  placeholder="A library, cloud tool, systems design, or teamwork skills."
-                  value={formData.motivation.learningGoals}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      motivation: { ...prev.motivation, learningGoals: e.target.value },
-                    }))
-                  }
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-                />
-              </div>
+              <form.AppField
+                name="motivation.learningGoals"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.learningGoals),
+                }}
+              >
+                {(field) => (
+                  <field.TextAreaField
+                    label="What do you want to learn?"
+                    placeholder="A library, cloud tool, systems design, or teamwork skills."
+                    rows={3}
+                    required
+                  />
+                )}
+              </form.AppField>
             </motion.div>
           )}
         </div>
@@ -746,80 +567,73 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3 border-gray-100 border-t p-4 pt-3.5"
             >
-              <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-gray-200 bg-gray-50 p-3 hover:bg-gray-100">
-                <input
-                  type="checkbox"
-                  checked={formData.consent.codeOfConduct}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      consent: { ...prev.consent, codeOfConduct: e.target.checked },
-                    }))
-                  }
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#4285F4] focus:ring-[#4285F4]"
-                />
-                <div className="text-xs">
-                  <span className="font-semibold text-gray-800">
-                    Agree to Code of Conduct <span className="text-red-500">*</span>
-                  </span>
-                  <p className="mt-0.5 text-[11px] text-gray-500">I agree to treat all attendees, mentors, and organizers with respect.</p>
-                </div>
-              </label>
+              <form.AppField
+                name="consent.codeOfConduct"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.codeOfConduct),
+                }}
+              >
+                {(field) => (
+                  <field.CheckboxField
+                    label="Agree to Code of Conduct"
+                    description="I agree to treat all attendees, mentors, and organizers with respect."
+                    required
+                  />
+                )}
+              </form.AppField>
 
-              <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-gray-200 bg-gray-50 p-3 hover:bg-gray-100">
-                <input
-                  type="checkbox"
-                  checked={formData.consent.photoVideo}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      consent: { ...prev.consent, photoVideo: e.target.checked },
-                    }))
-                  }
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#4285F4] focus:ring-[#4285F4]"
-                />
-                <div className="text-xs">
-                  <span className="font-semibold text-gray-800">
-                    Photo &amp; Video Consent <span className="text-red-500">*</span>
-                  </span>
-                  <p className="mt-0.5 text-[11px] text-gray-500">Permission to capture and share event photography &amp; footage.</p>
-                </div>
-              </label>
+              <form.AppField
+                name="consent.photoVideo"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.photoVideo),
+                }}
+              >
+                {(field) => (
+                  <field.CheckboxField
+                    label="Photo & Video Consent"
+                    description="Permission to capture and share event photography & footage."
+                    required
+                  />
+                )}
+              </form.AppField>
 
-              <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-gray-200 border-dashed bg-gray-50/50 p-3 hover:bg-gray-100/60">
-                <input
-                  type="checkbox"
-                  checked={formData.consent.sponsorInfoSharing}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      consent: { ...prev.consent, sponsorInfoSharing: e.target.checked },
-                    }))
-                  }
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#4285F4] focus:ring-[#4285F4]"
-                />
-                <div className="text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-gray-800">Sponsor Info Sharing</span>
-                    <span className="rounded bg-gray-200/70 px-1.5 py-0.2 font-medium text-[9px] text-gray-600">Optional</span>
-                  </div>
-                  <p className="mt-0.5 text-[11px] text-gray-500">Allow sponsors to review your info for internship or job opportunities.</p>
-                </div>
-              </label>
+              <form.AppField
+                name="consent.sponsorInfoSharing"
+                validators={{
+                  onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.sponsorInfoSharing),
+                }}
+              >
+                {(field) => (
+                  <field.CheckboxField
+                    label="Sponsor Info Sharing (Optional)"
+                    description="Allow partnering sponsors and recruiters to review your application."
+                  />
+                )}
+              </form.AppField>
             </motion.div>
           )}
         </div>
       </div>
 
-      {/* Submit Button */}
-      <motion.button
-        whileTap={{ scale: 0.98 }}
-        type="submit"
-        className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#4285F4] px-4 py-3.5 font-semibold text-sm text-white shadow-md transition-colors hover:bg-[#1a73e8] active:bg-[#1967d2]"
-      >
-        <span>Submit Hackathon Application</span>
-        <Send className="h-4 w-4" />
-      </motion.button>
+      {/* Submit Button & Validation Error */}
+      <div className="space-y-2 pt-1">
+        <form.AppForm>
+          <form.SubmitButton label="Submit Hackathon Application" />
+        </form.AppForm>
+
+        <AnimatePresence>
+          {validationError && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="text-center font-medium text-red-500 text-xs"
+            >
+              {validationError}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </form>
   );
 };

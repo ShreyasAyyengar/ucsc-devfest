@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../components/**/*.{tsx}";
+
 @theme {
   --font-google: "Google Sans", "Plus Jakarta Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;

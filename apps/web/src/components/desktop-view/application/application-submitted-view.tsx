@@ -1,7 +1,18 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@ucsc-devfest/shad-ui/components/alert-dialog";
 import { motion } from "framer-motion";
-import { Calendar, CheckCircle2, Mail, Users } from "lucide-react";
+import { AlertTriangle, Calendar, CheckCircle2, Mail, Users } from "lucide-react";
 import type { FC } from "react";
 import { formatOptionsList } from "./application-form-hook";
 
@@ -45,21 +56,48 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
           We’ve received your registration for Google DevFest 2026. Keep an eye on{" "}
           <span className="font-semibold text-gray-800">{userEmail}</span> for team matching and workshop access.
         </p>
-        <button
-          type="button"
-          disabled={isDeleting}
-          onClick={onWithdraw}
-          className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-2 font-semibold text-red-600 text-xs hover:text-red-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isDeleting ? (
-            <>
-              <span className="h-3 w-3 animate-spin rounded-full border border-red-600 border-t-transparent" />
-              <span>Withdrawing application...</span>
-            </>
-          ) : (
-            <span>Withdraw application</span>
-          )}
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              type="button"
+              disabled={isDeleting}
+              className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-2 font-semibold text-red-600 text-xs hover:text-red-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isDeleting ? (
+                <>
+                  <span className="h-3 w-3 animate-spin rounded-full border border-red-600 border-t-transparent" />
+                  <span>Withdrawing application...</span>
+                </>
+              ) : (
+                <span>Withdraw application</span>
+              )}
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="fixed top-1/2 left-1/2 z-[101] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
+            <AlertDialogHeader className="text-left sm:text-left">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <AlertDialogTitle className="font-bold font-google text-gray-900 text-lg">Withdraw Application?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-600 text-xs leading-relaxed">
+                Are you sure you want to withdraw your DevFest 2026 application? Your registration spot will be released, and you will need to
+                re-apply if you change your mind.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <AlertDialogCancel className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 font-medium text-gray-700 text-xs hover:bg-gray-100">
+                Keep Application
+              </AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                onClick={onWithdraw}
+                className="cursor-pointer rounded-xl bg-red-600 px-4 py-2 font-semibold text-white text-xs hover:bg-red-700"
+              >
+                Yes, Withdraw
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {deleteError && (
           <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">
