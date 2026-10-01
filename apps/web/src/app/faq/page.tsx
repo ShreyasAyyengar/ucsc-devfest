@@ -777,22 +777,22 @@ export default function FaqPage() {
               </p>
             </div>
 
-            <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row">
+            <div className="flex w-full shrink-0 flex-col gap-3 sm:w-64">
               <a
                 href="https://discord.gg/sJUmrEHs7B"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#5865F2] px-5 py-3 font-semibold text-white text-xs shadow-xs transition-colors hover:bg-[#4752C4] sm:text-sm"
+                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#5865F2] px-5 py-3 font-semibold text-white text-xs shadow-xs transition-colors hover:bg-[#4752C4] sm:text-sm"
               >
-                <DiscordSvg className="h-4 w-4" />
-                <span>Join Discord Community</span>
+                <DiscordSvg className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">Join Discord Community</span>
               </a>
               <a
                 href="mailto:ucsc.dsc@gmail.com"
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-700 text-xs shadow-2xs transition-colors hover:bg-gray-50 hover:text-gray-900 sm:text-sm"
+                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-700 text-xs shadow-2xs transition-colors hover:bg-gray-50 hover:text-gray-900 sm:text-sm"
               >
-                <Mail className="h-4 w-4 text-[#EA4335]" />
-                <span>Email Us</span>
+                <Mail className="h-4 w-4 shrink-0 text-[#EA4335]" />
+                <span className="whitespace-nowrap">Email Us</span>
               </a>
             </div>
           </div>
