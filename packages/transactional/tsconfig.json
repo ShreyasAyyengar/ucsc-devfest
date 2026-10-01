@@ -1,0 +1,9 @@
+{
+  "extends": "@ucsc-devfest/typescript-config/react-library.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["emails/**/*.tsx", "src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
