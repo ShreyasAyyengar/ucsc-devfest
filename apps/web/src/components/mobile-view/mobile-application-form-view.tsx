@@ -1,9 +1,12 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ucsc-devfest/shad-ui/components/select";
+import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Sparkles } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
+import { api } from "../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../backend/convex/application/schemas";
 import {
   createSchemaValidator,
@@ -156,20 +159,25 @@ export type MobileApplicationFormViewProps = {
   userEmail?: string;
   googleSub?: string;
   onSubmitSuccess: (data: Registration) => void;
+  initialValues?: Partial<Registration> | null;
 };
 
 export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
   userEmail = "student@ucsc.edu",
   googleSub = "dummy-google-sub",
   onSubmitSuccess,
+  initialValues,
 }) => {
   const [activeSection, setActiveSection] = useState<number>(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  const createRegistration = useMutation(api.application.service.createRegistration);
+
   const form = useAppForm({
     defaultValues: {
       ...defaultApplicationFormValues,
+      ...(initialValues ?? {}),
       googleSub,
     },
     validators: {
@@ -188,12 +196,18 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
       setValidationError(null);
       try {
         const validPayload: Registration = registrationSchema.parse(value);
+        // Remove googleSub as the backend derives it securely from the authenticated Google account session
+        const { googleSub: _, ...registrationInput } = validPayload;
+        await createRegistration(registrationInput);
         onSubmitSuccess(validPayload);
       } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof ConvexError) {
+          const data = err.data as { code?: string; message?: string };
+          setSubmitError(data.message || err.message);
+        } else if (err instanceof Error) {
           setSubmitError(err.message);
         } else {
-          setSubmitError("Failed to validate registration.");
+          setSubmitError("Failed to submit registration. Please try again.");
         }
       }
     },
@@ -222,6 +236,16 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
       }
     },
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      form.reset({
+        ...defaultApplicationFormValues,
+        ...initialValues,
+        googleSub,
+      });
+    }
+  }, [initialValues, form, googleSub]);
 
   return (
     <form
