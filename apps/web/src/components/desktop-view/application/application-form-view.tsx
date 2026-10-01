@@ -1,8 +1,11 @@
 "use client";
 
+import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { motion } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { type FC, useState } from "react";
+import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { AgreementsSection } from "./agreements-section";
 import { defaultApplicationFormValues, useAppForm } from "./application-form-hook";
@@ -20,6 +23,8 @@ type ApplicationFormViewProps = {
 
 export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const createRegistration = useMutation(api.application.service.createRegistration);
 
   const form = useAppForm({
     defaultValues: {
@@ -35,15 +40,25 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
         }
       },
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
+      setSubmitError(null);
       const validPayload: Registration = registrationSchema.parse(value);
-      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
-      console.log("=== DEV FEST APPLICATION FORM SUBMITTED (VALID) ===");
-      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
-      console.table(validPayload);
-      // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
-      console.log("Full form payload:", validPayload);
-      setSubmitted(true);
+      // Remove googleSub as the backend derives it securely from the authenticated Google account session
+      const { googleSub: _, ...registrationInput } = validPayload;
+
+      try {
+        await createRegistration(registrationInput);
+        setSubmitted(true);
+      } catch (err) {
+        if (err instanceof ConvexError) {
+          const data = err.data as { code?: string; message?: string };
+          setSubmitError(data.message || err.message);
+        } else if (err instanceof Error) {
+          setSubmitError(err.message);
+        } else {
+          setSubmitError("Failed to submit registration. Please try again.");
+        }
+      }
     },
     onSubmitInvalid: ({ value, formApi }) => {
       // biome-ignore lint/suspicious/noConsole: intentionally logging form errors for submission verification
@@ -96,7 +111,10 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
           </p>
           <button
             type="button"
-            onClick={() => setSubmitted(false)}
+            onClick={() => {
+              setSubmitted(false);
+              setSubmitError(null);
+            }}
             className="mx-auto block cursor-pointer pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
           >
             Edit your application
@@ -117,6 +135,13 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
           <SkillLevelSection form={form} />
           <MotivationSection form={form} />
           <AgreementsSection form={form} />
+
+          {submitError && (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-700 text-xs">
+              <span className="font-semibold">Submission failed:</span> {submitError}
+            </div>
+          )}
+
           <SubmitSection form={form} />
         </form>
       )}
