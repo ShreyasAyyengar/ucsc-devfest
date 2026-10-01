@@ -6,6 +6,12 @@ export type RegistrationConfirmationEmailProps = {
   priority: boolean;
 };
 
+RegistrationConfirmationEmail.PreviewProps = {
+  actionUrl: "http://localhost:3000",
+  name: "Sammy",
+  priority: true,
+} satisfies RegistrationConfirmationEmailProps;
+
 const chapterUrl = "https://gdg.community.dev/gdg-on-campus-university-of-california-santa-cruz-santa-cruz-united-states/";
 const discordUrl = "https://discord.gg/sSPYYYJ6Wq";
 const linkedInUrl = "https://www.linkedin.com/company/gdg-at-ucsc/";
@@ -370,11 +376,5 @@ function RegistrationConfirmationEmail({ actionUrl, name, priority }: Registrati
     </Html>
   );
 }
-
-RegistrationConfirmationEmail.PreviewProps = {
-  actionUrl: "http://localhost:3000",
-  name: "Sammy",
-  priority: true,
-} satisfies RegistrationConfirmationEmailProps;
 
 export default RegistrationConfirmationEmail;
