@@ -5,6 +5,7 @@ import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
 import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../backend/convex/_generated/api";
+import { GdgGlowingBackdrop } from "../desktop-view/gdg-glowing-backdrop";
 import { MobileApplicationFormView, type MobileFormData } from "./mobile-application-form-view";
 import { MobileApplicationSubmittedView } from "./mobile-application-submitted-view";
 import { MobileAuthSignInView } from "./mobile-auth-signin-view";
@@ -104,18 +105,14 @@ export const MobileView: FC<MobileViewProps> = ({
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#0d1117] text-gray-900">
+    <div className="flex min-h-screen w-full flex-col bg-[#F8F9FA] text-gray-900">
       {/* 1. Mobile Header */}
       <MobileHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={handleSignOut} />
 
       {/* 2. Top Hero Section: Ambient Glow & Mobile Countdown */}
       <section className="relative overflow-hidden px-4 pt-5 pb-6">
-        {/* Google Background Ambient Glow Orbs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-[#4285F4]/30 blur-[70px]" />
-          <div className="absolute top-1/2 -left-16 h-48 w-48 rounded-full bg-[#EA4335]/25 blur-[65px]" />
-          <div className="absolute right-4 bottom-0 h-40 w-40 rounded-full bg-[#FBBC05]/20 blur-[60px]" />
-        </div>
+        {/* Background Huge Glowing GDG Logo */}
+        <GdgGlowingBackdrop variant="mobile" />
 
         {/* Mobile Countdown */}
         <div className="relative z-10 mx-auto max-w-md">
@@ -124,7 +121,7 @@ export const MobileView: FC<MobileViewProps> = ({
       </section>
 
       {/* 3. Main Form / Auth Surface (Clean White Container) */}
-      <main className="relative z-10 flex-1 rounded-t-3xl border-white/20 border-t bg-white px-5 pt-7 pb-10 shadow-2xl">
+      <main className="relative z-10 flex-1 rounded-t-3xl border-gray-200/80 border-t bg-white px-5 pt-7 pb-10 shadow-sm">
         <div className="mx-auto max-w-md">
           <AnimatePresence mode="wait">
             {isLoading || isCheckingRegistration ? (
