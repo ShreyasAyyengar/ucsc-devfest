@@ -74,7 +74,7 @@ export function createSchemaValidator<T>(schema: {
   };
 }
 
-function getFieldError(field: {
+export function getFieldError(field: {
   state: { meta: { isTouched: boolean; errors: unknown[] } };
   form: { state: { submissionAttempts: number } };
 }): string | undefined {

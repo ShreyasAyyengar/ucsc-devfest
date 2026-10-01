@@ -3,33 +3,53 @@
 import { registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
 
-const HACKATHON_COUNT_OPTIONS = [
-  { value: "0", label: "0" },
-  { value: "1-2", label: "1-2" },
-  { value: "3+", label: "3+" },
-] as const;
+const skillLevelShape = registrationSchema.shape.skillLevel.shape;
 
-const CODING_COMFORT_OPTIONS = [
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
-] as const;
+type CodingComfort = (typeof skillLevelShape.codingComfort.options)[number];
+type Tool = (typeof skillLevelShape.toolsUsed.element.options)[number];
+type Role = (typeof skillLevelShape.teamRole.options)[number];
 
-const TOOLS_OPTIONS = [
-  { value: "gemini_api", label: "Gemini API" },
-  { value: "firebase", label: "Firebase" },
-  { value: "flutter", label: "Flutter" },
-  { value: "google_cloud", label: "Google Cloud" },
-  { value: "android", label: "Android" },
-  { value: "none", label: "None of these" },
-] as const;
+const HACKATHON_COUNT_OPTIONS = skillLevelShape.hackathonsAttended.options.map((value) => ({
+  value,
+  label: value,
+}));
 
-const ROLE_OPTIONS = [
-  { value: "frontend", label: "Frontend" },
-  { value: "backend", label: "Backend" },
-  { value: "ui_ux", label: "UI/UX" },
-  { value: "ml", label: "ML" },
-] as const;
+const CODING_COMFORT_LABELS: Record<CodingComfort, string> = {
+  beginner: "Beginner",
+  intermediate: "Intermediate",
+  advanced: "Advanced",
+};
+
+const CODING_COMFORT_OPTIONS = skillLevelShape.codingComfort.options.map((value) => ({
+  value,
+  label: CODING_COMFORT_LABELS[value],
+}));
+
+const TOOL_LABELS: Record<Tool, string> = {
+  gemini_api: "Gemini API",
+  firebase: "Firebase",
+  flutter: "Flutter",
+  google_cloud: "Google Cloud",
+  android: "Android",
+  none: "None of these",
+};
+
+const TOOLS_OPTIONS = skillLevelShape.toolsUsed.element.options.map((value) => ({
+  value,
+  label: TOOL_LABELS[value],
+}));
+
+const ROLE_LABELS: Record<Role, string> = {
+  frontend: "Frontend",
+  backend: "Backend",
+  ui_ux: "UI/UX",
+  ml: "ML",
+};
+
+const ROLE_OPTIONS = skillLevelShape.teamRole.options.map((value) => ({
+  value,
+  label: ROLE_LABELS[value],
+}));
 
 export const SkillLevelSection = withForm({
   defaultValues: defaultApplicationFormValues,
