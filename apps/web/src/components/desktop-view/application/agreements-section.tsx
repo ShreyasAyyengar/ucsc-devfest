@@ -2,17 +2,13 @@
 
 import { registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
+import { ApplicationSection } from "./application-section";
 
 export const AgreementsSection = withForm({
   defaultValues: defaultApplicationFormValues,
   render({ form }) {
     return (
-      <div className="space-y-3">
-        <div className="border-gray-100 border-b pb-1">
-          <h3 className="font-semibold text-gray-900 text-sm">Agreements & Consents</h3>
-          <p className="text-gray-500 text-xs">Please review and complete the event acknowledgments.</p>
-        </div>
-
+      <ApplicationSection number={5} title="Agreements & Consents" description="Code of conduct & media permissions">
         <div className="space-y-2.5">
           <form.AppField
             name="consent.codeOfConduct"
@@ -66,7 +62,7 @@ export const AgreementsSection = withForm({
             )}
           </form.AppField>
         </div>
-      </div>
+      </ApplicationSection>
     );
   },
 });

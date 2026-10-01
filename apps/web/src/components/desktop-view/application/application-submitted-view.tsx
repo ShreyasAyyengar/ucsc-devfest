@@ -13,7 +13,6 @@ import {
 } from "@ucsc-devfest/shad-ui/components/alert-dialog";
 import { motion } from "framer-motion";
 import { AlertTriangle, Calendar, CheckCircle2, Mail, Users } from "lucide-react";
-import type { FC } from "react";
 import { formatOptionsList } from "./application-form-hook";
 
 type ApplicationSubmittedViewProps = {
@@ -21,6 +20,7 @@ type ApplicationSubmittedViewProps = {
   isDeleting: boolean;
   deleteError: string | null;
   onWithdraw: () => void;
+  onSignOut?: () => void;
   summaryData: {
     identity?: {
       name?: string;
@@ -34,8 +34,15 @@ type ApplicationSubmittedViewProps = {
   };
 };
 
-export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ userEmail, isDeleting, deleteError, onWithdraw, summaryData }) => {
-  const hasSummary = Boolean(summaryData?.identity?.name && summaryData?.identity?.major);
+export function ApplicationSubmittedView({
+  userEmail,
+  isDeleting,
+  deleteError,
+  onWithdraw,
+  onSignOut,
+  summaryData,
+}: ApplicationSubmittedViewProps) {
+  const hasSummary = Boolean(summaryData.identity?.name && summaryData.identity?.major);
 
   return (
     <motion.div
@@ -44,7 +51,7 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="-mx-2 mt-6 min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-2"
+      className="mt-4 min-h-0 flex-1 space-y-4 lg:-mx-2 lg:mt-6 lg:overflow-y-auto lg:px-3 lg:py-2"
     >
       {/* Confirmation Banner */}
       <div className="space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center">
@@ -98,6 +105,16 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {onSignOut && (
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-1 font-medium text-gray-500 text-xs hover:text-gray-800 hover:underline lg:hidden"
+          >
+            Sign out
+          </button>
+        )}
 
         {deleteError && (
           <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">
@@ -202,4 +219,4 @@ export const ApplicationSubmittedView: FC<ApplicationSubmittedViewProps> = ({ us
       </div>
     </motion.div>
   );
-};
+}

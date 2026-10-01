@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DesktopView } from "@/components/desktop-view/desktop-view";
-import { MobileView } from "@/components/mobile-view/mobile-view";
+import { DevFestView } from "@/components/devfest-view";
 import { authClientWeb } from "@/lib/auth-client-web";
 
 export default function Home() {
@@ -27,30 +26,13 @@ export default function Home() {
   };
 
   return (
-    <>
-      {/* Mobile View Wrapper */}
-      <div className="w-full lg:hidden">
-        <MobileView
-          isAuthenticated={isAuthenticated}
-          userEmail={userEmail}
-          isLoading={isPending && manualAuthOverride === null}
-          onSignIn={handleSignIn}
-          onSignOut={handleSignOut}
-          onToggleAuth={() => setManualAuthOverride((prev) => (prev === null ? !isAuthenticated : !prev))}
-        />
-      </div>
-
-      {/* Desktop View Wrapper */}
-      <div className="hidden w-full lg:block">
-        <DesktopView
-          isAuthenticated={isAuthenticated}
-          userEmail={userEmail}
-          isLoading={isPending && manualAuthOverride === null}
-          onSignIn={handleSignIn}
-          onSignOut={handleSignOut}
-          onToggleAuth={() => setManualAuthOverride((prev) => (prev === null ? !isAuthenticated : !prev))}
-        />
-      </div>
-    </>
+    <DevFestView
+      isAuthenticated={isAuthenticated}
+      userEmail={userEmail}
+      isLoading={isPending && manualAuthOverride === null}
+      onSignIn={handleSignIn}
+      onSignOut={handleSignOut}
+      onToggleAuth={() => setManualAuthOverride((prev) => (prev === null ? !isAuthenticated : !prev))}
+    />
   );
 }

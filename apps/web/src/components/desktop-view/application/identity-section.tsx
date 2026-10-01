@@ -2,6 +2,7 @@
 
 import { registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
+import { ApplicationSection } from "./application-section";
 
 const YEAR_OPTIONS = [
   { value: "first_year", label: "1st Year / Freshman" },
@@ -17,11 +18,7 @@ export const IdentitySection = withForm({
   defaultValues: defaultApplicationFormValues,
   render({ form }) {
     return (
-      <div className="space-y-3">
-        <div className="border-gray-100 border-b pb-1">
-          <h3 className="font-semibold text-gray-900 text-sm">Identity</h3>
-        </div>
-
+      <ApplicationSection defaultOpen number={1} title="Identity" description="Name, major & academic standing">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <form.AppField
             name="identity.name"
@@ -47,9 +44,9 @@ export const IdentitySection = withForm({
             onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.year),
           }}
         >
-          {(field) => <field.ComboboxField label="Academic Year" options={YEAR_OPTIONS} placeholder="Select academic year..." required />}
+          {(field) => <field.ShadcnSelectField label="Academic Year" options={YEAR_OPTIONS} placeholder="Select academic year..." required />}
         </form.AppField>
-      </div>
+      </ApplicationSection>
     );
   },
 });

@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { type FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { isPriority } from "../../../../../backend/convex/priority.ts";
@@ -23,7 +23,7 @@ type ApplicationFormViewProps = {
   googleSub?: string;
 };
 
-export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }) => {
+export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }: ApplicationFormViewProps) {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -144,17 +144,25 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     >
       {/* Authed Status Pill */}
 
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-2">
           <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight sm:text-3xl">Hackathon Application</h2>
+          {isPriority === true && (
+            <div className="inline-flex items-center gap-1.5 font-medium text-gray-800 text-xs sm:rounded-md sm:border sm:border-black/10 sm:bg-yellow-100 sm:px-2.5 sm:py-1 sm:text-sm">
+              {/* TODO: Create boolean to toggle priority review */}
+              <Sparkles className="size-4 text-[#FBBC05] sm:size-5" />
+              <span>Priority Application</span>
+            </div>
+          )}
         </div>
-        {isPriority === true && (
-          <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-gray-800 text-sm sm:flex">
-            {/* TODO: Create boolean to toggle priority review */}
-            <Sparkles className="size-5 text-[#FBBC05]" />
-            <span>Priority Application</span>
-          </div>
-        )}
+
+        <button
+          type="button"
+          onClick={onSignOut}
+          className="shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-100 hover:text-gray-900 active:scale-95 lg:hidden"
+        >
+          Sign out
+        </button>
       </div>
 
       <AnimatePresence mode="wait">
@@ -176,6 +184,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
             isDeleting={isDeleting}
             deleteError={deleteError}
             onWithdraw={handleDelete}
+            onSignOut={onSignOut}
             summaryData={summaryData}
           />
         ) : (
@@ -191,7 +200,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
               e.stopPropagation();
               form.handleSubmit();
             }}
-            className="-mx-2 mt-6 min-h-0 flex-1 space-y-6 overflow-y-auto px-3 py-2"
+            className="mt-4 min-h-0 flex-1 space-y-2.5 lg:-mx-2 lg:mt-6 lg:space-y-6 lg:overflow-y-auto lg:px-3 lg:py-2"
           >
             <IdentitySection form={form} />
             <LogisticsSection form={form} />
@@ -225,4 +234,4 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
       </AnimatePresence>
     </motion.div>
   );
-};
+}

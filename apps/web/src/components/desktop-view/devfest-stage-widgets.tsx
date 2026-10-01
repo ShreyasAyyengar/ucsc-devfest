@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import type { FC, MouseEvent, ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { CodeFileSvg } from "@/SVGs/code-file-svg";
 import { HackerPassSvg } from "@/SVGs/hacker-pass-svg";
 import { TrophySvg } from "@/SVGs/trophy-svg";
@@ -68,7 +68,7 @@ export function TiltWidget({ children, className = "", baseRotateZ = 0, depth = 
  * Preserved original DevFest 3D Stage Widgets (Code terminal, Hacker Pass,
  * DevFest pill, Ship sticker, Prize pool, and decorative geometry).
  */
-export const DevFestStageWidgets: FC = () => {
+export function DevFestStageWidgets() {
   return (
     <>
       {/* ==========================================
@@ -254,4 +254,4 @@ export const DevFestStageWidgets: FC = () => {
       </div>
     </>
   );
-};
+}

@@ -2,17 +2,13 @@
 
 import { registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
+import { ApplicationSection } from "./application-section";
 
 export const MotivationSection = withForm({
   defaultValues: defaultApplicationFormValues,
   render({ form }) {
     return (
-      <div className="space-y-3">
-        <div className="border-gray-100 border-b pb-1">
-          <h3 className="font-semibold text-gray-900 text-sm">Motivation</h3>
-          <p className="text-gray-500 text-xs">Help us get to know you and what you want to achieve.</p>
-        </div>
-
+      <ApplicationSection number={4} title="Motivation" description="Why DevFest & projects you dream of">
         <form.AppField
           name="motivation.whyDevfest"
           validators={{
@@ -76,7 +72,7 @@ export const MotivationSection = withForm({
             />
           )}
         </form.AppField>
-      </div>
+      </ApplicationSection>
     );
   },
 });

@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
 
 interface DevFestHeaderProps {
@@ -7,7 +6,7 @@ interface DevFestHeaderProps {
   userEmail?: string;
 }
 
-export const DevFestHeader: FC<DevFestHeaderProps> = ({ isAuthenticated = false, onSignOut, userEmail = "student@ucsc.edu" }) => {
+export function DevFestHeader({ isAuthenticated = false, onSignOut, userEmail = "student@ucsc.edu" }: DevFestHeaderProps) {
   return (
     <header className="mb-6 flex w-full items-center justify-between gap-3">
       <div className="flex items-center gap-3">
@@ -34,4 +33,4 @@ export const DevFestHeader: FC<DevFestHeaderProps> = ({ isAuthenticated = false,
       </div>
     </header>
   );
-};
+}

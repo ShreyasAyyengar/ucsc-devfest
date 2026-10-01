@@ -1,11 +1,28 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import type { FC, MouseEvent } from "react";
+import { type PointerEvent, useEffect, useState } from "react";
 import { DevFestCountdown } from "./devfest-countdown";
 import { GdgGlowingBackdrop } from "./gdg-glowing-backdrop";
 
-export const DevFestStage3D: FC = () => {
+export function DevFestStage3D() {
+  const [supportsPointerInteraction, setSupportsPointerInteraction] = useState(false);
+
+  useEffect(() => {
+    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncInteractionSupport = () => setSupportsPointerInteraction(pointerQuery.matches && !motionQuery.matches);
+
+    syncInteractionSupport();
+    pointerQuery.addEventListener("change", syncInteractionSupport);
+    motionQuery.addEventListener("change", syncInteractionSupport);
+
+    return () => {
+      pointerQuery.removeEventListener("change", syncInteractionSupport);
+      motionQuery.removeEventListener("change", syncInteractionSupport);
+    };
+  }, []);
+
   // Motion values normalized between -0.5 and 0.5 for the entire stage
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -19,7 +36,7 @@ export const DevFestStage3D: FC = () => {
   const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-7, 7]);
   const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [7, -7]);
 
-  const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
+  const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -28,17 +45,17 @@ export const DevFestStage3D: FC = () => {
     mouseY.set(y);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
   };
 
   return (
     <aside
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={supportsPointerInteraction ? handlePointerMove : undefined}
+      onPointerLeave={supportsPointerInteraction ? handlePointerLeave : undefined}
       style={{ perspective: 1200 }}
-      className="relative flex min-h-[580px] w-full select-none items-center justify-center overflow-hidden border-gray-200/80 bg-[#F8F9FA] p-6 md:p-12 lg:min-h-screen lg:w-1/2 lg:border-l"
+      className="relative order-1 flex min-h-[300px] w-full select-none items-center justify-center overflow-hidden border-gray-200/80 bg-[#F8F9FA] p-4 sm:min-h-[360px] sm:p-6 md:p-8 lg:order-2 lg:min-h-screen lg:w-1/2 lg:border-l lg:p-12"
     >
       {/* Background Huge Glowing GDG Logo & Google Light Aura */}
       <GdgGlowingBackdrop stageMouseX={smoothMouseX} stageMouseY={smoothMouseY} />
@@ -51,11 +68,11 @@ export const DevFestStage3D: FC = () => {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="transform-style-3d relative z-10 flex h-[560px] w-full max-w-xl items-center justify-center"
+        className="transform-style-3d relative z-10 flex w-full max-w-xl items-center justify-center lg:h-[560px]"
       >
         {/* 3D Countdown Console facing towards cursor */}
-        <DevFestCountdown stageMouseX={smoothMouseX} stageMouseY={smoothMouseY} />
+        <DevFestCountdown stageMouseX={smoothMouseX} stageMouseY={smoothMouseY} interactive={supportsPointerInteraction} />
       </motion.div>
     </aside>
   );
-};
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { type MotionValue, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { type FC, type MouseEvent, useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
 
 // Official Target Date: November 14, 2026, 09:00:00 PST (Pacific Standard Time = UTC-8)
@@ -32,6 +32,7 @@ function calculateTimeRemaining(targetIso: string): TimeUnits {
 type DevFestCountdownProps = {
   stageMouseX?: MotionValue<number>;
   stageMouseY?: MotionValue<number>;
+  interactive?: boolean;
 };
 
 type DigitCardProps = {
@@ -40,14 +41,15 @@ type DigitCardProps = {
   accentColor: string;
   glowColor: string;
   textColor: string;
+  interactive: boolean;
 };
 
-function DigitCard({ label, value, accentColor, glowColor, textColor }: DigitCardProps) {
+function DigitCard({ label, value, accentColor, glowColor, textColor, interactive }: DigitCardProps) {
   const formattedValue = String(value).padStart(2, "0");
 
   return (
     <motion.div
-      whileHover={{ scale: 1.05, y: -4 }}
+      whileHover={interactive ? { scale: 1.05, y: -4 } : undefined}
       transition={{ duration: 0.2, ease: "easeOut" }}
       style={{ transformStyle: "preserve-3d" }}
       className="group relative flex min-w-0 flex-1 flex-col items-center justify-center"
@@ -57,7 +59,7 @@ function DigitCard({ label, value, accentColor, glowColor, textColor }: DigitCar
         style={{
           boxShadow: `0 10px 25px -4px ${glowColor}, 0 2px 8px rgba(0, 0, 0, 0.04)`,
         }}
-        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-2xl border border-gray-200/90 bg-white/95 px-2.5 py-4 shadow-xs backdrop-blur-xl transition-shadow group-hover:shadow-md sm:rounded-3xl sm:px-3 sm:py-5"
+        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200/90 bg-white/95 px-1.5 xs:px-2.5 py-2.5 xs:py-3 shadow-xs backdrop-blur-xl transition-shadow group-hover:shadow-md sm:rounded-3xl sm:px-3 sm:py-5"
       >
         {/* Top Accent Rim Indicator */}
         <div
@@ -78,20 +80,22 @@ function DigitCard({ label, value, accentColor, glowColor, textColor }: DigitCar
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-sans text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl"
+            className="block w-full truncate text-center font-bold font-sans text-2xl xs:text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl"
           >
             {formattedValue}
           </span>
         </div>
 
         {/* Unit Label */}
-        <span className="mt-1.5 font-sans font-semibold text-[10px] text-gray-500 uppercase tracking-wider sm:text-xs">{label}</span>
+        <span className="mt-1 font-sans font-semibold text-[9px] text-gray-500 xs:text-[10px] uppercase tracking-wider sm:mt-1.5 sm:text-xs">
+          {label}
+        </span>
       </div>
     </motion.div>
   );
 }
 
-export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stageMouseY }) => {
+export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true }: DevFestCountdownProps) {
   // Live ticking countdown state
   const [timeLeft, setTimeLeft] = useState<TimeUnits>(() => calculateTimeRemaining(TARGET_PST_DATE));
 
@@ -142,8 +146,8 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
 
   return (
     <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={interactive ? handleMouseMove : undefined}
+      onMouseLeave={interactive ? handleMouseLeave : undefined}
       style={{ perspective: 1200 }}
       className="relative flex w-full max-w-xl items-center justify-center p-2 sm:p-4"
     >
@@ -156,24 +160,31 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
           x: parallaxX,
           y: parallaxY,
         }}
-        className="transform-style-3d relative flex w-full flex-col items-center gap-6 sm:gap-8"
+        className="transform-style-3d relative flex w-full flex-col items-center gap-3.5 sm:gap-8"
       >
         {/* ========================================================
              1. EVENT TITLE (Layer Z: 35px)
              ======================================================== */}
-        <div style={{ transform: "translateZ(35px)" }} className="flex select-none items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200/80 bg-white/95 p-2 shadow-xs backdrop-blur-md transition-transform hover:scale-105">
+        <div style={{ transform: "translateZ(35px)" }} className="flex select-none items-center justify-center gap-2 sm:gap-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/80 bg-white/95 p-1.5 shadow-xs backdrop-blur-md transition-transform hover:scale-105 sm:h-10 sm:w-10 sm:rounded-2xl sm:p-2">
             <GdgLogoSvg className="h-full w-auto" />
           </div>
-          <h2 className="font-sans font-semibold text-2xl text-gray-700 tracking-tight sm:text-3xl">GDG UCSC DevFest &apos;26</h2>
+          <h2 className="font-sans font-semibold text-base text-gray-700 xs:text-lg tracking-tight sm:text-3xl">GDG UCSC DevFest &apos;26</h2>
         </div>
 
         {/* ========================================================
              2. 4-UNIT COUNTDOWN DISPLAY (Layer Z: 45px)
              ======================================================== */}
-        <div style={{ transform: "translateZ(45px)" }} className="relative flex w-full items-center justify-between gap-2 sm:gap-3">
+        <div style={{ transform: "translateZ(45px)" }} className="relative flex w-full items-center justify-between gap-1 xs:gap-1.5 sm:gap-3">
           {/* Days Card */}
-          <DigitCard label="Days" value={timeLeft.days} accentColor="#4285F4" glowColor="rgba(66, 133, 244, 0.22)" textColor="#1A73E8" />
+          <DigitCard
+            label="Days"
+            value={timeLeft.days}
+            accentColor="#4285F4"
+            glowColor="rgba(66, 133, 244, 0.22)"
+            textColor="#1A73E8"
+            interactive={interactive}
+          />
 
           {/* Colon Separator */}
           <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
@@ -182,7 +193,14 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
           </div>
 
           {/* Hours Card */}
-          <DigitCard label="Hours" value={timeLeft.hours} accentColor="#EA4335" glowColor="rgba(234, 67, 53, 0.22)" textColor="#D93025" />
+          <DigitCard
+            label="Hours"
+            value={timeLeft.hours}
+            accentColor="#EA4335"
+            glowColor="rgba(234, 67, 53, 0.22)"
+            textColor="#D93025"
+            interactive={interactive}
+          />
 
           {/* Colon Separator */}
           <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
@@ -191,7 +209,14 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
           </div>
 
           {/* Minutes Card */}
-          <DigitCard label="Mins" value={timeLeft.minutes} accentColor="#FBBC05" glowColor="rgba(251, 188, 5, 0.25)" textColor="#B06000" />
+          <DigitCard
+            label="Mins"
+            value={timeLeft.minutes}
+            accentColor="#FBBC05"
+            glowColor="rgba(251, 188, 5, 0.25)"
+            textColor="#B06000"
+            interactive={interactive}
+          />
 
           {/* Colon Separator */}
           <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
@@ -200,7 +225,14 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
           </div>
 
           {/* Seconds Card */}
-          <DigitCard label="Secs" value={timeLeft.seconds} accentColor="#34A853" glowColor="rgba(52, 168, 83, 0.22)" textColor="#1E8E3E" />
+          <DigitCard
+            label="Secs"
+            value={timeLeft.seconds}
+            accentColor="#34A853"
+            glowColor="rgba(52, 168, 83, 0.22)"
+            textColor="#1E8E3E"
+            interactive={interactive}
+          />
         </div>
 
         {/* ========================================================
@@ -208,7 +240,7 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
              ======================================================== */}
         <div
           style={{ transform: "translateZ(30px)" }}
-          className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/90 px-4 py-1.5 text-xs shadow-xs backdrop-blur-md"
+          className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/90 px-3 py-1 text-[11px] shadow-xs backdrop-blur-md sm:px-4 sm:py-1.5 sm:text-xs"
         >
           <span className="flex h-2 w-2 rounded-full bg-[#4285F4]" />
           <span className="font-medium font-sans text-gray-700">Event Kickoff:</span>
@@ -217,4 +249,4 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
       </motion.div>
     </div>
   );
-};
+}

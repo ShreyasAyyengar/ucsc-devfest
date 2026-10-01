@@ -7,6 +7,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { createSchemaValidator, defaultApplicationFormValues, getFieldError, useFieldContext, withForm } from "./application-form-hook";
+import { ApplicationSection } from "./application-section";
 
 const DIETARY_OPTIONS = [
   { value: "none", label: "No Restrictions" },
@@ -164,11 +165,7 @@ export const LogisticsSection = withForm({
   defaultValues: defaultApplicationFormValues,
   render({ form }) {
     return (
-      <div className="space-y-3">
-        <div className="border-gray-100 border-b pb-1">
-          <h3 className="font-semibold text-gray-900 text-sm">Logistics</h3>
-        </div>
-
+      <ApplicationSection number={2} title="Logistics" description="Dietary preferences, age & accessibility">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <form.AppField
             name="logistics.dietaryRestrictions"
@@ -211,7 +208,7 @@ export const LogisticsSection = withForm({
             />
           )}
         </form.AppField>
-      </div>
+      </ApplicationSection>
     );
   },
 });

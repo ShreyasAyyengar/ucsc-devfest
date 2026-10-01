@@ -1,7 +1,7 @@
 "use client";
 
 import { type MotionValue, motion, useMotionValue, useTransform } from "framer-motion";
-import { type FC, useId } from "react";
+import { useId } from "react";
 
 // Official GDG Logo capsule paths from gdg-logo-svg.tsx
 const RED_PATH =
@@ -23,7 +23,7 @@ type GdgGlowingBackdropProps = {
   variant?: "desktop" | "mobile";
 };
 
-export const GdgGlowingBackdrop: FC<GdgGlowingBackdropProps> = ({ stageMouseX, stageMouseY, className = "", variant = "desktop" }) => {
+export function GdgGlowingBackdrop({ stageMouseX, stageMouseY, className = "", variant = "desktop" }: GdgGlowingBackdropProps) {
   const uniqueId = useId().replace(/:/g, "_");
 
   // Fallback motion values for parallax when no mouse props provided
@@ -73,7 +73,7 @@ export const GdgGlowingBackdrop: FC<GdgGlowingBackdropProps> = ({ stageMouseX, s
           ease: "easeInOut",
         }}
         className={`relative flex items-center justify-center ${
-          variant === "mobile" ? "w-[130%] max-w-none" : "w-[125%] max-w-none sm:w-[135%] md:w-[145%] lg:w-[155%] xl:w-[165%]"
+          variant === "mobile" ? "w-[130%] max-w-none" : "w-[130%] max-w-none sm:w-[135%] md:w-[145%] lg:w-[155%] xl:w-[165%]"
         }`}
       >
         <svg
@@ -156,4 +156,4 @@ export const GdgGlowingBackdrop: FC<GdgGlowingBackdropProps> = ({ stageMouseX, s
       </motion.div>
     </div>
   );
-};
+}
