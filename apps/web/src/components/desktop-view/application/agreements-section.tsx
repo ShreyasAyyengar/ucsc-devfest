@@ -1,6 +1,7 @@
 "use client";
 
-import { defaultApplicationFormValues, withForm } from "./application-form-hook";
+import { registrationSchema } from "../../../../../backend/convex/application/schemas";
+import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
 
 export const AgreementsSection = withForm({
   defaultValues: defaultApplicationFormValues,
@@ -14,9 +15,9 @@ export const AgreementsSection = withForm({
 
         <div className="space-y-2.5">
           <form.AppField
-            name="agreeCodeOfConduct"
+            name="consent.codeOfConduct"
             validators={{
-              onChange: ({ value }) => (!value ? "You must agree to the Code of Conduct to participate." : undefined),
+              onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.codeOfConduct),
             }}
           >
             {(field) => (
@@ -29,9 +30,9 @@ export const AgreementsSection = withForm({
           </form.AppField>
 
           <form.AppField
-            name="consentPhotoVideo"
+            name="consent.photoVideo"
             validators={{
-              onChange: ({ value }) => (!value ? "Consent to photos/video is required for this event." : undefined),
+              onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.photoVideo),
             }}
           >
             {(field) => (
@@ -51,7 +52,12 @@ export const AgreementsSection = withForm({
             <span className="rounded bg-gray-200/70 px-2 py-0.5 font-medium text-[10px] text-gray-600">Optional</span>
           </div>
 
-          <form.AppField name="consentShareSponsors">
+          <form.AppField
+            name="consent.sponsorInfoSharing"
+            validators={{
+              onBlur: createSchemaValidator(registrationSchema.shape.consent.shape.sponsorInfoSharing),
+            }}
+          >
             {(field) => (
               <field.CheckboxField
                 label="Consent to share your info with sponsors"

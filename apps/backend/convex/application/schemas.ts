@@ -57,4 +57,6 @@ export const registrationSchema = z.object({
   }),
 });
 
+export type Registration = z.infer<typeof registrationSchema>;
+
 export const registrationTable = defineTable(zodOutputToConvex(registrationSchema)).index("googleSub", ["googleSub"]);
