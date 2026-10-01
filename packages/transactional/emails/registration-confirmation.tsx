@@ -12,7 +12,7 @@ RegistrationConfirmationEmail.PreviewProps = {
   priority: true,
 } satisfies RegistrationConfirmationEmailProps;
 
-const chapterUrl = "https://gdg.community.dev/gdg-on-campus-university-of-california-santa-cruz-santa-cruz-united-states/";
+const instagramURL = "https://www.instagram.com/gdgc_ucsc/";
 const discordUrl = "https://discord.gg/sSPYYYJ6Wq";
 const linkedInUrl = "https://www.linkedin.com/company/gdg-at-ucsc/";
 
@@ -353,8 +353,8 @@ function RegistrationConfirmationEmail({ actionUrl, name, priority }: Registrati
             <Section id="email-footer" className="border-[#e8eaed] border-t bg-[#f8f9fa] px-5 py-6 text-center sm:px-10 sm:py-7">
               <Text className="m-0 font-bold text-[#3c4043] text-[13px]">Stay in the loop with GDG UCSC</Text>
               <Text className="m-0 mt-3 text-[12px]">
-                <Link href={chapterUrl} className="font-semibold text-[#1a73e8] no-underline">
-                  Chapter
+                <Link href={instagramURL} className="font-semibold text-[#1a73e8] no-underline">
+                  Instagram
                 </Link>
                 <span className="px-2 text-[#bdc1c6] sm:px-3">•</span>
                 <Link href={discordUrl} className="font-semibold text-[#1a73e8] no-underline">
