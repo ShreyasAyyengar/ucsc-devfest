@@ -61,6 +61,7 @@ export function DesktopView({
           <div className="flex items-center gap-4 text-gray-400">
             {onToggleAuth ? (
               <>
+                {/* TODO: REMOVE THIS SHIT */}
                 <button type="button" onClick={onToggleAuth} className="font-mono text-[#4285F4] text-[11px] hover:underline">
                   [Toggle State: {isAuthenticated ? "Authed" : "Unauthed"}]
                 </button>

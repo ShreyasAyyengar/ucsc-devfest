@@ -9,7 +9,12 @@ import { useState } from "react";
 
 import type { Registration } from "../../../../../backend/convex/application/schemas";
 
-export type ApplicationFormValues = Omit<Registration, "consent"> & {
+export type ApplicationFormValues = Omit<Registration, "consent" | "skillLevel"> & {
+  skillLevel: Omit<Registration["skillLevel"], "hackathonsAttended" | "codingComfort" | "teamRole"> & {
+    hackathonsAttended: Registration["skillLevel"]["hackathonsAttended"] | "";
+    codingComfort: Registration["skillLevel"]["codingComfort"] | "";
+    teamRole: Registration["skillLevel"]["teamRole"] | "";
+  };
   consent: {
     codeOfConduct: boolean;
     photoVideo: boolean;
@@ -34,10 +39,10 @@ export const defaultApplicationFormValues: ApplicationFormValues = {
   },
 
   skillLevel: {
-    hackathonsAttended: "0",
-    codingComfort: "intermediate",
-    toolsUsed: ["gemini_api"],
-    teamRole: "frontend",
+    hackathonsAttended: "",
+    codingComfort: "",
+    toolsUsed: [],
+    teamRole: "",
   },
 
   motivation: {
@@ -61,14 +66,103 @@ export type SelectOption<T extends string = string> = {
   value: T;
 };
 
+const OPTION_LABELS: Record<string, string> = {
+  // Roles
+  frontend: "Frontend",
+  backend: "Backend",
+  ui_ux: "UI/UX",
+  ml: "ML",
+  // Comfort
+  beginner: "Beginner",
+  intermediate: "Intermediate",
+  advanced: "Advanced",
+  // Hackathons attended
+  "0": "0",
+  "1-2": "1-2",
+  "3+": "3+",
+  // Academic years
+  first_year: "1st Year / Freshman",
+  second_year: "2nd Year / Sophomore",
+  third_year: "3rd Year / Junior",
+  fourth_year: "4th Year / Senior",
+  fifth_year_or_later: "5th+ Year",
+  graduate: "Graduate",
+  other: "Other",
+  // Tools
+  gemini_api: "Gemini API",
+  firebase: "Firebase",
+  flutter: "Flutter",
+  google_cloud: "Google Cloud",
+  android: "Android",
+  none: "None of these",
+};
+
+const SNAKE_CASE_REGEX = /_/g;
+const WORD_START_REGEX = /\b\w/g;
+const EXPECTED_ONE_OF_REGEX = /expected one of (.+)$/i;
+const EXPECTED_OPTIONS_REGEX = /expected (.+?)(?:, received|$)/i;
+const QUOTE_WRAP_REGEX = /^["']|["']$/g;
+
+function humanizeOption(opt: string): string {
+  if (OPTION_LABELS[opt]) return OPTION_LABELS[opt];
+  return opt.replace(SNAKE_CASE_REGEX, " ").replace(WORD_START_REGEX, (c) => c.toUpperCase());
+}
+
+export function formatOptionsList(options: string[]): string {
+  const formatted = options.map(humanizeOption);
+  const [first] = formatted;
+  if (formatted.length === 0 || !first) return "";
+  if (formatted.length === 1) return first;
+  const last = formatted.at(-1);
+  if (formatted.length === 2 && last) return `${first} or ${last}`;
+  if (last) {
+    return `${formatted.slice(0, -1).join(", ")}, or ${last}`;
+  }
+  return formatted.join(", ");
+}
+
+export function formatValidationErrorMessage(message: string, values?: unknown[]): string {
+  if (Array.isArray(values) && values.length > 0) {
+    if (values.some((v) => typeof v === "boolean" || v === "true" || v === "false")) {
+      return "Please select an option";
+    }
+    const stringValues = values.map(String);
+    return `Please select an option: ${formatOptionsList(stringValues)}`;
+  }
+
+  const match1 = message.match(EXPECTED_ONE_OF_REGEX);
+  if (match1?.[1]) {
+    const rawOptions = match1[1].split("|").map((s) => s.trim().replace(QUOTE_WRAP_REGEX, ""));
+    if (rawOptions.some((v) => v === "true" || v === "false")) {
+      return "Please select an option";
+    }
+    return `Please select an option: ${formatOptionsList(rawOptions)}`;
+  }
+
+  const match2 = message.match(EXPECTED_OPTIONS_REGEX);
+  if (match2?.[1]) {
+    const rawOptions = match2[1].split("|").map((s) => s.trim().replace(QUOTE_WRAP_REGEX, ""));
+    if (rawOptions.some((v) => v === "true" || v === "false")) {
+      return "Please select an option";
+    }
+    return `Please select an option: ${formatOptionsList(rawOptions)}`;
+  }
+
+  if (message.includes("expected true") || message === "Please select an option: True") {
+    return "Please select an option";
+  }
+
+  return message;
+}
+
 export function createSchemaValidator<T>(schema: {
-  safeParse: (val: unknown) => { success: boolean; error?: { issues: { message: string }[] } };
+  safeParse: (val: unknown) => { success: boolean; error?: { issues: { message: string; values?: unknown[] }[] } };
 }) {
   return ({ value }: { value: T }): string | undefined => {
     const res = schema.safeParse(value);
     const [firstIssue] = res.error?.issues ?? [];
     if (!res.success && firstIssue) {
-      return firstIssue.message;
+      return formatValidationErrorMessage(firstIssue.message, firstIssue.values);
     }
     return undefined;
   };
@@ -84,16 +178,20 @@ export function getFieldError(field: {
   if (!shouldShow) return undefined;
   const [firstError] = field.state.meta.errors;
   if (!firstError) return undefined;
-  if (typeof firstError === "string") return firstError;
+  if (typeof firstError === "string") return formatValidationErrorMessage(firstError);
   if (
     typeof firstError === "object" &&
     firstError !== null &&
     "message" in firstError &&
     typeof (firstError as { message?: unknown }).message === "string"
   ) {
-    return (firstError as { message: string }).message;
+    const values =
+      "values" in firstError && Array.isArray((firstError as { values?: unknown[] }).values)
+        ? (firstError as { values?: unknown[] }).values
+        : undefined;
+    return formatValidationErrorMessage((firstError as { message: string }).message, values);
   }
-  return String(firstError);
+  return formatValidationErrorMessage(String(firstError));
 }
 
 export function TextField({
@@ -438,7 +536,8 @@ export function MultiCheckboxField<T extends string = string>({
 
 export function CheckboxField({ label, description, required }: { label: string; description?: string; required?: boolean }) {
   const field = useFieldContext<boolean>();
-  const error = getFieldError(field);
+  const rawError = getFieldError(field);
+  const error = rawError === "Please select an option: True" ? "Please select an option" : rawError;
 
   return (
     <div>

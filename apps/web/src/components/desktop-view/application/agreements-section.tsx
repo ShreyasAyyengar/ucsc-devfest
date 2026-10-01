@@ -61,7 +61,7 @@ export const AgreementsSection = withForm({
             {(field) => (
               <field.CheckboxField
                 label="Consent to share your info with sponsors"
-                description="Allow partnering sponsors and recruiters to review your application and resume for internship or job opportunities."
+                description="Allow partnering sponsors and recruiters to review your application and reach out about possible opportunities."
               />
             )}
           </form.AppField>
