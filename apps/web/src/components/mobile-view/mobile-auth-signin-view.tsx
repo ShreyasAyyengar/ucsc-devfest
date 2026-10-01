@@ -66,13 +66,13 @@ export const MobileAuthSignInView: FC<MobileAuthSignInViewProps> = ({ onSignIn }
         <p className="mb-2.5 font-mono font-semibold text-gray-400 text-xs uppercase tracking-wider">Hackathon Essentials</p>
         <div className="grid grid-cols-3 gap-2">
           <div className="rounded-xl border border-gray-100 border-t-2 border-t-[#4285F4] bg-gray-50/80 p-2.5 text-center">
-            <span className="block font-medium text-gray-500 text-[11px]">Timeline</span>
+            <span className="block font-medium text-[11px] text-gray-500">Timeline</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-xs">Nov 14-15</span>
             <span className="mt-1 inline-block rounded bg-[#4285F4]/10 px-1.5 py-0.5 font-semibold text-[#1A73E8] text-[9px]">24 Hours</span>
           </div>
 
           <div className="rounded-xl border border-gray-100 border-t-2 border-t-[#34A853] bg-gray-50/80 p-2.5 text-center">
-            <span className="block font-medium text-gray-500 text-[11px]">Prize Pool</span>
+            <span className="block font-medium text-[11px] text-gray-500">Prize Pool</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-xs">$2,000</span>
             <span className="mt-1 inline-block rounded bg-[#34A853]/10 px-1.5 py-0.5 font-semibold text-[#1E8E3E] text-[9px]">
               Prizes &amp; Swag
@@ -80,7 +80,7 @@ export const MobileAuthSignInView: FC<MobileAuthSignInViewProps> = ({ onSignIn }
           </div>
 
           <div className="rounded-xl border border-gray-100 border-t-2 border-t-[#EA4335] bg-gray-50/80 p-2.5 text-center">
-            <span className="block font-medium text-gray-500 text-[11px]">Tracks</span>
+            <span className="block font-medium text-[11px] text-gray-500">Tracks</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-xs">4 Themes</span>
             <span className="mt-1 inline-block rounded bg-[#EA4335]/10 px-1.5 py-0.5 font-semibold text-[#D93025] text-[9px]">All Levels</span>
           </div>

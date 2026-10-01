@@ -1,5 +1,6 @@
 "use client";
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ucsc-devfest/shad-ui/components/select";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, Send, Sparkles } from "lucide-react";
 import { type FC, type FormEvent, useState } from "react";
@@ -121,13 +122,6 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
   const [activeSection, setActiveSection] = useState<number>(0);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const sections = [
-    { title: "Identity", subtitle: "Name, major & academic standing" },
-    { title: "Logistics", subtitle: "Age, dietary & accessibility needs" },
-    { title: "Skill Level", subtitle: "Experience & team preferences" },
-    { title: "Motivation", subtitle: "Your goals & project ideas" },
-    { title: "Agreements", subtitle: "Code of conduct & consents" },
-  ];
 
   const handleToolToggle = (toolValue: string) => {
     setFormData((prev) => {
@@ -205,10 +199,10 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#34A853]/20 bg-[#E6F4EA] px-3 py-1 font-medium text-[#1E8E3E] text-xs">
           <span className="h-1.5 w-1.5 rounded-full bg-[#34A853]" />
-          <span className="truncate max-w-[200px]">{userEmail}</span>
+          <span className="max-w-[200px] truncate">{userEmail}</span>
         </div>
 
-        <div className="flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 font-medium text-amber-700 text-[11px]">
+        <div className="flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 font-medium text-[11px] text-amber-700">
           <Sparkles className="h-3 w-3 text-[#FBBC05]" />
           <span>Priority Review</span>
         </div>
@@ -294,23 +288,36 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
                 <label htmlFor="mobile-select-year" className="mb-1 block font-medium text-gray-700 text-xs">
                   Academic Year <span className="text-red-500">*</span>
                 </label>
-                <select
-                  id="mobile-select-year"
+                <Select
                   value={formData.identity.year}
-                  onChange={(e) =>
+                  onValueChange={(val) =>
                     setFormData((prev) => ({
                       ...prev,
-                      identity: { ...prev.identity, year: e.target.value },
+                      identity: { ...prev.identity, year: val },
                     }))
                   }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
                 >
-                  {YEAR_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    id="mobile-select-year"
+                    className="flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-left text-gray-900 text-sm transition-all hover:bg-gray-100 focus:bg-white focus:ring-2 focus:ring-[#4285F4]/40"
+                  >
+                    <SelectValue placeholder="Select academic year..." />
+                  </SelectTrigger>
+                  <SelectContent
+                    position="popper"
+                    className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+                  >
+                    {YEAR_OPTIONS.map((opt) => (
+                      <SelectItem
+                        key={opt.value}
+                        value={opt.value}
+                        className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
+                      >
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </motion.div>
           )}
@@ -345,23 +352,36 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({ 
                 <label htmlFor="mobile-select-dietary" className="mb-1 block font-medium text-gray-700 text-xs">
                   Dietary Restrictions
                 </label>
-                <select
-                  id="mobile-select-dietary"
+                <Select
                   value={formData.logistics.dietaryRestrictions}
-                  onChange={(e) =>
+                  onValueChange={(val) =>
                     setFormData((prev) => ({
                       ...prev,
-                      logistics: { ...prev.logistics, dietaryRestrictions: e.target.value },
+                      logistics: { ...prev.logistics, dietaryRestrictions: val },
                     }))
                   }
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
                 >
-                  {DIETARY_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    id="mobile-select-dietary"
+                    className="flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-left text-gray-900 text-sm transition-all hover:bg-gray-100 focus:bg-white focus:ring-2 focus:ring-[#4285F4]/40"
+                  >
+                    <SelectValue placeholder="Select dietary preference..." />
+                  </SelectTrigger>
+                  <SelectContent
+                    position="popper"
+                    className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+                  >
+                    {DIETARY_OPTIONS.map((opt) => (
+                      <SelectItem
+                        key={opt.value}
+                        value={opt.value}
+                        className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
+                      >
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {formData.logistics.dietaryRestrictions === "other" && (
