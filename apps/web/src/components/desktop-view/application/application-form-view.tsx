@@ -3,12 +3,13 @@
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { AgreementsSection } from "./agreements-section";
 import { defaultApplicationFormValues, formatValidationErrorMessage, useAppForm } from "./application-form-hook";
+import { ApplicationSubmittedView } from "./application-submitted-view";
 import { IdentitySection } from "./identity-section";
 import { LogisticsSection } from "./logistics-section";
 import { MotivationSection } from "./motivation-section";
@@ -127,6 +128,8 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     }
   }, [existingRegistration, hasInitializedFromQuery, form, googleSub]);
 
+  const summaryData = existingRegistration ?? form.state.values;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -167,44 +170,13 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
             <p className="font-google text-gray-500 text-sm">Loading application status...</p>
           </motion.div>
         ) : submitted ? (
-          <motion.div
-            key="submitted"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="mt-6 space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center"
-          >
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4285F4] text-white shadow-md">
-              <CheckCircle2 className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold font-google text-gray-900 text-lg">Application Submitted!</h3>
-            <p className="mx-auto max-w-sm text-gray-600 text-xs">
-              We’ve received your registration for Google DevFest 2026. Keep an eye on{" "}
-              <span className="font-semibold text-gray-800">{userEmail}</span> for team matching and workshop access.
-            </p>
-            <button
-              type="button"
-              disabled={isDeleting}
-              onClick={handleDelete}
-              className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-2 font-semibold text-red-600 text-xs hover:text-red-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isDeleting ? (
-                <>
-                  <span className="h-3 w-3 animate-spin rounded-full border border-red-600 border-t-transparent" />
-                  <span>Withdrawing application...</span>
-                </>
-              ) : (
-                <span>Withdraw application</span>
-              )}
-            </button>
-
-            {deleteError && (
-              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-red-700 text-xs">
-                <span className="font-semibold">Withdraw failed:</span> {deleteError}
-              </div>
-            )}
-          </motion.div>
+          <ApplicationSubmittedView
+            userEmail={userEmail}
+            isDeleting={isDeleting}
+            deleteError={deleteError}
+            onWithdraw={handleDelete}
+            summaryData={summaryData}
+          />
         ) : (
           <motion.form
             key="form"
