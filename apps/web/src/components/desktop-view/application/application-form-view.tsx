@@ -1,10 +1,11 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import { authClientWeb } from "@/lib/auth-client-web.ts";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { isPriority } from "../../../../../backend/convex/priority.ts";
@@ -18,23 +19,23 @@ import { SkillLevelSection } from "./skill-level-section";
 import { SubmitSection } from "./submit-section";
 
 type ApplicationFormViewProps = {
-  onSignOut: () => void;
   userEmail?: string;
   googleSub?: string;
 };
 
-export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }: ApplicationFormViewProps) {
-  const [submitted, setSubmitted] = useState(false);
+export function ApplicationFormView({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }: ApplicationFormViewProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [hasInitializedFromQuery, setHasInitializedFromQuery] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const { isAuthenticated: isConvexAuthenticated, isLoading: isConvexAuthLoading } = useConvexAuth();
+
   const createRegistration = useMutation(api.application.service.createRegistration);
   const deleteRegistration = useMutation(api.application.service.deleteRegistration);
-  const existingRegistration = useQuery(api.application.service.getRegistration);
-  const isLoading = existingRegistration === undefined;
-
+  const existingRegistration = useQuery(api.application.service.getRegistration, isConvexAuthenticated ? {} : "skip");
+  const isLoading = isConvexAuthLoading || (isConvexAuthenticated && existingRegistration === undefined);
   const form = useAppForm({
     defaultValues: {
       ...defaultApplicationFormValues,
@@ -61,7 +62,6 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
 
       try {
         await createRegistration(registrationInput);
-        setSubmitted(true);
       } catch (err) {
         if (err instanceof ConvexError) {
           const data = err.data as { code?: string; message?: string };
@@ -89,7 +89,6 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
     setIsDeleting(true);
     try {
       await deleteRegistration({});
-      setSubmitted(false);
       setHasInitializedFromQuery(false);
       form.reset({
         ...defaultApplicationFormValues,
@@ -111,7 +110,6 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
 
   useEffect(() => {
     if (existingRegistration && !hasInitializedFromQuery) {
-      setSubmitted(true);
       setHasInitializedFromQuery(true);
       form.reset({
         ...defaultApplicationFormValues,
@@ -123,7 +121,6 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
         googleSub: existingRegistration.googleSub ?? googleSub,
       });
     } else if (existingRegistration === null && hasInitializedFromQuery) {
-      setSubmitted(false);
       setHasInitializedFromQuery(false);
       form.reset({
         ...defaultApplicationFormValues,
@@ -132,7 +129,9 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
     }
   }, [existingRegistration, hasInitializedFromQuery, form, googleSub]);
 
-  const summaryData = existingRegistration ?? form.state.values;
+  const handleSignOut = async () => {
+    await authClientWeb.signOut();
+  };
 
   return (
     <motion.div
@@ -158,7 +157,7 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
 
         <button
           type="button"
-          onClick={onSignOut}
+          onClick={handleSignOut}
           className="shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-100 hover:text-gray-900 active:scale-95 lg:hidden"
         >
           Sign out
@@ -178,14 +177,14 @@ export function ApplicationFormView({ onSignOut, userEmail = "student@ucsc.edu",
             <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#4285F4] border-t-transparent" />
             <p className="font-google text-gray-500 text-sm">Loading application status...</p>
           </motion.div>
-        ) : submitted ? (
+        ) : existingRegistration ? (
           <ApplicationSubmittedView
             userEmail={userEmail}
             isDeleting={isDeleting}
             deleteError={deleteError}
             onWithdraw={handleDelete}
-            onSignOut={onSignOut}
-            summaryData={summaryData}
+            onSignOut={handleSignOut}
+            registration={existingRegistration}
           />
         ) : (
           <motion.form
