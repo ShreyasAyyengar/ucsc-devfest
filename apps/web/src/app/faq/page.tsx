@@ -487,7 +487,7 @@ export default function FaqPage() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <a
+            {/* <a
               href="https://discord.gg/sJUmrEHs7B"
               target="_blank"
               rel="noopener noreferrer"
@@ -495,14 +495,14 @@ export default function FaqPage() {
             >
               <MessageSquare className="h-3.5 w-3.5 text-[#5865F2]" />
               <span>Discord</span>
-            </a>
+            </a> */}
 
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 rounded-lg bg-[#4285F4] px-3.5 py-1.5 font-semibold text-white text-xs shadow-xs transition-colors hover:bg-[#1A73E8]"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Back to Register</span>
+              <span>Back to Application</span>
             </Link>
           </div>
         </div>
