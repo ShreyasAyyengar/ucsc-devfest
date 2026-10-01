@@ -1,8 +1,7 @@
 "use client";
 
-import { defaultApplicationFormValues, withForm } from "./application-form-hook";
-
-const MIN_MOTIVATION_LENGTH = 10;
+import { registrationSchema } from "../../../../../backend/convex/application/schemas";
+import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
 
 export const MotivationSection = withForm({
   defaultValues: defaultApplicationFormValues,
@@ -15,12 +14,9 @@ export const MotivationSection = withForm({
         </div>
 
         <form.AppField
-          name="whyDevFest"
+          name="motivation.whyDevfest"
           validators={{
-            onChange: ({ value }) =>
-              value.trim().length < MIN_MOTIVATION_LENGTH
-                ? `Please share why you want to attend (at least ${MIN_MOTIVATION_LENGTH} characters)`
-                : undefined,
+            onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.whyDevfest),
           }}
         >
           {(field) => (
@@ -34,12 +30,9 @@ export const MotivationSection = withForm({
         </form.AppField>
 
         <form.AppField
-          name="somethingBuilt"
+          name="motivation.projectAndWhatWentWrong"
           validators={{
-            onChange: ({ value }) =>
-              value.trim().length < MIN_MOTIVATION_LENGTH
-                ? `Please share something you built or attempted to build (at least ${MIN_MOTIVATION_LENGTH} characters)`
-                : undefined,
+            onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.projectAndWhatWentWrong),
           }}
         >
           {(field) => (
@@ -53,12 +46,9 @@ export const MotivationSection = withForm({
         </form.AppField>
 
         <form.AppField
-          name="weekendGeminiIdea"
+          name="motivation.geminiWeekendIdea"
           validators={{
-            onChange: ({ value }) =>
-              value.trim().length < MIN_MOTIVATION_LENGTH
-                ? `Please share your weekend project idea (at least ${MIN_MOTIVATION_LENGTH} characters)`
-                : undefined,
+            onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.geminiWeekendIdea),
           }}
         >
           {(field) => (
@@ -72,12 +62,9 @@ export const MotivationSection = withForm({
         </form.AppField>
 
         <form.AppField
-          name="walkAwayGoal"
+          name="motivation.learningGoals"
           validators={{
-            onChange: ({ value }) =>
-              value.trim().length < MIN_MOTIVATION_LENGTH
-                ? `Please share what you hope to learn (at least ${MIN_MOTIVATION_LENGTH} characters)`
-                : undefined,
+            onBlur: createSchemaValidator(registrationSchema.shape.motivation.shape.learningGoals),
           }}
         >
           {(field) => (

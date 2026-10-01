@@ -1,18 +1,17 @@
 "use client";
 
-import { defaultApplicationFormValues, withForm } from "./application-form-hook";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { registrationSchema } from "../../../../../backend/convex/application/schemas";
+import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
 
 const YEAR_OPTIONS = [
-  { value: "1st Year / Freshman", label: "1st Year / Freshman" },
-  { value: "2nd Year / Sophomore", label: "2nd Year / Sophomore" },
-  { value: "3rd Year / Junior", label: "3rd Year / Junior" },
-  { value: "4th Year / Senior", label: "4th Year / Senior" },
-  { value: "5th+ Year", label: "5th+ Year" },
-  { value: "Graduate / Master's / PhD", label: "Graduate / Master's / PhD" },
-  { value: "High School / Other", label: "High School / Other" },
-];
+  { value: "first_year", label: "1st Year / Freshman" },
+  { value: "second_year", label: "2nd Year / Sophomore" },
+  { value: "third_year", label: "3rd Year / Junior" },
+  { value: "fourth_year", label: "4th Year / Senior" },
+  { value: "fifth_year_or_later", label: "5th+ Year" },
+  { value: "graduate", label: "Graduate / Master's / PhD" },
+  { value: "other", label: "Other" },
+] as const;
 
 export const IdentitySection = withForm({
   defaultValues: defaultApplicationFormValues,
@@ -25,46 +24,31 @@ export const IdentitySection = withForm({
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <form.AppField
-            name="fullName"
+            name="identity.name"
             validators={{
-              onChange: ({ value }) => (!value.trim() ? "Full name is required" : undefined),
+              onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.name),
             }}
           >
-            {(field) => <field.TextField label="Name" placeholder="Full name" required />}
+            {(field) => <field.TextField label="Full Name" placeholder="Your name" required />}
           </form.AppField>
           <form.AppField
-            name="email"
+            name="identity.major"
             validators={{
-              onChange: ({ value }) => {
-                if (!value.trim()) return "Email address is required";
-                if (!EMAIL_REGEX.test(value.trim())) {
-                  return "Please enter a valid email address";
-                }
-              },
-            }}
-          >
-            {(field) => <field.TextField label="Email" type="email" placeholder="student@ucsc.edu" required />}
-          </form.AppField>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <form.AppField
-            name="year"
-            validators={{
-              onChange: ({ value }) => (!value ? "Academic year is required" : undefined),
-            }}
-          >
-            {(field) => <field.ComboboxField label="Year" options={YEAR_OPTIONS} placeholder="Select academic year..." required />}
-          </form.AppField>
-          <form.AppField
-            name="major"
-            validators={{
-              onChange: ({ value }) => (!value.trim() ? "Major is required" : undefined),
+              onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.major),
             }}
           >
             {(field) => <field.TextField label="Major" placeholder="e.g. Computer Science" required />}
           </form.AppField>
         </div>
+
+        <form.AppField
+          name="identity.year"
+          validators={{
+            onBlur: createSchemaValidator(registrationSchema.shape.identity.shape.year),
+          }}
+        >
+          {(field) => <field.ComboboxField label="Academic Year" options={YEAR_OPTIONS} placeholder="Select academic year..." required />}
+        </form.AppField>
       </div>
     );
   },

@@ -1,9 +1,7 @@
 "use client";
 
-import { defaultApplicationFormValues, withForm } from "./application-form-hook";
-
-const MIN_AGE = 13;
-const MAX_AGE = 120;
+import { registrationSchema } from "../../../../../backend/convex/application/schemas";
+import { createSchemaValidator, defaultApplicationFormValues, withForm } from "./application-form-hook";
 
 const DIETARY_OPTIONS = [
   { value: "none", label: "No Restrictions" },
@@ -13,7 +11,7 @@ const DIETARY_OPTIONS = [
   { value: "kosher", label: "Kosher" },
   { value: "gluten-free", label: "Gluten-Free" },
   { value: "other", label: "Other" },
-];
+] as const;
 
 export const LogisticsSection = withForm({
   defaultValues: defaultApplicationFormValues,
@@ -25,32 +23,41 @@ export const LogisticsSection = withForm({
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <form.AppField name="dietary">
+          <form.AppField
+            name="logistics.dietaryRestrictions"
+            validators={{
+              onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.dietaryRestrictions),
+            }}
+          >
             {(field) => (
               <field.ComboboxField label="Dietary Restrictions" options={DIETARY_OPTIONS} placeholder="Select dietary preference..." />
             )}
           </form.AppField>
           <form.AppField
-            name="age"
+            name="logistics.age"
             validators={{
-              onChange: ({ value }) => {
-                if (!value.trim()) return "Age is required";
-                const num = Number(value);
-                if (Number.isNaN(num) || num < MIN_AGE || num > MAX_AGE) {
-                  return `Please enter a valid age (${MIN_AGE}+)`;
-                }
-              },
+              onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.age),
             }}
           >
-            {(field) => <field.TextField label="Age" type="number" placeholder="e.g. 20" required />}
+            {(field) => <field.NumberField label="Age" placeholder="e.g. 20" min={1} max={120} required />}
           </form.AppField>
         </div>
 
-        <form.AppField name="allergies">
+        <form.AppField
+          name="logistics.allergies"
+          validators={{
+            onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.allergies),
+          }}
+        >
           {(field) => <field.TextField label="Allergies" placeholder="e.g., Peanuts, Shellfish, Dairy, or None" />}
         </form.AppField>
 
-        <form.AppField name="accessibilityNeeds">
+        <form.AppField
+          name="logistics.accessibilityNeeds"
+          validators={{
+            onBlur: createSchemaValidator(registrationSchema.shape.logistics.shape.accessibilityNeeds),
+          }}
+        >
           {(field) => (
             <field.TextAreaField
               label="Accessibility Needs"

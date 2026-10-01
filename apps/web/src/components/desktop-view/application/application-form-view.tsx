@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { type FC, useState } from "react";
+import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { AgreementsSection } from "./agreements-section";
 import { defaultApplicationFormValues, useAppForm } from "./application-form-hook";
 import { IdentitySection } from "./identity-section";
@@ -14,23 +15,34 @@ import { SubmitSection } from "./submit-section";
 type ApplicationFormViewProps = {
   onSignOut: () => void;
   userEmail?: string;
+  googleSub?: string;
 };
 
-export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu" }) => {
+export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const form = useAppForm({
     defaultValues: {
       ...defaultApplicationFormValues,
-      email: userEmail,
+      googleSub,
+    },
+    validators: {
+      onSubmit: ({ value }) => {
+        const res = registrationSchema.safeParse(value);
+        if (!res.success) {
+          const [firstIssue] = res.error.issues;
+          return firstIssue ? firstIssue.message : "Please complete all required fields correctly.";
+        }
+      },
     },
     onSubmit: ({ value }) => {
+      const validPayload: Registration = registrationSchema.parse(value);
       // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
       console.log("=== DEV FEST APPLICATION FORM SUBMITTED (VALID) ===");
       // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
-      console.table(value);
+      console.table(validPayload);
       // biome-ignore lint/suspicious/noConsole: intentionally logging form values for submission verification
-      console.log("Full form payload:", value);
+      console.log("Full form payload:", validPayload);
       setSubmitted(true);
     },
     onSubmitInvalid: ({ value, formApi }) => {

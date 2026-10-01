@@ -7,69 +7,72 @@ import { motion } from "framer-motion";
 import { Check, ChevronsUpDown, Send } from "lucide-react";
 import { useState } from "react";
 
-export type ApplicationFormValues = {
-  // Identity
-  fullName: string;
-  email: string;
-  year: string;
-  major: string;
+import type { Registration } from "../../../../../backend/convex/application/schemas";
 
-  // Logistics
-  dietary: string;
-  allergies: string;
-  accessibilityNeeds: string;
-  age: string;
-
-  // Skill level
-  hackathonsAttended: string;
-  codingComfort: string;
-  toolsUsed: string[];
-  teamRole: string;
-
-  // Motivation (Q/A)
-  whyDevFest: string;
-  somethingBuilt: string;
-  weekendGeminiIdea: string;
-  walkAwayGoal: string;
-
-  // Required checkboxes & consents
-  agreeCodeOfConduct: boolean;
-  consentPhotoVideo: boolean;
-  consentShareSponsors: boolean;
+export type ApplicationFormValues = Omit<Registration, "consent"> & {
+  consent: {
+    codeOfConduct: boolean;
+    photoVideo: boolean;
+    sponsorInfoSharing: boolean;
+  };
 };
 
 export const defaultApplicationFormValues: ApplicationFormValues = {
-  fullName: "",
-  email: "",
-  year: "1st Year / Freshman",
-  major: "",
+  googleSub: "dummy-google-sub",
 
-  dietary: "none",
-  allergies: "",
-  accessibilityNeeds: "",
-  age: "",
+  identity: {
+    name: "",
+    year: "first_year",
+    major: "",
+  },
 
-  hackathonsAttended: "0",
-  codingComfort: "intermediate",
-  toolsUsed: [],
-  teamRole: "frontend",
+  logistics: {
+    dietaryRestrictions: "",
+    allergies: "",
+    accessibilityNeeds: "",
+    age: 18,
+  },
 
-  whyDevFest: "",
-  somethingBuilt: "",
-  weekendGeminiIdea: "",
-  walkAwayGoal: "",
+  skillLevel: {
+    hackathonsAttended: "0",
+    codingComfort: "intermediate",
+    toolsUsed: ["gemini_api"],
+    teamRole: "frontend",
+  },
 
-  agreeCodeOfConduct: false,
-  consentPhotoVideo: false,
-  consentShareSponsors: false,
+  motivation: {
+    whyDevfest: "",
+    projectAndWhatWentWrong: "",
+    geminiWeekendIdea: "",
+    learningGoals: "",
+  },
+
+  consent: {
+    codeOfConduct: false,
+    photoVideo: false,
+    sponsorInfoSharing: false,
+  },
 };
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
 
-export type SelectOption = {
+export type SelectOption<T extends string = string> = {
   label: string;
-  value: string;
+  value: T;
 };
+
+export function createSchemaValidator<T>(schema: {
+  safeParse: (val: unknown) => { success: boolean; error?: { issues: { message: string }[] } };
+}) {
+  return ({ value }: { value: T }): string | undefined => {
+    const res = schema.safeParse(value);
+    const [firstIssue] = res.error?.issues ?? [];
+    if (!res.success && firstIssue) {
+      return firstIssue.message;
+    }
+    return undefined;
+  };
+}
 
 function getFieldError(field: {
   state: { meta: { isTouched: boolean; errors: unknown[] } };
@@ -106,7 +109,7 @@ export function TextField({
   required?: boolean;
   className?: string;
 }) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | number | undefined>();
   const error = getFieldError(field);
 
   return (
@@ -119,9 +122,63 @@ export function TextField({
         name={field.name}
         type={type}
         placeholder={placeholder}
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={(e) => {
+          if (type === "number") {
+            const val = e.target.value === "" ? 0 : Number.parseInt(e.target.value, 10);
+            field.handleChange(Number.isNaN(val) ? 0 : (val as unknown as string));
+          } else {
+            field.handleChange(e.target.value);
+          }
+        }}
+        className={`w-full rounded-xl border px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 ${
+          error
+            ? "border-red-400 bg-red-50/40 focus:border-red-500 focus:ring-red-500/20"
+            : "border-gray-200 bg-gray-50 focus:bg-white focus:ring-[#4285F4]/40"
+        } ${className ?? ""}`}
+      />
+      {error && <p className="mt-1 text-red-500 text-xs">{error}</p>}
+    </div>
+  );
+}
+
+export function NumberField({
+  label,
+  placeholder,
+  required,
+  min,
+  max,
+  className,
+}: {
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  className?: string;
+}) {
+  const field = useFieldContext<number>();
+  const error = getFieldError(field);
+
+  return (
+    <div>
+      <label htmlFor={field.name} className="mb-1 block font-medium text-gray-700 text-xs">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        id={field.name}
+        name={field.name}
+        type="number"
+        min={min}
+        max={max}
+        placeholder={placeholder}
+        value={Number.isNaN(field.state.value) || field.state.value === 0 ? "" : field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => {
+          const val = e.target.value === "" ? 0 : Number.parseInt(e.target.value, 10);
+          field.handleChange(Number.isNaN(val) ? 0 : val);
+        }}
         className={`w-full rounded-xl border px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 ${
           error
             ? "border-red-400 bg-red-50/40 focus:border-red-500 focus:ring-red-500/20"
@@ -146,7 +203,7 @@ export function TextAreaField({
   rows?: number;
   className?: string;
 }) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | undefined>();
   const error = getFieldError(field);
 
   return (
@@ -159,7 +216,7 @@ export function TextAreaField({
         name={field.name}
         rows={rows}
         placeholder={placeholder}
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         className={`w-full resize-none rounded-xl border px-3.5 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 ${
@@ -173,7 +230,7 @@ export function TextAreaField({
   );
 }
 
-export function ComboboxField({
+export function ComboboxField<T extends string = string>({
   label,
   options,
   placeholder = "Select an option...",
@@ -181,12 +238,12 @@ export function ComboboxField({
   className,
 }: {
   label: string;
-  options: SelectOption[];
+  options: readonly SelectOption<T>[] | SelectOption<T>[];
   placeholder?: string;
   required?: boolean;
   className?: string;
 }) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<T>();
   const error = getFieldError(field);
   const [open, setOpen] = useState(false);
 
@@ -198,7 +255,15 @@ export function ComboboxField({
         {label} {required && <span className="text-red-500">*</span>}
       </label>
 
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (!isOpen) {
+            field.handleBlur();
+          }
+        }}
+      >
         <PopoverTrigger asChild>
           <button
             id={field.name}
@@ -234,6 +299,7 @@ export function ComboboxField({
                       value={option.label}
                       onSelect={() => {
                         field.handleChange(option.value);
+                        field.handleBlur();
                         setOpen(false);
                       }}
                       className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
@@ -256,8 +322,16 @@ export function ComboboxField({
 
 export const SelectField = ComboboxField;
 
-export function RadioGroupField({ label, options, required }: { label: string; options: SelectOption[]; required?: boolean }) {
-  const field = useFieldContext<string>();
+export function RadioGroupField<T extends string = string>({
+  label,
+  options,
+  required,
+}: {
+  label: string;
+  options: readonly SelectOption<T>[] | SelectOption<T>[];
+  required?: boolean;
+}) {
+  const field = useFieldContext<T>();
   const error = getFieldError(field);
 
   return (
@@ -294,23 +368,30 @@ export function RadioGroupField({ label, options, required }: { label: string; o
   );
 }
 
-export function MultiCheckboxField({ label, options }: { label: string; options: SelectOption[] }) {
-  const field = useFieldContext<string[]>();
+export function MultiCheckboxField<T extends string = string>({
+  label,
+  options,
+}: {
+  label: string;
+  options: readonly SelectOption<T>[] | SelectOption<T>[];
+}) {
+  const field = useFieldContext<T[]>();
   const error = getFieldError(field);
-  const selectedValues = field.state.value || [];
+  const selectedValues = (field.state.value || []) as string[];
 
-  const handleToggle = (value: string) => {
-    if (value === "none") {
+  const handleToggle = (value: T) => {
+    const strVal = String(value);
+    if (strVal === "none") {
       if (selectedValues.includes("none")) {
         field.handleChange([]);
       } else {
-        field.handleChange(["none"]);
+        field.handleChange([value]);
       }
       field.handleBlur();
       return;
     }
 
-    const withoutNone = selectedValues.filter((v) => v !== "none");
+    const withoutNone = selectedValues.filter((v) => v !== "none") as T[];
     if (withoutNone.includes(value)) {
       field.handleChange(withoutNone.filter((v) => v !== value));
     } else {
@@ -371,7 +452,10 @@ export function CheckboxField({ label, description, required }: { label: string;
           name={field.name}
           checked={field.state.value}
           onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.checked)}
+          onChange={(e) => {
+            field.handleChange(e.target.checked);
+            field.handleBlur();
+          }}
           className="mt-0.5 h-4 w-4 cursor-pointer rounded border-gray-300 text-[#4285F4] focus:ring-[#4285F4]"
         />
         <div className="flex-1 text-xs">
@@ -413,6 +497,7 @@ export const { useAppForm, withForm } = createFormHook({
   formContext,
   fieldComponents: {
     TextField,
+    NumberField,
     TextAreaField,
     SelectField,
     ComboboxField,
