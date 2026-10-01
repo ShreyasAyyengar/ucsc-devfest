@@ -2,7 +2,6 @@ import { ConvexError } from "convex/values";
 import { withSystemFields, zid } from "convex-helpers/server/zod4";
 import { z } from "zod";
 
-import { internal } from "../_generated/api";
 import { protectedMutation } from "../lib/procedures";
 import { registrationDocumentSchema, registrationSchema } from "./schemas";
 
@@ -65,12 +64,12 @@ export const createRegistration = protectedMutation({
       priority,
     });
 
-    await ctx.scheduler.runAfter(0, internal.email.actions.sendRegistrationConfirmation, {
-      name: registration.identity.name,
-      priority,
-      registrationId,
-      to: recipientEmail,
-    });
+    // await ctx.scheduler.runAfter(0, internal.email.actions.sendRegistrationConfirmation, {
+    //   name: registration.identity.name,
+    //   priority,
+    //   registrationId,
+    //   to: recipientEmail,
+    // });
 
     return registrationId;
   },
