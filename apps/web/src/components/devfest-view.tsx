@@ -9,9 +9,6 @@ import { DevFestStage3D } from "./desktop-view/devfest-stage-3d";
 type DevFestViewProps = {
   isAuthenticated: boolean;
   isLoading?: boolean;
-  onSignIn: () => void;
-  onSignOut: () => void;
-  onToggleAuth?: () => void;
   userEmail?: string;
 };
 
