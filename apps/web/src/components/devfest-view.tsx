@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { ApplicationFormView } from "./desktop-view/application/application-form-view";
 import { AuthSignInView } from "./desktop-view/auth/auth-signin-view";
 import { DevFestHeader } from "./desktop-view/devfest-header";
@@ -47,15 +48,15 @@ export function DevFestView({ isAuthenticated, isLoading = false, userEmail = "h
             <span className="font-semibold text-gray-800">Google Developer Groups</span>
           </div>
 
-          <div className="flex flex-col items-center gap-2 border border-red-500 text-[11px] text-gray-400 lg:flex-row lg:gap-4 lg:text-xs">
+          <div className="flex flex-col items-center gap-2 text-[11px] text-gray-400 lg:flex-row lg:gap-4 lg:text-xs">
             <div className="flex items-center gap-3 lg:gap-4">
-              <a href="#rules" className="transition-colors hover:text-[#4285F4]">
+              <Link href="/faq#code-of-conduct" className="transition-colors hover:text-[#4285F4]">
                 Code of Conduct
-              </a>
+              </Link>
               <span>•</span>
-              <a href="#faq" className="transition-colors hover:text-[#4285F4]">
+              <Link href="/faq" className="transition-colors hover:text-[#4285F4]">
                 FAQ
-              </a>
+              </Link>
             </div>
           </div>
         </footer>
