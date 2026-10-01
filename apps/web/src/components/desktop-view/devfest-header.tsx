@@ -1,12 +1,16 @@
+import { authClientWeb } from "@/lib/auth-client-web.ts";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
 
-interface DevFestHeaderProps {
+type DevFestHeaderProps = {
   isAuthenticated?: boolean;
-  onSignOut?: () => void;
   userEmail?: string;
-}
+};
 
-export function DevFestHeader({ isAuthenticated = false, onSignOut, userEmail = "student@ucsc.edu" }: DevFestHeaderProps) {
+export function DevFestHeader({ isAuthenticated = false, userEmail = "student@ucsc.edu" }: DevFestHeaderProps) {
+  const handleSignOut = async () => {
+    await authClientWeb.signOut();
+  };
+
   return (
     <header className="mb-6 flex w-full items-center justify-between gap-3">
       <div className="flex items-center gap-3">
@@ -23,7 +27,7 @@ export function DevFestHeader({ isAuthenticated = false, onSignOut, userEmail = 
             <span className="hidden text-black text-xs sm:inline-block">{userEmail}</span>
             <button
               type="button"
-              onClick={onSignOut}
+              onClick={handleSignOut}
               className="rounded-lg border border-gray-200 px-2.5 py-1 text-black text-xs transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
               Sign out
