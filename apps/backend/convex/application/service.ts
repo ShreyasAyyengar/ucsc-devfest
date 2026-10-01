@@ -2,6 +2,7 @@ import { ConvexError } from "convex/values";
 import { withSystemFields, zid } from "convex-helpers/server/zod4";
 import { z } from "zod";
 
+import { internal } from "../_generated/api";
 import { protectedMutation } from "../lib/procedures";
 import { registrationSchema } from "./schemas";
 
