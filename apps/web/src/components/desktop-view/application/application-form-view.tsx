@@ -25,7 +25,10 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [hasInitializedFromQuery, setHasInitializedFromQuery] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const createRegistration = useMutation(api.application.service.createRegistration);
+  const deleteRegistration = useMutation(api.application.service.deleteRegistration);
   const existingRegistration = useQuery(api.application.service.getRegistration);
   const isLoading = existingRegistration === undefined;
 
@@ -45,6 +48,7 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     },
     onSubmit: async ({ value }) => {
       setSubmitError(null);
+      setDeleteError(null);
       const validPayload: Registration = registrationSchema.parse(value);
       // Remove googleSub as the backend derives it securely from the authenticated Google account session
       const { googleSub: _, ...registrationInput } = validPayload;
@@ -73,6 +77,31 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     },
   });
 
+  const handleDelete = async () => {
+    setDeleteError(null);
+    setIsDeleting(true);
+    try {
+      await deleteRegistration({});
+      setSubmitted(false);
+      setHasInitializedFromQuery(false);
+      form.reset({
+        ...defaultApplicationFormValues,
+        googleSub,
+      });
+    } catch (err) {
+      if (err instanceof ConvexError) {
+        const data = err.data as { code?: string; message?: string };
+        setDeleteError(data.message || err.message);
+      } else if (err instanceof Error) {
+        setDeleteError(err.message);
+      } else {
+        setDeleteError("Failed to withdraw application. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   useEffect(() => {
     if (existingRegistration && !hasInitializedFromQuery) {
       setSubmitted(true);
@@ -85,6 +114,13 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
         motivation: existingRegistration.motivation,
         consent: existingRegistration.consent,
         googleSub: existingRegistration.googleSub ?? googleSub,
+      });
+    } else if (existingRegistration === null && hasInitializedFromQuery) {
+      setSubmitted(false);
+      setHasInitializedFromQuery(false);
+      form.reset({
+        ...defaultApplicationFormValues,
+        googleSub,
       });
     }
   }, [existingRegistration, hasInitializedFromQuery, form, googleSub]);
@@ -146,14 +182,25 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
             </p>
             <button
               type="button"
-              onClick={() => {
-                setSubmitted(false);
-                setSubmitError(null);
-              }}
-              className="mx-auto block cursor-pointer pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
+              disabled={isDeleting}
+              onClick={handleDelete}
+              className="mx-auto flex cursor-pointer items-center justify-center gap-1.5 pt-2 font-semibold text-red-600 text-xs hover:text-red-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Edit your application
+              {isDeleting ? (
+                <>
+                  <span className="h-3 w-3 animate-spin rounded-full border border-red-600 border-t-transparent" />
+                  <span>Withdrawing application...</span>
+                </>
+              ) : (
+                <span>Withdraw application</span>
+              )}
             </button>
+
+            {deleteError && (
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-red-700 text-xs">
+                <span className="font-semibold">Withdraw failed:</span> {deleteError}
+              </div>
+            )}
           </motion.div>
         ) : (
           <motion.form
