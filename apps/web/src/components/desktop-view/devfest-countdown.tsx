@@ -3,6 +3,9 @@
 import { type MotionValue, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { type MouseEvent, useEffect, useState } from "react";
 import { GdgLogoSvg } from "@/SVGs/gdg-logo-svg";
+import { DevFestTimeline } from "./devfest-timeline";
+
+export { DevFestTimeline, TIMELINE_MILESTONES, type TimelineMilestone } from "./devfest-timeline";
 
 // Official Target Date: November 14, 2026, 09:00:00 PST (Pacific Standard Time = UTC-8)
 const TARGET_PST_DATE = "2026-11-14T09:00:00-08:00";
@@ -160,10 +163,15 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
           x: parallaxX,
           y: parallaxY,
         }}
-        className="transform-style-3d relative flex w-full flex-col items-center gap-3.5 sm:gap-8"
+        className="transform-style-3d relative flex w-full flex-col items-center gap-2.5 xs:gap-3 sm:gap-5"
       >
         {/* ========================================================
-             1. EVENT TITLE (Layer Z: 35px)
+             1. TIMELINE PROGRESS BAR (Layer Z: 40px)
+             ======================================================== */}
+        <DevFestTimeline style={{ transform: "translateZ(40px)" }} />
+
+        {/* ========================================================
+             2. EVENT TITLE (Layer Z: 35px)
              ======================================================== */}
         <div style={{ transform: "translateZ(35px)" }} className="flex select-none items-center justify-center gap-2 sm:gap-3">
           <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/80 bg-white/95 p-1.5 shadow-xs backdrop-blur-md transition-transform hover:scale-105 sm:h-10 sm:w-10 sm:rounded-2xl sm:p-2">
@@ -173,7 +181,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
         </div>
 
         {/* ========================================================
-             2. 4-UNIT COUNTDOWN DISPLAY (Layer Z: 45px)
+             3. 4-UNIT COUNTDOWN DISPLAY (Layer Z: 45px)
              ======================================================== */}
         <div style={{ transform: "translateZ(45px)" }} className="relative flex w-full items-center justify-between gap-1 xs:gap-1.5 sm:gap-3">
           {/* Days Card */}
