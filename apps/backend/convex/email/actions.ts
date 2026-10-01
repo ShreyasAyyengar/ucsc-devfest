@@ -27,7 +27,7 @@ async function sendRegistrationEmail(ctx: ActionCtx, { idempotencyKey, name, pri
   return resend.sendEmail(ctx, {
     from: "UCSC DevFest <events@ucsc-devfest.com>",
     to,
-    subject: "Application received — Google DevFest 2026 at UC Santa Cruz",
+    subject: "Application Received — Google DevFest 2026 @ UC Santa Cruz",
     html,
     text,
     replyTo: [replyTo],
