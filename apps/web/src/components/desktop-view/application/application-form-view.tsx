@@ -1,10 +1,10 @@
 "use client";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { AgreementsSection } from "./agreements-section";
@@ -24,7 +24,10 @@ type ApplicationFormViewProps = {
 export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = "student@ucsc.edu", googleSub = "dummy-google-sub" }) => {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [hasInitializedFromQuery, setHasInitializedFromQuery] = useState(false);
   const createRegistration = useMutation(api.application.service.createRegistration);
+  const existingRegistration = useQuery(api.application.service.getRegistration);
+  const isLoading = existingRegistration === undefined;
 
   const form = useAppForm({
     defaultValues: {
@@ -70,6 +73,22 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
     },
   });
 
+  useEffect(() => {
+    if (existingRegistration && !hasInitializedFromQuery) {
+      setSubmitted(true);
+      setHasInitializedFromQuery(true);
+      form.reset({
+        ...defaultApplicationFormValues,
+        identity: existingRegistration.identity,
+        logistics: existingRegistration.logistics,
+        skillLevel: existingRegistration.skillLevel,
+        motivation: existingRegistration.motivation,
+        consent: existingRegistration.consent,
+        googleSub: existingRegistration.googleSub ?? googleSub,
+      });
+    }
+  }, [existingRegistration, hasInitializedFromQuery, form, googleSub]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -95,56 +114,78 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
         </div>
       </div>
 
-      {submitted ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mt-6 space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center"
-        >
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4285F4] text-white shadow-md">
-            <CheckCircle2 className="h-6 w-6" />
-          </div>
-          <h3 className="font-bold font-google text-gray-900 text-lg">Application Submitted!</h3>
-          <p className="mx-auto max-w-sm text-gray-600 text-xs">
-            We’ve received your registration for Google DevFest 2026. Keep an eye on{" "}
-            <span className="font-semibold text-gray-800">{userEmail}</span> for team matching and workshop access.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSubmitted(false);
-              setSubmitError(null);
-            }}
-            className="mx-auto block cursor-pointer pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mt-12 flex flex-col items-center justify-center space-y-3 py-16 text-center"
           >
-            Edit your application
-          </button>
-        </motion.div>
-      ) : (
-        <form
-          noValidate
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-          className="-mx-2 mt-6 max-h-[58vh] space-y-6 overflow-y-auto px-3 py-2"
-        >
-          <IdentitySection form={form} />
-          <LogisticsSection form={form} />
-          <SkillLevelSection form={form} />
-          <MotivationSection form={form} />
-          <AgreementsSection form={form} />
-
-          {submitError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-700 text-xs">
-              <span className="font-semibold">Submission failed:</span> {submitError}
+            <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#4285F4] border-t-transparent" />
+            <p className="font-google text-gray-500 text-sm">Loading application status...</p>
+          </motion.div>
+        ) : submitted ? (
+          <motion.div
+            key="submitted"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="mt-6 space-y-3 rounded-2xl border border-[#4285F4]/30 bg-[#E8F0FE] p-6 text-center"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4285F4] text-white shadow-md">
+              <CheckCircle2 className="h-6 w-6" />
             </div>
-          )}
+            <h3 className="font-bold font-google text-gray-900 text-lg">Application Submitted!</h3>
+            <p className="mx-auto max-w-sm text-gray-600 text-xs">
+              We’ve received your registration for Google DevFest 2026. Keep an eye on{" "}
+              <span className="font-semibold text-gray-800">{userEmail}</span> for team matching and workshop access.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSubmitted(false);
+                setSubmitError(null);
+              }}
+              className="mx-auto block cursor-pointer pt-2 font-semibold text-[#1A73E8] text-xs hover:underline"
+            >
+              Edit your application
+            </button>
+          </motion.div>
+        ) : (
+          <motion.form
+            key="form"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="-mx-2 mt-6 max-h-[58vh] space-y-6 overflow-y-auto px-3 py-2"
+          >
+            <IdentitySection form={form} />
+            <LogisticsSection form={form} />
+            <SkillLevelSection form={form} />
+            <MotivationSection form={form} />
+            <AgreementsSection form={form} />
 
-          <SubmitSection form={form} />
-        </form>
-      )}
+            {submitError && (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-700 text-xs">
+                <span className="font-semibold">Submission failed:</span> {submitError}
+              </div>
+            )}
+
+            <SubmitSection form={form} />
+          </motion.form>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
