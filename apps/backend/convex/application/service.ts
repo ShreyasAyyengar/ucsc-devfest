@@ -4,10 +4,10 @@ import { z } from "zod";
 
 import { internal } from "../_generated/api";
 import { protectedMutation } from "../lib/procedures";
-import { registrationSchema } from "./schemas";
+import { registrationDocumentSchema, registrationSchema } from "./schemas";
 
 const registrationInputSchema = registrationSchema.omit({ googleSub: true });
-const registrationDocumentSchema = z.object(withSystemFields("registrations", registrationSchema.shape));
+const registrationDocumentWithSystemFieldsSchema = z.object(withSystemFields("registrations", registrationDocumentSchema.shape));
 
 import type { ZCustomCtx } from "convex-helpers/server/zod4";
 import { authComponent, createAuth } from "../auth";
