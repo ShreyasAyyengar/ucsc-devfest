@@ -1,7 +1,10 @@
 "use client";
 
+import { useMutation, useQuery } from "convex/react";
+import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
+import { api } from "../../../../backend/convex/_generated/api";
 import { MobileApplicationFormView, type MobileFormData } from "./mobile-application-form-view";
 import { MobileApplicationSubmittedView } from "./mobile-application-submitted-view";
 import { MobileAuthSignInView } from "./mobile-auth-signin-view";
@@ -31,6 +34,22 @@ export const MobileView: FC<MobileViewProps> = ({
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState<MobileFormData | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const deleteRegistration = useMutation(api.application.service.deleteRegistration);
+  const existingRegistration = useQuery(api.application.service.getRegistration, isAuthenticated ? {} : "skip");
+  const isCheckingRegistration = isAuthenticated && existingRegistration === undefined;
+
+  useEffect(() => {
+    if (existingRegistration) {
+      setIsSubmitted(true);
+      setSubmittedData(existingRegistration);
+    } else if (existingRegistration === null) {
+      setIsSubmitted(false);
+      setSubmittedData(null);
+    }
+  }, [existingRegistration]);
 
   const handleSignIn = () => {
     if (propOnSignIn) {
@@ -42,6 +61,7 @@ export const MobileView: FC<MobileViewProps> = ({
 
   const handleSignOut = () => {
     setIsSubmitted(false);
+    setSubmittedData(null);
     if (propOnSignOut) {
       propOnSignOut();
     } else {
@@ -62,8 +82,25 @@ export const MobileView: FC<MobileViewProps> = ({
     setIsSubmitted(true);
   };
 
-  const handleWithdraw = () => {
-    setIsSubmitted(false);
+  const handleWithdraw = async () => {
+    setDeleteError(null);
+    setIsDeleting(true);
+    try {
+      await deleteRegistration({});
+      setIsSubmitted(false);
+      setSubmittedData(null);
+    } catch (err) {
+      if (err instanceof ConvexError) {
+        const data = err.data as { code?: string; message?: string };
+        setDeleteError(data.message || err.message);
+      } else if (err instanceof Error) {
+        setDeleteError(err.message);
+      } else {
+        setDeleteError("Failed to withdraw application. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -90,7 +127,7 @@ export const MobileView: FC<MobileViewProps> = ({
       <main className="relative z-10 flex-1 rounded-t-3xl border-white/20 border-t bg-white px-5 pt-7 pb-10 shadow-2xl">
         <div className="mx-auto max-w-md">
           <AnimatePresence mode="wait">
-            {isLoading ? (
+            {isLoading || isCheckingRegistration ? (
               <motion.div
                 key="loading"
                 initial={{ opacity: 0 }}
@@ -99,7 +136,7 @@ export const MobileView: FC<MobileViewProps> = ({
                 className="flex flex-col items-center justify-center space-y-3 py-16 text-center"
               >
                 <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#4285F4] border-t-transparent" />
-                <p className="font-google text-gray-500 text-sm">Checking session...</p>
+                <p className="font-google text-gray-500 text-sm">{isLoading ? "Checking session..." : "Checking application status..."}</p>
               </motion.div>
             ) : !isAuthenticated ? (
               <MobileAuthSignInView key="signin" onSignIn={handleSignIn} />
@@ -107,6 +144,8 @@ export const MobileView: FC<MobileViewProps> = ({
               <MobileApplicationSubmittedView
                 key="submitted"
                 userEmail={userEmail}
+                isDeleting={isDeleting}
+                deleteError={deleteError}
                 onWithdraw={handleWithdraw}
                 summaryData={
                   submittedData
@@ -125,7 +164,7 @@ export const MobileView: FC<MobileViewProps> = ({
                 }
               />
             ) : (
-              <MobileApplicationFormView key="form" userEmail={userEmail} onSubmitSuccess={handleSubmitSuccess} />
+              <MobileApplicationFormView key="form" userEmail={userEmail} initialValues={submittedData} onSubmitSuccess={handleSubmitSuccess} />
             )}
           </AnimatePresence>
 
