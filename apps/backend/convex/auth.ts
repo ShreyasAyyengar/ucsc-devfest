@@ -15,6 +15,7 @@ export const authComponent = createClient<DataModel, typeof authSchema>(componen
   },
 });
 
+// TODO: Trying to log out generates an error
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     database: authComponent.adapter(ctx),
