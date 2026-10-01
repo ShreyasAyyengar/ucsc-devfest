@@ -1,13 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { authClientWeb } from "@/lib/auth-client-web.ts";
 import { GoogleSvg } from "@/SVGs/google-svg";
 
-type AuthSignInViewProps = {
-  onSignIn: () => void;
-};
+export function AuthSignInView() {
+  const handleSignIn = async () => {
+    await authClientWeb.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
 
-export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -53,7 +57,7 @@ export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           type="button"
-          onClick={onSignIn}
+          onClick={handleSignIn}
           className="group relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-gray-300 px-5 py-3.5 font-google font-medium text-gray-700 text-sm shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:ring-offset-2 active:bg-gray-100 sm:px-6 sm:py-4 sm:text-base"
         >
           {/* Google 4-Color 'G' Logo SVG */}
