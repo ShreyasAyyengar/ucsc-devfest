@@ -62,7 +62,7 @@ export function AuthSignInView() {
         >
           {/* Google 4-Color 'G' Logo SVG */}
           <GoogleSvg className="h-5 w-5 shrink-0 transition-transform group-hover:scale-105" />
-          <span className="font-semibold text-sm tracking-wide">Continue with Google Account</span>
+          <span className="font-semibold text-sm tracking-wide">Continue with Google</span>
         </motion.button>
         <p className="text-center text-gray-400 text-xs">
           Sign in using your student or personal Google account to proceed with your application.
