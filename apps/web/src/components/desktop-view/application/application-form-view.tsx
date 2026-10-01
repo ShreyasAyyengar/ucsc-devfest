@@ -8,7 +8,7 @@ import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
 import { AgreementsSection } from "./agreements-section";
-import { defaultApplicationFormValues, useAppForm } from "./application-form-hook";
+import { defaultApplicationFormValues, formatValidationErrorMessage, useAppForm } from "./application-form-hook";
 import { IdentitySection } from "./identity-section";
 import { LogisticsSection } from "./logistics-section";
 import { MotivationSection } from "./motivation-section";
@@ -42,7 +42,9 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
         const res = registrationSchema.safeParse(value);
         if (!res.success) {
           const [firstIssue] = res.error.issues;
-          return firstIssue ? firstIssue.message : "Please complete all required fields correctly.";
+          return firstIssue
+            ? formatValidationErrorMessage(firstIssue.message, (firstIssue as { values?: unknown[] }).values)
+            : "Please complete all required fields correctly.";
         }
       },
     },
