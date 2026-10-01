@@ -9,7 +9,12 @@ import { useState } from "react";
 
 import type { Registration } from "../../../../../backend/convex/application/schemas";
 
-export type ApplicationFormValues = Omit<Registration, "consent"> & {
+export type ApplicationFormValues = Omit<Registration, "consent" | "skillLevel"> & {
+  skillLevel: Omit<Registration["skillLevel"], "hackathonsAttended" | "codingComfort" | "teamRole"> & {
+    hackathonsAttended: Registration["skillLevel"]["hackathonsAttended"] | "";
+    codingComfort: Registration["skillLevel"]["codingComfort"] | "";
+    teamRole: Registration["skillLevel"]["teamRole"] | "";
+  };
   consent: {
     codeOfConduct: boolean;
     photoVideo: boolean;
@@ -34,10 +39,10 @@ export const defaultApplicationFormValues: ApplicationFormValues = {
   },
 
   skillLevel: {
-    hackathonsAttended: "0",
-    codingComfort: "intermediate",
-    toolsUsed: ["gemini_api"],
-    teamRole: "frontend",
+    hackathonsAttended: "",
+    codingComfort: "",
+    toolsUsed: [],
+    teamRole: "",
   },
 
   motivation: {
