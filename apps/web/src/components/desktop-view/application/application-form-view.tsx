@@ -7,6 +7,7 @@ import { Sparkles } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
+import { isPriority } from "../../../../../backend/convex/priority.ts";
 import { AgreementsSection } from "./agreements-section";
 import { defaultApplicationFormValues, formatValidationErrorMessage, useAppForm } from "./application-form-hook";
 import { ApplicationSubmittedView } from "./application-submitted-view";
@@ -142,21 +143,18 @@ export const ApplicationFormView: FC<ApplicationFormViewProps> = ({ userEmail = 
       className="w-full"
     >
       {/* Authed Status Pill */}
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#34A853]/20 bg-[#E6F4EA] px-3 py-1 font-medium text-[#1E8E3E] text-xs">
-        <span className="h-2 w-2 rounded-full bg-[#34A853]" />
-        <span>Connected as {userEmail}</span>
-      </div>
 
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight sm:text-3xl">Hackathon Application</h2>
-          <p className="mt-1 text-gray-500 text-sm">Complete your registration for Google DevFest 2026.</p>
         </div>
-        <div className="hidden items-center gap-1.5 rounded-md bg-gray-100 px-2.5 py-1 font-mono text-gray-600 text-xs sm:flex">
-          {/* TODO: Create boolean to toggle priority review */}
-          <Sparkles className="h-3.5 w-3.5 text-[#FBBC05]" />
-          <span>Priority Review</span>
-        </div>
+        {isPriority === true && (
+          <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-black-600 text-md sm:flex">
+            {/* TODO: Create boolean to toggle priority review */}
+            <Sparkles className="size-5 text-[#FBBC05]" />
+            <span>Priority Application</span>
+          </div>
+        )}
       </div>
 
       <AnimatePresence mode="wait">

@@ -15,6 +15,7 @@ import type * as email_actions from "../email/actions.js";
 import type * as email_resend from "../email/resend.js";
 import type * as http from "../http.js";
 import type * as lib_procedures from "../lib/procedures.js";
+import type * as priority from "../priority.js";
 
 import type {
   ApiFromModules,
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   "email/resend": typeof email_resend;
   http: typeof http;
   "lib/procedures": typeof lib_procedures;
+  priority: typeof priority;
 }>;
 
 /**

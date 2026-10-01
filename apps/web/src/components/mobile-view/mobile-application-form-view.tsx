@@ -8,6 +8,7 @@ import { ChevronDown, Sparkles } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import { api } from "../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../backend/convex/application/schemas";
+import { isPriority } from "../../../../backend/convex/priority.ts";
 import {
   createSchemaValidator,
   defaultApplicationFormValues,
@@ -259,14 +260,14 @@ export const MobileApplicationFormView: FC<MobileApplicationFormViewProps> = ({
     >
       {/* Connected User Badge */}
       <div className="flex items-center justify-between">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#34A853]/20 bg-[#E6F4EA] px-3 py-1 font-medium text-[#1E8E3E] text-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#34A853]" />
-          <span className="max-w-[200px] truncate">{userEmail}</span>
-        </div>
-
-        <div className="flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 font-medium text-[11px] text-amber-700">
-          <Sparkles className="h-3 w-3 text-[#FBBC05]" />
-          <span>Priority Review</span>
+        <div className="flex items-center gap-1 rounded-md bg-amber-50 py-0.5 font-medium text-[11px] text-amber-700">
+          {isPriority === true && (
+            <div className="hidden items-center gap-1.5 rounded-md border border-black/10 bg-yellow-100 px-2.5 py-1 font-medium text-black-600 text-md sm:flex">
+              {/* TODO: Create boolean to toggle priority review */}
+              <Sparkles className="size-5 text-[#FBBC05]" />
+              <span>Priority Application</span>
+            </div>
+          )}
         </div>
       </div>
 

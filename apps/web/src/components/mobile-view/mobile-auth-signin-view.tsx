@@ -76,7 +76,7 @@ export const MobileAuthSignInView: FC<MobileAuthSignInViewProps> = ({ onSignIn }
             <span className="block font-medium text-[11px] text-gray-500">Prize Pool</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-xs">$2,000</span>
             <span className="mt-1 inline-block rounded bg-[#34A853]/10 px-1.5 py-0.5 font-semibold text-[#1E8E3E] text-[9px]">
-              Prizes &amp; Swag
+              Prizes, Swag &amp; Credits
             </span>
           </div>
 

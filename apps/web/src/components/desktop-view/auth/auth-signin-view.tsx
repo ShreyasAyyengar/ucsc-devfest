@@ -24,7 +24,7 @@ export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
           <span className="h-2 w-2 rounded-full bg-[#FBBC05]" />
           <span className="h-2 w-2 rounded-full bg-[#34A853]" />
         </span>
-        <span>24 Hours to Innovate, Build & Scale</span>
+        <span>// TODO</span>
       </div>
 
       <h2 className="font-extrabold font-google text-3xl text-gray-900 leading-[1.12] tracking-tight sm:text-4xl md:text-5xl">
@@ -80,7 +80,7 @@ export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
             <span className="block font-medium text-gray-500 text-xs">Prize Pool</span>
             <span className="mt-0.5 block font-bold text-gray-900 text-sm">$2,000</span>
             <span className="mt-1.5 inline-block rounded-md bg-[#34A853]/10 px-2 py-0.5 font-semibold text-[#1E8E3E] text-[10px]">
-              Prizes & Swag
+              Prizes, Swag &amp; Credits
             </span>
           </div>
           <div className="rounded-xl border border-gray-100 border-t-2 border-t-[#EA4335] bg-gray-50/80 p-3 text-center transition-all hover:bg-white hover:shadow-xs">

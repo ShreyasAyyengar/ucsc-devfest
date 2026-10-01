@@ -19,21 +19,16 @@ export const DevFestHeader: FC<DevFestHeaderProps> = ({ isAuthenticated = false,
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <div className="flex items-center gap-2">
-            <span className="hidden font-mono text-gray-500 text-xs sm:inline-block">{userEmail}</span>
+            <span className="hidden text-black text-xs sm:inline-block">{userEmail}</span>
             <button
               type="button"
               onClick={onSignOut}
-              className="rounded-lg border border-gray-200 px-2.5 py-1 text-gray-600 text-xs transition-colors hover:bg-gray-100 hover:text-gray-900"
+              className="rounded-lg border border-gray-200 px-2.5 py-1 text-black text-xs transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
               Sign out
             </button>
-          </div>
-        ) : (
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#4285F4]/15 bg-[#E8F0FE] px-3 py-1 font-semibold text-[#1A73E8] text-xs">
-            <span className="h-2 w-2 animate-ping rounded-full bg-[#34A853]" />
-            <span>Fall 2026 Edition</span>
           </div>
         )}
       </div>
