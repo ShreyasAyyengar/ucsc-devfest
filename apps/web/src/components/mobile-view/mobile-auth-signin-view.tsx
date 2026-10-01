@@ -38,8 +38,9 @@ export const MobileAuthSignInView: FC<MobileAuthSignInViewProps> = ({ onSignIn }
             <span className="text-[#34A853]">C</span>
             <span className="text-[#4285F4]">&apos;s</span>
           </span>{" "}
-          <br />
-          <span className="bg-gradient-to-r from-[#4285F4] via-[#7c3aed] to-[#EA4335] bg-clip-text text-transparent">DevFest Hackathon</span>
+          <span className="mt-1 block bg-gradient-to-r from-[#4285F4] via-[#7c3aed] to-[#EA4335] bg-clip-text font-google font-thin text-3xl text-transparent tracking-tight sm:text-4xl">
+            DevFest Hackathon
+          </span>
         </h2>
 
         <p className="mt-2.5 text-gray-600 text-sm leading-relaxed">

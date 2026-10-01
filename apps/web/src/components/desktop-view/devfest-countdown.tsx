@@ -78,14 +78,14 @@ function DigitCard({ label, value, accentColor, glowColor, textColor }: DigitCar
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-google text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl"
+            className="block w-full truncate text-center font-bold font-sans text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl"
           >
             {formattedValue}
           </span>
         </div>
 
         {/* Unit Label */}
-        <span className="mt-1.5 font-bold font-mono text-[10px] text-gray-500 uppercase tracking-widest sm:text-xs">{label}</span>
+        <span className="mt-1.5 font-sans font-semibold text-[10px] text-gray-500 uppercase tracking-wider sm:text-xs">{label}</span>
       </div>
     </motion.div>
   );
@@ -119,8 +119,8 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
   const smoothY = useSpring(activeY, springConfig);
 
   // Rotate towards the mouse cursor
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [12, -12]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-10, 10]);
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [10, -10]);
 
   // Subtle floating parallax offsets
   const parallaxX = useTransform(smoothX, [-0.5, 0.5], [-10, 10]);
@@ -162,10 +162,10 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
              1. EVENT TITLE (Layer Z: 35px)
              ======================================================== */}
         <div style={{ transform: "translateZ(35px)" }} className="flex select-none items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200/90 bg-white/95 p-2 shadow-xs backdrop-blur-md transition-transform hover:scale-105">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200/80 bg-white/95 p-2 shadow-xs backdrop-blur-md transition-transform hover:scale-105">
             <GdgLogoSvg className="h-full w-auto" />
           </div>
-          <h2 className="font-bold font-google text-2xl text-gray-900 tracking-tight sm:text-3xl">GDG UCSC DevFest &apos;26</h2>
+          <h2 className="font-sans font-semibold text-2xl text-gray-700 tracking-tight sm:text-3xl">GDG UCSC DevFest &apos;26</h2>
         </div>
 
         {/* ========================================================
@@ -208,11 +208,11 @@ export const DevFestCountdown: FC<DevFestCountdownProps> = ({ stageMouseX, stage
              ======================================================== */}
         <div
           style={{ transform: "translateZ(30px)" }}
-          className="inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white/90 px-4 py-1.5 text-xs shadow-xs backdrop-blur-md"
+          className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/90 px-4 py-1.5 text-xs shadow-xs backdrop-blur-md"
         >
           <span className="flex h-2 w-2 rounded-full bg-[#4285F4]" />
-          <span className="font-semibold text-gray-900">Event Kickoff:</span>
-          <span className="font-mono text-gray-600">Sat, Nov 14, 2026 • 9:00 AM PST</span>
+          <span className="font-medium font-sans text-gray-700">Event Kickoff:</span>
+          <span className="font-sans text-gray-500">Sat, Nov 14, 2026 • 9:00 AM PST</span>
         </div>
       </motion.div>
     </div>

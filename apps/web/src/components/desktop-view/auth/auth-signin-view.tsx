@@ -37,7 +37,9 @@ export function AuthSignInView({ onSignIn }: AuthSignInViewProps) {
           <span className="text-[#4285F4]">&apos;s</span>
         </span>{" "}
         <br />
-        <span className="bg-gradient-to-r from-[#4285F4] via-[#7c3aed] to-[#EA4335] bg-clip-text text-transparent">DevFest Hackathon</span>
+        <span className="bg-gradient-to-r from-[#4285F4] via-[#7c3aed] to-[#EA4335] bg-clip-text font-semibold text-transparent">
+          DevFest Hackathon
+        </span>
       </h2>
 
       <p className="mt-4 font-normal text-base text-gray-600 leading-relaxed sm:text-lg">

@@ -152,19 +152,6 @@ export const GdgGlowingBackdrop: FC<GdgGlowingBackdropProps> = ({ stageMouseX, s
             <path d={YELLOW_PATH} stroke="white" strokeWidth="1.2" strokeDasharray="130 50" fill="none" />
             <path d={GREEN_PATH} stroke="white" strokeWidth="1.2" strokeDasharray="130 50" fill="none" />
           </g>
-
-          {/* LAYER 5: Creative Center Nexus - Futuristic Hackathon Tech Orbitals */}
-          <g opacity="0.45">
-            {/* Concentric Tech Rings Between < and > brackets */}
-            <circle cx="225" cy="112.5" r="32" stroke="#4285F4" strokeWidth="1" strokeDasharray="3 5" fill="none" />
-            <circle cx="225" cy="112.5" r="56" stroke="#FBBC05" strokeWidth="1" strokeDasharray="4 8" fill="none" opacity="0.75" />
-            <circle cx="225" cy="112.5" r="84" stroke="#34A853" strokeWidth="0.75" strokeDasharray="3 9" fill="none" opacity="0.55" />
-            <circle cx="225" cy="112.5" r="116" stroke="#EA4335" strokeWidth="0.75" strokeDasharray="6 12" fill="none" opacity="0.4" />
-
-            {/* Center Core Node */}
-            <circle cx="225" cy="112.5" r="4.5" fill="#4285F4" opacity="0.7" />
-            <circle cx="225" cy="112.5" r="1.5" fill="white" />
-          </g>
         </svg>
       </motion.div>
     </div>

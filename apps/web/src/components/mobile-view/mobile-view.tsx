@@ -10,7 +10,6 @@ import { MobileApplicationFormView, type MobileFormData } from "./mobile-applica
 import { MobileApplicationSubmittedView } from "./mobile-application-submitted-view";
 import { MobileAuthSignInView } from "./mobile-auth-signin-view";
 import { MobileCountdown } from "./mobile-countdown";
-import { MobileHeader } from "./mobile-header";
 
 export type MobileViewProps = {
   isAuthenticated?: boolean;
@@ -107,7 +106,7 @@ export const MobileView: FC<MobileViewProps> = ({
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#F8F9FA] text-gray-900">
       {/* 1. Mobile Header */}
-      <MobileHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={handleSignOut} />
+      {/* <MobileHeader isAuthenticated={isAuthenticated} userEmail={userEmail} onSignOut={handleSignOut} /> */}
 
       {/* 2. Top Hero Section: Ambient Glow & Mobile Countdown */}
       <section className="relative overflow-hidden px-4 pt-5 pb-6">
