@@ -3,6 +3,7 @@
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { Command, CommandGroup, CommandItem, CommandList } from "@ucsc-devfest/shad-ui/components/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ucsc-devfest/shad-ui/components/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ucsc-devfest/shad-ui/components/select";
 import { motion } from "framer-motion";
 import { Check, ChevronsUpDown, Send } from "lucide-react";
 import { useState } from "react";
@@ -420,6 +421,64 @@ export function ComboboxField<T extends string = string>({
 
 export const SelectField = ComboboxField;
 
+export function ShadcnSelectField<T extends string = string>({
+  label,
+  options,
+  placeholder = "Select an option...",
+  required,
+  className,
+}: {
+  label: string;
+  options: readonly SelectOption<T>[] | SelectOption<T>[];
+  placeholder?: string;
+  required?: boolean;
+  className?: string;
+}) {
+  const field = useFieldContext<T>();
+  const error = getFieldError(field);
+
+  return (
+    <div>
+      <label htmlFor={field.name} className="mb-1 block font-medium text-gray-700 text-xs">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <Select
+        value={field.state.value}
+        onValueChange={(val) => {
+          field.handleChange(val as T);
+          field.handleBlur();
+        }}
+      >
+        <SelectTrigger
+          id={field.name}
+          className={`flex h-[42px] w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-2.5 text-left text-sm transition-all focus:outline-none focus:ring-2 ${
+            error
+              ? "border-red-400 bg-red-50/40 text-gray-900 focus:border-red-500 focus:ring-red-500/20"
+              : "border-gray-200 bg-gray-50 text-gray-900 hover:bg-gray-100 focus:bg-white focus:ring-[#4285F4]/40"
+          } ${className ?? ""}`}
+        >
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent
+          position="popper"
+          className="z-50 max-h-60 w-[var(--radix-select-trigger-width)] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+        >
+          {options.map((opt) => (
+            <SelectItem
+              key={opt.value}
+              value={opt.value}
+              className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs transition-colors hover:bg-gray-100"
+            >
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {error && <p className="mt-1 text-red-500 text-xs">{error}</p>}
+    </div>
+  );
+}
+
 export function RadioGroupField<T extends string = string>({
   label,
   options,
@@ -569,18 +628,16 @@ export function CheckboxField({ label, description, required }: { label: string;
   );
 }
 
-export function SubmitButton({ label = "Submit Hackathon Application" }: { label?: string }) {
+export function SubmitButton({ label = "Submit Hackathon Application", disabled }: { label?: string; disabled?: boolean }) {
   const form = useFormContext();
   return (
-    <form.Subscribe
-      selector={(state: { canSubmit?: boolean; isSubmitting?: boolean }) => [state.canSubmit ?? false, state.isSubmitting ?? false] as const}
-    >
-      {([canSubmit, isSubmitting]) => (
+    <form.Subscribe selector={(state: { isSubmitting?: boolean }) => [state.isSubmitting ?? false] as const}>
+      {([isSubmitting]) => (
         <motion.button
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          disabled={!canSubmit || isSubmitting}
+          disabled={disabled !== undefined ? disabled : isSubmitting}
           className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#4285F4] px-4 py-3 font-semibold text-sm text-white shadow-md transition-all hover:bg-[#1a73e8] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span>{isSubmitting ? "Submitting..." : label}</span>
@@ -600,6 +657,7 @@ export const { useAppForm, withForm } = createFormHook({
     TextAreaField,
     SelectField,
     ComboboxField,
+    ShadcnSelectField,
     RadioGroupField,
     MultiCheckboxField,
     CheckboxField,
