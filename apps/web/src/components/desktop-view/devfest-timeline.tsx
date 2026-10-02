@@ -113,7 +113,7 @@ export type DevFestTimelineProps = {
 };
 
 export function DevFestTimeline({ className = "", style, milestones = TIMELINE_MILESTONES, nowMs: externalNowMs }: DevFestTimelineProps) {
-  const [internalNowMs, setInternalNowMs] = useState<number>(() => Date.now());
+  const [internalNowMs, setInternalNowMs] = useState<number | null>(null);
 
   useEffect(() => {
     if (externalNowMs !== undefined) return;
@@ -126,7 +126,9 @@ export function DevFestTimeline({ className = "", style, milestones = TIMELINE_M
     return () => clearInterval(timer);
   }, [externalNowMs]);
 
-  const effectiveNowMs = externalNowMs ?? internalNowMs;
+  // Use a stable value for the server render and the client's first render.
+  // The effect above replaces it with the current time after hydration.
+  const effectiveNowMs = externalNowMs ?? internalNowMs ?? milestones[0]?.timestamp ?? 0;
 
   const timelineProgress = useMemo(() => calculateTimelineProgress(effectiveNowMs, milestones), [effectiveNowMs, milestones]);
 
