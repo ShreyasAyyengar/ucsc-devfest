@@ -95,7 +95,7 @@ export function ApplicationSubmittedView({
           </AlertDialogContent>
         </AlertDialog>
 
-        {onSignOut && (
+        {/* {onSignOut && (
           <button
             type="button"
             onClick={onSignOut}
@@ -103,7 +103,7 @@ export function ApplicationSubmittedView({
           >
             Sign out
           </button>
-        )}
+        )} */}
 
         {deleteError && (
           <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-left text-red-700 text-xs">

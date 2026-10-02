@@ -201,6 +201,10 @@ export function ApplicationFormView({ userEmail = "student@ucsc.edu", googleSub 
             }}
             className="mt-4 min-h-0 flex-1 space-y-2.5 lg:-mx-2 lg:mt-6 lg:space-y-6 lg:overflow-y-auto lg:px-3 lg:py-2"
           >
+            <span className="block text-gray-500 text-xs leading-relaxed">
+              * Disclaimer: We do not accommodate overnight stays. The venue is open Saturday, Nov 14th from 9:00 AM – 7:00 PM and Sunday, Nov
+              15th from 9:00 AM – 4:00 PM.
+            </span>
             <IdentitySection form={form} />
             <LogisticsSection form={form} />
             <SkillLevelSection form={form} />

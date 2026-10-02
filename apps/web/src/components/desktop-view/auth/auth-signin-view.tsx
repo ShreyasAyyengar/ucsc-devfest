@@ -28,7 +28,7 @@ export function AuthSignInView() {
           <span className="h-1.5 w-1.5 rounded-full bg-[#FBBC05] sm:h-2 sm:w-2" />
           <span className="h-1.5 w-1.5 rounded-full bg-[#34A853] sm:h-2 sm:w-2" />
         </span>
-        <span>24-Hour Innovation Sprint</span>
+        <span>24-Hours to Build the Best App!</span>
       </div>
 
       <h2 className="font-extrabold font-google text-2xl text-gray-900 leading-[1.12] tracking-tight sm:text-4xl md:text-5xl">

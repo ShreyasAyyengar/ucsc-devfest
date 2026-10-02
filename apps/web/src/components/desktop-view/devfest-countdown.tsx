@@ -54,15 +54,23 @@ function DigitCard({ label, value, accentColor, glowColor, textColor, interactiv
     <motion.div
       whileHover={interactive ? { scale: 1.05, y: -4 } : undefined}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      style={{ transformStyle: "preserve-3d" }}
-      className="group relative flex min-w-0 flex-1 flex-col items-center justify-center"
+      style={
+        interactive
+          ? {
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+            }
+          : undefined
+      }
+      className={`group relative flex min-w-0 flex-1 flex-col items-center justify-center ${interactive ? "transform-style-3d" : ""}`}
     >
       {/* 3D Depth Card Box */}
       <div
         style={{
           boxShadow: `0 10px 25px -4px ${glowColor}, 0 2px 8px rgba(0, 0, 0, 0.04)`,
         }}
-        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200/90 bg-white/95 px-1.5 xs:px-2.5 py-2.5 xs:py-3 shadow-xs backdrop-blur-xl transition-shadow group-hover:shadow-md sm:rounded-3xl sm:px-3 sm:py-5"
+        className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200/90 bg-white px-1.5 xs:px-2.5 py-2.5 xs:py-3 shadow-xs transition-shadow group-hover:shadow-md sm:bg-white/95 sm:backdrop-blur-md sm:rounded-3xl sm:px-3 sm:py-5"
       >
         {/* Top Accent Rim Indicator */}
         <div
@@ -83,14 +91,14 @@ function DigitCard({ label, value, accentColor, glowColor, textColor, interactiv
           <span
             suppressHydrationWarning
             style={{ color: textColor }}
-            className="block w-full truncate text-center font-bold font-sans text-2xl xs:text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl"
+            className="block w-full truncate text-center font-bold font-sans text-2xl xs:text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl antialiased [text-rendering:optimizeLegibility]"
           >
             {formattedValue}
           </span>
         </div>
 
         {/* Unit Label */}
-        <span className="mt-1 font-sans font-semibold text-[9px] text-gray-500 xs:text-[10px] uppercase tracking-wider sm:mt-1.5 sm:text-xs">
+        <span className="mt-1 font-sans font-bold text-[9.5px] text-gray-600 xs:text-[10.5px] uppercase tracking-wider sm:mt-1.5 sm:text-xs antialiased">
           {label}
         </span>
       </div>
@@ -151,39 +159,78 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
     <div
       onMouseMove={interactive ? handleMouseMove : undefined}
       onMouseLeave={interactive ? handleMouseLeave : undefined}
-      style={{ perspective: 1200 }}
-      className="relative flex w-full max-w-xl items-center justify-center p-2 sm:p-4"
+      className="relative flex w-full max-w-xl items-center justify-center p-2 sm:p-4 antialiased [text-rendering:optimizeLegibility]"
     >
       {/* Main 3D Presentation: Floating freely without an enclosing box */}
       <motion.div
-        style={{
-          transformStyle: "preserve-3d",
-          rotateX,
-          rotateY,
-          x: parallaxX,
-          y: parallaxY,
-        }}
-        className="transform-style-3d relative flex w-full flex-col items-center gap-2.5 xs:gap-3 sm:gap-5"
+        style={
+          interactive
+            ? {
+                transformStyle: "preserve-3d",
+                rotateX,
+                rotateY,
+                x: parallaxX,
+                y: parallaxY,
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }
+            : undefined
+        }
+        className={`relative flex w-full flex-col items-center gap-2.5 xs:gap-3 sm:gap-5 ${interactive ? "transform-style-3d" : ""}`}
       >
         {/* ========================================================
              1. TIMELINE PROGRESS BAR (Layer Z: 40px)
              ======================================================== */}
-        <DevFestTimeline style={{ transform: "translateZ(40px)" }} />
+        <DevFestTimeline
+          style={
+            interactive
+              ? {
+                  transform: "translateZ(40px)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }
+              : undefined
+          }
+        />
 
         {/* ========================================================
              2. EVENT TITLE (Layer Z: 35px)
              ======================================================== */}
-        <div style={{ transform: "translateZ(35px)" }} className="flex select-none items-center justify-center gap-2 sm:gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/80 bg-white/95 p-1.5 shadow-xs backdrop-blur-md transition-transform hover:scale-105 sm:h-10 sm:w-10 sm:rounded-2xl sm:p-2">
+        <div
+          style={
+            interactive
+              ? {
+                  transform: "translateZ(35px)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }
+              : undefined
+          }
+          className="flex select-none items-center justify-center gap-2 sm:gap-3"
+        >
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200/90 bg-white p-1.5 shadow-xs transition-transform hover:scale-105 sm:h-10 sm:w-10 sm:rounded-2xl sm:p-2 sm:bg-white/95 sm:backdrop-blur-md">
             <GdgLogoSvg className="h-full w-auto" />
           </div>
-          <h2 className="font-sans font-semibold text-base text-gray-700 xs:text-lg tracking-tight sm:text-3xl">GDG UCSC DevFest &apos;26</h2>
+          <h2 className="font-sans font-bold text-base text-gray-900 xs:text-lg tracking-tight sm:text-3xl antialiased [text-rendering:optimizeLegibility]">
+            GDG UCSC DevFest &apos;26
+          </h2>
         </div>
 
         {/* ========================================================
              3. 4-UNIT COUNTDOWN DISPLAY (Layer Z: 45px)
              ======================================================== */}
-        <div style={{ transform: "translateZ(45px)" }} className="relative flex w-full items-center justify-between gap-1 xs:gap-1.5 sm:gap-3">
+        <div
+          style={
+            interactive
+              ? {
+                  transform: "translateZ(45px)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }
+              : undefined
+          }
+          className="relative flex w-full items-center justify-between gap-1 xs:gap-1.5 sm:gap-3"
+        >
           {/* Days Card */}
           <DigitCard
             label="Days"
@@ -195,7 +242,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
           />
 
           {/* Colon Separator */}
-          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
+          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-60">
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
           </div>
@@ -211,7 +258,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
           />
 
           {/* Colon Separator */}
-          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
+          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-60">
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
           </div>
@@ -227,7 +274,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
           />
 
           {/* Colon Separator */}
-          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-50">
+          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 opacity-60">
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
             <div className="h-1.5 w-1.5 rounded-full bg-[#D98200]" />
           </div>
@@ -244,15 +291,23 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
         </div>
 
         {/* ========================================================
-             3. EVENT KICKOFF INFORMATION (Layer Z: 30px)
+             4. EVENT KICKOFF INFORMATION (Layer Z: 30px)
              ======================================================== */}
         <div
-          style={{ transform: "translateZ(30px)" }}
-          className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/90 px-3 py-1 text-[11px] shadow-xs backdrop-blur-md sm:px-4 sm:py-1.5 sm:text-xs"
+          style={
+            interactive
+              ? {
+                  transform: "translateZ(30px)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }
+              : undefined
+          }
+          className="inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white px-3 py-1 text-[11.5px] shadow-xs sm:bg-white/95 sm:backdrop-blur-md sm:px-4 sm:py-1.5 sm:text-xs antialiased"
         >
-          <span className="flex h-2 w-2 rounded-full bg-[#4285F4]" />
-          <span className="font-medium font-sans text-gray-700">Event Kickoff:</span>
-          <span className="font-sans text-gray-500">Sat, Nov 14, 2026 • 9:00 AM PST</span>
+          <span className="flex h-2 w-2 shrink-0 rounded-full bg-[#4285F4]" />
+          <span className="font-semibold font-sans text-gray-800">Event Kickoff:</span>
+          <span className="font-medium font-sans text-gray-600">Sat, Nov 14, 2026 • 9:00 AM PST</span>
         </div>
       </motion.div>
     </div>
