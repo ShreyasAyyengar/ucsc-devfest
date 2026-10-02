@@ -39,6 +39,7 @@ export const internalQuery = zCustomQuery(baseInternalQuery, NoOp);
 export const internalMutation = zCustomMutation(baseInternalMutation, NoOp);
 export const internalAction = zCustomAction(baseInternalAction, NoOp);
 
+export const publicQuery = zCustomQuery(query, NoOp);
 export const protectedQuery = zCustomQuery(query, withIdentity);
 export const protectedMutation = zCustomMutation(mutation, withIdentity);
 export const protectedAction = zCustomAction(action, withIdentity);
