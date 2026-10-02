@@ -7,21 +7,31 @@ import { GdgGlowingBackdrop } from "./gdg-glowing-backdrop";
 
 export function DevFestStage3D() {
   const [supportsPointerInteraction, setSupportsPointerInteraction] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
     const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const syncInteractionSupport = () => setSupportsPointerInteraction(pointerQuery.matches && !motionQuery.matches);
 
-    syncInteractionSupport();
-    pointerQuery.addEventListener("change", syncInteractionSupport);
-    motionQuery.addEventListener("change", syncInteractionSupport);
+    const syncCapabilities = () => {
+      setIsDesktop(desktopQuery.matches);
+      setSupportsPointerInteraction(pointerQuery.matches && !motionQuery.matches);
+    };
+
+    syncCapabilities();
+    desktopQuery.addEventListener("change", syncCapabilities);
+    pointerQuery.addEventListener("change", syncCapabilities);
+    motionQuery.addEventListener("change", syncCapabilities);
 
     return () => {
-      pointerQuery.removeEventListener("change", syncInteractionSupport);
-      motionQuery.removeEventListener("change", syncInteractionSupport);
+      desktopQuery.removeEventListener("change", syncCapabilities);
+      pointerQuery.removeEventListener("change", syncCapabilities);
+      motionQuery.removeEventListener("change", syncCapabilities);
     };
   }, []);
+
+  const enable3D = isDesktop && supportsPointerInteraction;
 
   // Motion values normalized between -0.5 and 0.5 for the entire stage
   const mouseX = useMotionValue(0);
@@ -52,26 +62,39 @@ export function DevFestStage3D() {
 
   return (
     <aside
-      onPointerMove={supportsPointerInteraction ? handlePointerMove : undefined}
-      onPointerLeave={supportsPointerInteraction ? handlePointerLeave : undefined}
-      style={{ perspective: 1200 }}
-      className="relative order-1 flex min-h-[300px] w-full select-none items-center justify-center overflow-hidden border-gray-200/80 bg-[#F8F9FA] p-4 sm:min-h-[360px] sm:p-6 md:p-8 lg:order-2 lg:min-h-screen lg:w-1/2 lg:border-l lg:p-12"
+      onPointerMove={enable3D ? handlePointerMove : undefined}
+      onPointerLeave={enable3D ? handlePointerLeave : undefined}
+      style={enable3D ? { perspective: 1200 } : undefined}
+      className="relative order-1 flex min-h-[300px] w-full select-none items-center justify-center overflow-hidden border-gray-200/80 bg-[#F8F9FA] p-4 sm:min-h-[360px] sm:p-6 md:p-8 lg:order-2 lg:min-h-screen lg:w-1/2 lg:border-l lg:p-12 antialiased [text-rendering:optimizeLegibility]"
     >
       {/* Background Huge Glowing GDG Logo & Google Light Aura */}
-      <GdgGlowingBackdrop stageMouseX={smoothMouseX} stageMouseY={smoothMouseY} />
+      <GdgGlowingBackdrop
+        stageMouseX={enable3D ? smoothMouseX : undefined}
+        stageMouseY={enable3D ? smoothMouseY : undefined}
+        variant={isDesktop ? "desktop" : "mobile"}
+      />
 
       {/* Interactive 3D Perspective Stage */}
       <motion.div
-        style={{
-          transformPerspective: 1200,
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d",
-        }}
-        className="transform-style-3d relative z-10 flex w-full max-w-xl items-center justify-center lg:h-[560px]"
+        style={
+          enable3D
+            ? {
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }
+            : undefined
+        }
+        className={`relative z-10 flex w-full max-w-xl items-center justify-center lg:h-[560px] ${enable3D ? "transform-style-3d" : ""}`}
       >
         {/* 3D Countdown Console facing towards cursor */}
-        <DevFestCountdown stageMouseX={smoothMouseX} stageMouseY={smoothMouseY} interactive={supportsPointerInteraction} />
+        <DevFestCountdown
+          stageMouseX={enable3D ? smoothMouseX : undefined}
+          stageMouseY={enable3D ? smoothMouseY : undefined}
+          interactive={enable3D}
+        />
       </motion.div>
     </aside>
   );

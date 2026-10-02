@@ -112,12 +112,7 @@ export type DevFestTimelineProps = {
   nowMs?: number;
 };
 
-export function DevFestTimeline({
-  className = "",
-  style,
-  milestones = TIMELINE_MILESTONES,
-  nowMs: externalNowMs,
-}: DevFestTimelineProps) {
+export function DevFestTimeline({ className = "", style, milestones = TIMELINE_MILESTONES, nowMs: externalNowMs }: DevFestTimelineProps) {
   const [internalNowMs, setInternalNowMs] = useState<number>(() => Date.now());
 
   useEffect(() => {
@@ -133,18 +128,12 @@ export function DevFestTimeline({
 
   const effectiveNowMs = externalNowMs ?? internalNowMs;
 
-  const timelineProgress = useMemo(
-    () => calculateTimelineProgress(effectiveNowMs, milestones),
-    [effectiveNowMs, milestones],
-  );
+  const timelineProgress = useMemo(() => calculateTimelineProgress(effectiveNowMs, milestones), [effectiveNowMs, milestones]);
 
-  const currentMilestoneIndex = useMemo(
-    () => getActiveMilestoneIndex(effectiveNowMs, milestones),
-    [effectiveNowMs, milestones],
-  );
+  const currentMilestoneIndex = useMemo(() => getActiveMilestoneIndex(effectiveNowMs, milestones), [effectiveNowMs, milestones]);
 
   return (
-    <div style={style} className={`relative w-full px-1 sm:px-2 ${className}`}>
+    <div style={style} className={`relative w-full px-1 sm:px-2 antialiased [text-rendering:optimizeLegibility] ${className}`}>
       {/* Progress Bar & Circles */}
       <div className="relative w-full py-0.5">
         {/* Background Line */}
@@ -169,12 +158,12 @@ export function DevFestTimeline({
                 {/* Date on top */}
                 <div className="flex h-5 items-center justify-center xs:h-6 sm:h-7">
                   <span
-                    className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 font-bold font-google text-[8px] xs:text-[9px] sm:text-[10px] tracking-tight backdrop-blur-md transition-all shadow-2xs ${
+                    className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 font-bold font-google text-[8.5px] xs:text-[9.5px] sm:text-[10px] tracking-tight shadow-2xs transition-all antialiased ${
                       isCurrent
-                        ? "border border-[#4285F4]/40 bg-white/95 text-[#1A73E8] ring-2 ring-[#4285F4]/20 font-extrabold"
+                        ? "border border-[#4285F4]/40 bg-white text-[#1A73E8] ring-2 ring-[#4285F4]/20 font-extrabold sm:bg-white/95 sm:backdrop-blur-md"
                         : isCompleted
-                          ? "border border-gray-200/90 bg-white/90 text-gray-900"
-                          : "border border-gray-200/80 bg-white/85 text-gray-600"
+                          ? "border border-gray-200/90 bg-white text-gray-900 sm:bg-white/90 sm:backdrop-blur-md"
+                          : "border border-gray-200/80 bg-white text-gray-700 sm:bg-white/85 sm:backdrop-blur-md"
                     }`}
                   >
                     {milestone.dateLabel}
@@ -202,15 +191,16 @@ export function DevFestTimeline({
 
                 {/* Title on bottom */}
                 <span
-                  className={`mt-1 inline-flex items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-medium text-[7.5px] xs:text-[8.5px] leading-tight backdrop-blur-md shadow-2xs transition-all sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] max-w-[48px] xs:max-w-[58px] sm:max-w-[74px] ${
+                  className={`mt-1 inline-flex items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-semibold text-[8.5px] xs:text-[9px] leading-tight shadow-2xs transition-all sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] max-w-[50px] xs:max-w-[60px] sm:max-w-[74px] antialiased ${
                     isCurrent
-                      ? "border border-blue-200/90 bg-white/95 font-semibold text-gray-950 shadow-xs ring-1 ring-blue-400/25"
+                      ? "border border-blue-200/90 bg-white font-bold text-gray-950 shadow-xs ring-1 ring-blue-400/25 sm:bg-white/95 sm:backdrop-blur-md"
                       : isCompleted
-                        ? "border border-gray-200/80 bg-white/90 text-gray-900"
-                        : "border border-gray-200/70 bg-white/85 text-gray-700"
+                        ? "border border-gray-200/90 bg-white text-gray-900 sm:bg-white/90 sm:backdrop-blur-md"
+                        : "border border-gray-200/80 bg-white text-gray-800 sm:bg-white/85 sm:backdrop-blur-md"
                   }`}
                 >
-                  {milestone.fullTitle}
+                  <span className="sm:hidden">{milestone.shortTitle}</span>
+                  <span className="hidden sm:inline">{milestone.fullTitle}</span>
                 </span>
               </div>
             );
