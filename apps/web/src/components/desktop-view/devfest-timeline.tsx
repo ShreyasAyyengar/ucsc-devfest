@@ -22,14 +22,14 @@ export const TIMELINE_MILESTONES: TimelineMilestone[] = [
   {
     id: "prio-open",
     dateLabel: "Oct 2",
-    shortTitle: "Prio Open",
+    shortTitle: "Priority Open",
     fullTitle: "Priority Apps Open",
     timestamp: new Date("2026-10-02T00:00:00-07:00").getTime(),
   },
   {
     id: "prio-close",
     dateLabel: "Oct 11",
-    shortTitle: "Prio Close",
+    shortTitle: "Priority Close",
     fullTitle: "Priority Apps Close",
     timestamp: new Date("2026-10-11T23:59:59-07:00").getTime(),
   },
@@ -135,7 +135,7 @@ export function DevFestTimeline({ className = "", style, milestones = TIMELINE_M
   const currentMilestoneIndex = useMemo(() => getActiveMilestoneIndex(effectiveNowMs, milestones), [effectiveNowMs, milestones]);
 
   return (
-    <div style={style} className={`relative w-full px-1 sm:px-2 antialiased [text-rendering:optimizeLegibility] ${className}`}>
+    <div style={style} className={`relative w-full px-1 antialiased [text-rendering:optimizeLegibility] sm:px-2 ${className}`}>
       {/* Progress Bar & Circles */}
       <div className="relative w-full py-0.5">
         {/* Background Line */}
@@ -158,11 +158,11 @@ export function DevFestTimeline({ className = "", style, milestones = TIMELINE_M
             return (
               <div key={milestone.id} className="flex flex-col items-center">
                 {/* Date on top */}
-                <div className="flex h-5 items-center justify-center xs:h-6 sm:h-7">
+                <div className="flex h-5 xs:h-6 items-center justify-center sm:h-7">
                   <span
-                    className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 font-bold font-google text-[8.5px] xs:text-[9.5px] sm:text-[10px] tracking-tight shadow-2xs transition-all antialiased ${
+                    className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 font-bold font-google text-[8.5px] xs:text-[9.5px] tracking-tight antialiased shadow-2xs transition-all sm:text-[10px] ${
                       isCurrent
-                        ? "border border-[#4285F4]/40 bg-white text-[#1A73E8] ring-2 ring-[#4285F4]/20 font-extrabold sm:bg-white/95 sm:backdrop-blur-md"
+                        ? "border border-[#4285F4]/40 bg-white font-extrabold text-[#1A73E8] ring-2 ring-[#4285F4]/20 sm:bg-white/95 sm:backdrop-blur-md"
                         : isCompleted
                           ? "border border-gray-200/90 bg-white text-gray-900 sm:bg-white/90 sm:backdrop-blur-md"
                           : "border border-gray-200/80 bg-white text-gray-700 sm:bg-white/85 sm:backdrop-blur-md"
@@ -193,7 +193,7 @@ export function DevFestTimeline({ className = "", style, milestones = TIMELINE_M
 
                 {/* Title on bottom */}
                 <span
-                  className={`mt-1 inline-flex items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-semibold text-[8.5px] xs:text-[9px] leading-tight shadow-2xs transition-all sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] max-w-[50px] xs:max-w-[60px] sm:max-w-[74px] antialiased ${
+                  className={`mt-1 inline-flex max-w-[50px] xs:max-w-[60px] items-center justify-center rounded-lg px-1.5 py-0.5 text-center font-semibold text-[8.5px] xs:text-[9px] leading-tight antialiased shadow-2xs transition-all sm:max-w-[74px] sm:rounded-xl sm:px-2 sm:py-1 sm:text-[9.5px] ${
                     isCurrent
                       ? "border border-blue-200/90 bg-white font-bold text-gray-950 shadow-xs ring-1 ring-blue-400/25 sm:bg-white/95 sm:backdrop-blur-md"
                       : isCompleted
