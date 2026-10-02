@@ -15,8 +15,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Google DevFest Hackathon — Registration",
-  description: "Join 5,000+ university students, engineers, and creators building solutions powered by Gemini, Cloud, and Web technologies.",
+  title: "GDGC DevFest Hackathon @ UCSC — Registration",
+  description:
+    "Join students and developers at UCSC for a hands-on hackathon. Find teammates, experiment with new tools, and build a prototype you can demo for a chance to win great prizes.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

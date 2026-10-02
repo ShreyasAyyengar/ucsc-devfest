@@ -47,8 +47,8 @@ export function AuthSignInView() {
       </h2>
 
       <p className="mt-3 font-normal text-gray-600 text-sm leading-relaxed sm:mt-4 sm:text-lg">
-        Join 5,000+ university students, engineers, and creators building solutions powered by Gemini, Android, Cloud, and Web technologies. Turn
-        wild ideas into shipped prototypes.
+        Join students and developers at UCSC for a hands-on hackathon. Find teammates, experiment with new tools, and build a prototype you can
+        demo for a chance to win great prizes.
       </p>
 
       {/* Google SSO Container */}
