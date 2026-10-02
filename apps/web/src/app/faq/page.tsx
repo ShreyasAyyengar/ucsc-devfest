@@ -92,7 +92,7 @@ export default function FaqPage() {
         category: "getting-started",
         question: "Do I need any experience to participate?",
         answerText:
-          "Nope! This hackathon is designed for beginners. If you've never written a line of code, you're welcome here. We'll have workshops, mentors, and starter resources to help you get going at our GDGC instruction meetings. The only requirement is curiosity and a willingness to learn.",
+          "Nope! This hackathon is designed for beginners. If you've never written a line of code, you're welcome here. We'll have workshops, mentors, and starter resources to help you get going at the hackathon and our GDGC instruction meetings. The only requirement is curiosity and a willingness to learn.",
       },
       {
         id: "what-is-a-hackathon",
@@ -255,7 +255,7 @@ export default function FaqPage() {
         category: "building",
         question: "Will there be workshops or mentors?",
         answerText:
-          "Yes! We'll host beginner-friendly workshops at our GDGC club meetings leading up to the hackathon, so you can pick up the basics before the event. Check our Instagram (@gdgc_ucsc) and mailing list for workshop dates and times. During the hackathon itself, mentors will be around throughout to help when you're stuck.",
+          "Yes! We'll host beginner-friendly workshops at our GDGC club meetings leading up to the hackathon so you can pick up the basics beforehand. Check our Instagram (@gdgc_ucsc) and mailing list for dates and times. During the hackathon itself, mentors will be on hand to help whenever you're stuck, and we'll also host workshops on Google technologies.",
         renderCustomContent: () => (
           <div className="mt-3 flex flex-wrap items-center gap-2.5">
             <a
@@ -282,7 +282,7 @@ export default function FaqPage() {
         category: "building",
         question: "What tools or technologies can I use?",
         answerText:
-          "Anything you like! We'll provide resources for popular beginner tools, but you're free to use any language, framework, or platform.",
+          "Anything you like! We'll provide resources for google technologies, but you're free to use any language, framework, or platform.",
       },
 
       // 6. Food, Swag & Prizes
