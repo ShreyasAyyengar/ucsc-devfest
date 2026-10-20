@@ -45,10 +45,11 @@ type DigitCardProps = {
   glowColor: string;
   textColor: string;
   interactive: boolean;
+  isMounted?: boolean;
 };
 
-function DigitCard({ label, value, accentColor, glowColor, textColor, interactive }: DigitCardProps) {
-  const formattedValue = String(value).padStart(2, "0");
+function DigitCard({ label, value, accentColor, glowColor, textColor, interactive, isMounted = true }: DigitCardProps) {
+  const formattedValue = isMounted ? String(value).padStart(2, "0") : "--";
 
   return (
     <motion.div
@@ -89,7 +90,6 @@ function DigitCard({ label, value, accentColor, glowColor, textColor, interactiv
         {/* Digit Display */}
         <div className="relative my-1 flex w-full items-center justify-center overflow-hidden">
           <span
-            suppressHydrationWarning
             style={{ color: textColor }}
             className="block w-full truncate text-center font-bold font-sans text-2xl xs:text-3xl tabular-nums leading-none tracking-tight sm:text-4xl md:text-5xl antialiased [text-rendering:optimizeLegibility]"
           >
@@ -107,10 +107,12 @@ function DigitCard({ label, value, accentColor, glowColor, textColor, interactiv
 }
 
 export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true }: DevFestCountdownProps) {
+  const [hasMounted, setHasMounted] = useState(false);
   // Live ticking countdown state
   const [timeLeft, setTimeLeft] = useState<TimeUnits>(() => calculateTimeRemaining(TARGET_PST_DATE));
 
   useEffect(() => {
+    setHasMounted(true);
     // Sync immediate calculation
     setTimeLeft(calculateTimeRemaining(TARGET_PST_DATE));
 
@@ -239,6 +241,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
             glowColor="rgba(66, 133, 244, 0.22)"
             textColor="#1A73E8"
             interactive={interactive}
+            isMounted={hasMounted}
           />
 
           {/* Colon Separator */}
@@ -255,6 +258,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
             glowColor="rgba(234, 67, 53, 0.22)"
             textColor="#D93025"
             interactive={interactive}
+            isMounted={hasMounted}
           />
 
           {/* Colon Separator */}
@@ -271,6 +275,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
             glowColor="rgba(251, 188, 5, 0.25)"
             textColor="#B06000"
             interactive={interactive}
+            isMounted={hasMounted}
           />
 
           {/* Colon Separator */}
@@ -287,6 +292,7 @@ export function DevFestCountdown({ stageMouseX, stageMouseY, interactive = true 
             glowColor="rgba(52, 168, 83, 0.22)"
             textColor="#1E8E3E"
             interactive={interactive}
+            isMounted={hasMounted}
           />
         </div>
 

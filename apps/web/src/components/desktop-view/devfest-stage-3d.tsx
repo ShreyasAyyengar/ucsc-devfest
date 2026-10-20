@@ -1,9 +1,11 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
 import { type PointerEvent, useEffect, useState } from "react";
-import { DevFestCountdown } from "./devfest-countdown";
 import { GdgGlowingBackdrop } from "./gdg-glowing-backdrop";
+
+const DevFestCountdown = dynamic(() => import("./devfest-countdown").then((mod) => mod.DevFestCountdown), { ssr: false });
 
 export function DevFestStage3D() {
   const [supportsPointerInteraction, setSupportsPointerInteraction] = useState(false);
