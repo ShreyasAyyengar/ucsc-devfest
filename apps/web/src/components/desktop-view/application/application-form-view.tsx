@@ -3,12 +3,10 @@
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { authClientWeb } from "@/lib/auth-client-web.ts";
 import { api } from "../../../../../backend/convex/_generated/api";
 import { type Registration, registrationSchema } from "../../../../../backend/convex/application/schemas";
-import { isPriority } from "../../../../../backend/convex/priority.ts";
 import { AgreementsSection } from "./agreements-section";
 import { defaultApplicationFormValues, formatValidationErrorMessage, useAppForm } from "./application-form-hook";
 import { ApplicationSubmittedView } from "./application-submitted-view";
@@ -146,13 +144,6 @@ export function ApplicationFormView({ userEmail = "student@ucsc.edu", googleSub 
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-2">
           <h2 className="font-extrabold font-google text-2xl text-gray-900 tracking-tight sm:text-3xl">Hackathon Application</h2>
-          {isPriority === true && (
-            <div className="inline-flex items-center gap-1.5 font-medium text-gray-800 text-xs sm:rounded-md sm:border sm:border-black/10 sm:bg-yellow-100 sm:px-2.5 sm:py-1 sm:text-sm">
-              {/* TODO: Create boolean to toggle priority review */}
-              <Sparkles className="size-4 text-[#FBBC05] sm:size-5" />
-              <span>Priority Application</span>
-            </div>
-          )}
         </div>
 
         <button
