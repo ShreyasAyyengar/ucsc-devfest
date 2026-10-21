@@ -42,17 +42,17 @@ export const TIMELINE_MILESTONES: TimelineMilestone[] = [
   },
   {
     id: "regular-close",
-    dateLabel: "Oct 28",
+    dateLabel: "Nov 2",
     shortTitle: "Regular Close",
     fullTitle: "Regular Apps Close",
-    timestamp: new Date("2026-10-28T23:59:59-07:00").getTime(),
+    timestamp: new Date("2026-11-02T23:59:59-08:00").getTime(),
   },
   {
     id: "decisions",
-    dateLabel: "Nov 2",
+    dateLabel: "Nov 5",
     shortTitle: "Decisions",
     fullTitle: "App Decisions",
-    timestamp: new Date("2026-11-02T12:00:00-07:00").getTime(),
+    timestamp: new Date("2026-11-05T12:00:00-08:00").getTime(),
   },
   {
     id: "event-day",
